@@ -2,6 +2,7 @@
 {
     public interface ICreature
     {
+        public Guid ID { get; }
         public string Name { get; set; }
         public int CombatLevel { get; set; }
         public Rank MonsterRank { get; set; }

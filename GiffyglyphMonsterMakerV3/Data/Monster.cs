@@ -6,7 +6,12 @@ namespace GiffyglyphMonsterMakerV3.Data
         {
             Name = name;
         }
+        public Monster()
+        {
+            Name = "My New Monster";
+        }
 
+        public Guid ID { get; } = new();
         public string Name { get; set; } = "";
         public int CombatLevel { get; set; }
         public Rank MonsterRank { get; set; }

@@ -1,0 +1,42 @@
+﻿@page "/monstermaker"
+@using GiffyglyphMonsterMakerV3.Data
+@inject MonsterService MonsterService
+
+<PageTitle>Monster Statblock Maker V3</PageTitle>
+<div class="row">
+    <div class="col">
+        <span>Enter Stats</span>
+        <input value="@active.Name" />
+    </div>
+    <div class="col">
+        <span>Stat Blocks</span>
+        <span class="fa-solid fa-plus" @onclick="addStatBlock" />
+        @foreach(var mon in monsters)
+        {
+            <MonsterStatBlock model="mon" DeleteCallback="() => removeMonster(mon)" ActiveClick="() => ActiveClick(mon)" Focused=@(active.ID == mon.ID) />
+        }
+    </div>
+</div>
+
+@code {
+    private List<Monster> monsters { get; set; } = new();
+    private Monster active{ get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        Monster monster = new("My First Monster");
+        monsters.Add(monster);
+        active = monster;
+    }
+    public void addStatBlock()
+    {
+        monsters.Add(new Monster());
+    }
+    public void removeMonster(Monster mon)
+    {
+        monsters.Remove(mon);
+    }
+    public void ActiveClick(Monster mon)
+    {
+        active = mon;
+    }
+}

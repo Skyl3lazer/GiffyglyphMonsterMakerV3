@@ -1,0 +1,27 @@
+﻿@using GiffyglyphMonsterMakerV3.Data
+<div @onclick="Activate" class="@(Focused ? "border border-primary border-2" : "border border-secondary border-1")">
+    <h3>@model.Name</h3>
+    <div @onclick="Delete">
+        <span class="fa-solid fa-x" /><span> Delete</span>
+    </div>
+</div>
+@code {
+    [Parameter]
+    public Monster model { get; set; }
+    [Parameter]
+    public EventCallback DeleteCallback { get; set; }
+    [Parameter]
+    public EventCallback ActiveClick { get; set; }
+    [Parameter]
+    public bool Focused{ get; set; }
+
+    protected async Task Delete()
+    {
+        await DeleteCallback.InvokeAsync();
+    }
+
+    protected async Task Activate()
+    {
+        await ActiveClick.InvokeAsync();
+    }
+}
