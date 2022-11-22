@@ -1,0 +1,13 @@
+﻿@page "/statblock"
+@using GiffyglyphMonsterMakerV3.Data
+@inject MonsterService MonsterService
+
+<PageTitle>Monster Statblock Maker V3</PageTitle>
+
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        Monster Monster = new("My New Monster");
+    }
+}
