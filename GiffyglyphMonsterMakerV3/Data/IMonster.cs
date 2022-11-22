@@ -2,11 +2,12 @@
 {
     public interface ICreature
     {
-        public Guid ID { get; }
+        public Guid ID { get; init; }
         public string Name { get; set; }
         public int CombatLevel { get; set; }
         public Rank MonsterRank { get; set; }
-        public Role MosnterRole { get; set; }
+        public Role MonsterRole { get; set; }
+        public string MonsterRoleDetail { get; set; }
         public AttributeArray Attributes { get; set; }
         public DefenseArray Defenses { get; set; }
         public int Proficiency { get; set; }
@@ -14,6 +15,9 @@
         public SpeedArray Speed { get; set; }
         public CombatArray Combat { get; set; }
         public int InitiativeModifier { get; set; }
+        public SizeType Size { get; set; }
+        public CreatureType Type { get; set; }
+        public string TypeDetail { get; set; }
     }
     public enum Rank
     {
@@ -66,5 +70,31 @@
         public int DifficultyCheck { get; set; }
         public int Damage { get; set; }
         public int Range { get; set; }
+    }
+    public enum SizeType
+    {
+        Tiny = 0,
+        Small,
+        Medium,
+        Large,
+        Huge,
+        Gargantuan
+    }
+    public enum CreatureType
+    {
+        Aberration = 0,
+        Beast,
+        Celestial,
+        Construct,
+        Dragon,
+        Elemental,
+        Fey,
+        Fiend,
+        Giant,
+        Humanoid,
+        Monstrosity,
+        Ooze,
+        Plant,
+        Undead
     }
 }

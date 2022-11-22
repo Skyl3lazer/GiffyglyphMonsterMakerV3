@@ -3,29 +3,48 @@
 @inject MonsterService MonsterService
 
 <PageTitle>Monster Statblock Maker V3</PageTitle>
-<div class="row">
-    <div class="col">
-        <span>Enter Stats</span>
-        <input value="@active.Name" />
-    </div>
-    <div class="col">
-        <span>Stat Blocks</span>
-        <span class="fa-solid fa-plus" @onclick="addStatBlock" />
-        @foreach(var mon in monsters)
-        {
-            <MonsterStatBlock model="mon" DeleteCallback="() => removeMonster(mon)" ActiveClick="() => ActiveClick(mon)" Focused=@(active.ID == mon.ID) />
-        }
+<div class="container">
+    <div class="row">
+        <div class="col-3">
+            <span class="fs-2">Monster Details</span>
+            <div><span>Name: </span><input @bind="active.Name" @bind:event="oninput" /></div>
+            <div><span>Size: </span><InputSelect @bind-Value="active.Size">@foreach(var item in Enum.GetValues(typeof(SizeType))){<option value="@item">@item</option>}</InputSelect></div>
+            <div><span>Creature Type: </span><InputSelect @bind-Value="active.Type">@foreach(var item in Enum.GetValues(typeof(CreatureType))){<option value="@item">@item</option>}</InputSelect></div>
+            <div><span>Combat Level: </span><InputNumber @bind-Value="active.CombatLevel" min="0"/></div>
+            <div><span>STR: </span><InputSelect @bind-Value="active.Attributes.Strength">@for(int i=-5;i<6;i++){<option>@i</option>}</InputSelect>
+            <span>DEX: </span><InputSelect @bind-Value="active.Attributes.Dexterity">@for(int i=-5;i<6;i++){<option>@i</option>}</InputSelect>
+            <span>CON: </span><InputSelect @bind-Value="active.Attributes.Constitution">@for(int i=-5;i<6;i++){<option>@i</option>}</InputSelect></div>
+            <div><span>INT: </span><InputSelect @bind-Value="active.Attributes.Intelligence">@for(int i=-5;i<6;i++){<option>@i</option>}</InputSelect>
+            <span>WIS: </span><InputSelect @bind-Value="active.Attributes.Wisdom">@for(int i=-5;i<6;i++){<option>@i</option>}</InputSelect>
+            <span>CHA: </span><InputSelect @bind-Value="active.Attributes.Charisma">@for(int i=-5;i<6;i++){<option>@i</option>}</InputSelect></div>
+        </div>
+        <div class="col-9 w-50">
+            <div><span>Stat Blocks</span> <span class="fa-solid fa-plus" @onclick="addStatBlock" /></div>
+            <div class="row overflow-auto px-1 d-block" style="height:250px;">
+                @foreach (var mon in monsters)
+                {
+                    <MonsterTitleCard model="mon" DeleteCallback="() => removeMonster(mon)" ActiveClick="() => ActiveClick(mon)" Focused="@(mon.ID == active.ID)" />
+                }
+            </div>
+            <div class="row overflow-auto my-1">
+                @foreach (var mon in monsters)
+                {
+                    <MonsterStatBlock model="mon" Hidden="@(mon.ID != active.ID)" />
+                }
+            </div>
+        </div>
     </div>
 </div>
 
 @code {
     private List<Monster> monsters { get; set; } = new();
-    private Monster active{ get; set; }
+    private Monster active { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         Monster monster = new("My First Monster");
-        monsters.Add(monster);
         active = monster;
+        monsters.Add(monster);
     }
     public void addStatBlock()
     {
@@ -34,6 +53,16 @@
     public void removeMonster(Monster mon)
     {
         monsters.Remove(mon);
+        if (monsters.Count == 0)
+        {
+            Monster monster = new("My First Monster");
+            active = monster;
+            monsters.Add(monster);
+        }
+        else if (active.ID == mon.ID)
+        {
+            active = monsters[0];
+        }
     }
     public void ActiveClick(Monster mon)
     {

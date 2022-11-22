@@ -1,0 +1,24 @@
+﻿.name {
+    font-family: 'Alegreya Sans';
+}
+html{
+    font-family: 'Libre Franklin';
+}
+.monsterPrimary {
+    background-color: #831517;
+}
+.monsterAccent {
+    background-color: #5f0709;
+}
+.ability-common {
+    background-color: #1c922c;
+}
+.ability-uncommon {
+    background-color: #b29403;
+}
+.ability-rare {
+    background-color: #941212;
+}
+.border-black{
+    border-color: black;
+}

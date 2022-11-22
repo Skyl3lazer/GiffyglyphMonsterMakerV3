@@ -1,27 +1,35 @@
 ﻿@using GiffyglyphMonsterMakerV3.Data
-<div @onclick="Activate" class="@(Focused ? "border border-primary border-2" : "border border-secondary border-1")">
-    <h3>@model.Name</h3>
-    <div @onclick="Delete">
-        <span class="fa-solid fa-x" /><span> Delete</span>
+<div class="@(Hidden ? "d-none" : "") border-black border-2 p-1">
+    <div class="monsterPrimary px-2">
+        <div class="name text-white fw-bold fs-2">@model.Name</div>
+        <div class="text-white fst-italic">@model.Size @model.Type @(String.IsNullOrWhiteSpace(model.TypeDetail) ? "" : "("+model.TypeDetail+")")</div>
+    </div>
+    <div class="monsterAccent px-2">
+        <span class="fa-solid fa-crown text-white" />
+        <span class="text-white fw-bold">Level @model.CombatLevel @model.MonsterRank, @model.MonsterRole @(string.IsNullOrWhiteSpace(model.MonsterRoleDetail) ? "" : "("+model.MonsterRoleDetail+")")</span>
+    </div>
+    <div class="p-1">
+        <div class="row monsterAccent text-white">
+            <div class="col fs-5 border border-opacity-50 border-white">STR</div>
+            <div class="col fs-5 border border-opacity-50 border-white">DEX</div>
+            <div class="col fs-5 border border-opacity-50 border-white">CON</div>
+            <div class="col fs-5 border border-opacity-50 border-white">INT</div>
+            <div class="col fs-5 border border-opacity-50 border-white">WIS</div>
+            <div class="col fs-5 border border-opacity-50 border-white">CHA</div>
+        </div>
+        <div class="row monsterPrimary text-white">
+            <div class="col fs-3 border border-opacity-50 border-white">@model.Attributes.Strength</div>
+            <div class="col fs-3 border border-opacity-50 border-white">@model.Attributes.Dexterity</div>
+            <div class="col fs-3 border border-opacity-50 border-white">@model.Attributes.Constitution</div>
+            <div class="col fs-3 border border-opacity-50 border-white">@model.Attributes.Intelligence</div>
+            <div class="col fs-3 border border-opacity-50 border-white">@model.Attributes.Wisdom</div>
+            <div class="col fs-3 border border-opacity-50 border-white">@model.Attributes.Charisma</div>
+        </div>
     </div>
 </div>
 @code {
     [Parameter]
     public Monster model { get; set; }
     [Parameter]
-    public EventCallback DeleteCallback { get; set; }
-    [Parameter]
-    public EventCallback ActiveClick { get; set; }
-    [Parameter]
-    public bool Focused{ get; set; }
-
-    protected async Task Delete()
-    {
-        await DeleteCallback.InvokeAsync();
-    }
-
-    protected async Task Activate()
-    {
-        await ActiveClick.InvokeAsync();
-    }
+    public bool Hidden{ get; set; }
 }
