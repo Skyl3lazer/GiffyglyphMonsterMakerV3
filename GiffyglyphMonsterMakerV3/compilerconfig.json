@@ -4,7 +4,7 @@
     "inputFile": "wwwroot/lib/bootstrap/scss/bootstrap.scss"
   },
   {
-    "outputFile": "wwwroot/css/boostrap.custom.css",
-    "inputFile": "wwwroot/css/boostrap.custom.scss"
+    "outputFile": "wwwroot/css/bootstrap.custom.css",
+    "inputFile": "wwwroot/css/bootstrap.custom.scss"
   }
 ]
