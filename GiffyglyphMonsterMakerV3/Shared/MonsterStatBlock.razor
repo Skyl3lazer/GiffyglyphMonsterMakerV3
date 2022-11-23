@@ -2,11 +2,11 @@
 <div class="@(Hidden ? "d-none" : "") border-black border-2 p-1">
     <div class="monsterPrimary px-2">
         <div class="name text-white fw-bold fs-2">@model.Name</div>
-        <div class="text-white fst-italic">@model.Size @model.Type @(String.IsNullOrWhiteSpace(model.TypeDetail) ? "" : "("+model.TypeDetail+")")</div>
+        <div class="text-white fst-italic">@model.Size @model.Type @(String.IsNullOrWhiteSpace(model.TypeDetail) ? "" : "(" + model.TypeDetail + ")")</div>
     </div>
     <div class="monsterAccent px-2">
         <span class="fa-solid fa-crown text-white" />
-        <span class="text-white fw-bold">Level @model.CombatLevel @model.MonsterRank, @model.MonsterRole @(string.IsNullOrWhiteSpace(model.MonsterRoleDetail) ? "" : "("+model.MonsterRoleDetail+")")</span>
+        <span class="text-white fw-bold">Level @model.CombatLevel @model.MonsterRank, @model.MonsterRole @(string.IsNullOrWhiteSpace(model.MonsterRoleDetail) ? "" : "(" + model.MonsterRoleDetail + ")")</span>
     </div>
     <div class="p-1">
         <div class="row monsterAccent text-white">
@@ -26,10 +26,108 @@
             <div class="col fs-3 border border-opacity-50 border-white">@model.Attributes.Charisma</div>
         </div>
     </div>
+    <div>
+        <div>
+            <span>Sh</span><span class="monsterPrimaryText fw-bold">AC </span><span>@(model.Defenses.ArmorClass).</span>
+            <span class="monsterPrimaryText fw-bold">Saving Throws</span>
+            @if (model.Defenses.ProficientSavingThrows.Strength)
+            {
+                <span> Str +@(model.Attributes.Strength + model.Defenses.SaveBonus)</span>
+            }
+            @if (model.Defenses.ProficientSavingThrows.Dexterity)
+            {
+                <span> Dex +@(model.Attributes.Dexterity + model.Defenses.SaveBonus)</span>
+            }
+            @if (model.Defenses.ProficientSavingThrows.Constitution)
+            {
+                <span> Con +@(model.Attributes.Constitution + model.Defenses.SaveBonus)</span>
+            }
+            @if (model.Defenses.ProficientSavingThrows.Intelligence)
+            {
+                <span> Int +@(model.Attributes.Intelligence + model.Defenses.SaveBonus)</span>
+            }
+            @if (model.Defenses.ProficientSavingThrows.Wisdom)
+            {
+                <span> Wis +@(model.Attributes.Wisdom + model.Defenses.SaveBonus)</span>
+            }
+            @if (model.Defenses.ProficientSavingThrows.Charisma)
+            {
+                <span> Cha +@(model.Attributes.Charisma + model.Defenses.SaveBonus)</span>
+            }
+            <span>.</span>
+        </div>
+        <div>
+            <span>He</span><span class="monsterPrimaryText fw-bold">HP </span><span>@(model.Defenses.HitPoints).</span>
+        </div>
+        <div>
+            <span>Sw</span><span class="monsterPrimaryText fw-bold">ATK </span><span>@(model.Offense.Attack).</span>
+            <span class="monsterPrimaryText fw-bold">DC </span><span>+@(model.Offense.DifficultyCheck).</span>
+            <span class="monsterPrimaryText fw-bold">DMG </span><span>@(model.Offense.Damage).</span>
+            <span class="monsterPrimaryText fw-bold">Reach </span><span>@model.Offense.MaxReach ft.</span>
+            @if (model.Offense.MaxRange > 0)
+            {
+                <span class="monsterPrimaryText fw-bold">Range </span>
+
+                <span>@model.Offense.MaxRange ft.</span>
+            }
+        </div>
+        <hr class="monsterAccent" />
+        <div>
+            <div>
+                <span>Li</span><span class="monsterPrimaryText fw-bold">Speed </span><span>@(model.WalkSpeed + model.SpeedMod) ft.</span>
+                @foreach (var item in model.OtherSpeeds)
+                {
+                    <span>@item.Key @(item.Value + model.SpeedMod) ft.</span>
+                }
+            </div>
+            <div>
+                <span>Ey</span><span class="monsterPrimaryText fw-bold">Senses </span>
+                @foreach (var item in model.Senses)
+                {
+                    <span>@item.Key @item.Value ft.</span>
+                }
+                <span class="">passive Perception </span><span>@(10 + model.Attributes.Wisdom).</span>
+            </div>
+            <div>
+                <span>Sp</span><span class="monsterPrimaryText fw-bold">Languages </span>
+                @if (model.Languages.Count() > 0)
+                {
+                    <span>@(string.Join(",", model.Languages)).</span>
+                }
+                else
+                {
+                    <span>none.</span>
+                }
+            </div>
+            <div>
+                <span>Me</span><span class="monsterPrimaryText fw-bold">Proficiency </span><span>+@model.Proficiency</span>
+                <span class="monsterPrimaryText fw-bold">CR </span>
+                <span class="monsterPrimaryText fw-bold">XP </span>
+            </div>
+            @if (model.Items.Count() > 0)
+            {
+                <div>
+                    <span>Me</span><span class="monsterPrimaryText fw-bold">Items </span>
+                    <span>@(string.Join(",", model.Items)).</span>
+                </div>
+            }
+        </div>
+        @foreach (var fType in model.Features.Select(a => a.Type))
+        {
+            <div>
+                <div class="monsterTertiary d-block"><span class="monsterPrimary text-white fw-bold h-100 d-inline-block" style="z-index: 10; position:relative">@(fType)s</span><span class="slant-45 monsterPrimary d-inline-flex" style="width: 48px; height: 24px; margin-left: -24px; position: relative; z-index: 1;"/></div>
+                <div class="monsterPrimary d-block" style="height:4px"/>
+                @foreach (var feature in model.Features.Where(b => b.Type == fType))
+                {
+                    <div>@feature.Name</div>
+                }
+            </div>
+        }
+    </div>
 </div>
 @code {
     [Parameter]
     public Monster model { get; set; }
     [Parameter]
-    public bool Hidden{ get; set; }
+    public bool Hidden { get; set; }
 }

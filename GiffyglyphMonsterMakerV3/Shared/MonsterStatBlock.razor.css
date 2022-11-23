@@ -7,8 +7,14 @@ html{
 .monsterPrimary {
     background-color: #831517;
 }
+.monsterPrimaryText {
+    color: #831517;
+}
 .monsterAccent {
     background-color: #5f0709;
+}
+.monsterTertiary {
+    background-color: #f6ebeb;
 }
 .ability-common {
     background-color: #1c922c;
@@ -21,4 +27,7 @@ html{
 }
 .border-black{
     border-color: black;
+}
+.slant-45 {
+    transform: skew(45deg);
 }

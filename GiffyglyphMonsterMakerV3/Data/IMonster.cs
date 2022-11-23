@@ -11,14 +11,18 @@
         public AttributeArray Attributes { get; set; }
         public DefenseArray Defenses { get; set; }
         public int Proficiency { get; }
-        public IEnumerable<IFeature> Features { get; set; }
-        public SpeedArray Speed { get; set; }
+        public List<IFeature> Features { get; set; }
+        public int WalkSpeed { get; set; }
+        public Dictionary<MovementType, int> OtherSpeeds { get; set; }
         public int SpeedMod { get; }
         public OffenseArray Offense { get; set; }
         public int InitiativeModifier { get; }
         public SizeType Size { get; set; }
         public CreatureType Type { get; set; }
         public string TypeDetail { get; set; }
+        public Dictionary<SenseType, int> Senses { get; set; }
+        public List<string> Languages { get; set; }
+        public List<string> Items { get; set; }
     }
     public enum Rank
     {
@@ -61,18 +65,25 @@
         public int SaveBonus { get; set; }
         public ProficientSaves ProficientSavingThrows { get; set; } = new();
     }
-    public class SpeedArray
-    {
-        public int Walk { get; set; }
-        public int Climb { get; set; }
-        public int Fly { get; set; }
-    }
     public class OffenseArray
     {
         public int Attack { get; set; }
         public int DifficultyCheck { get; set; }
         public int Damage { get; set; }
-        public int Range { get; set; }
+        public int MaxRange { get;  }
+        public int MaxReach { get; }
+    }
+
+    public enum MovementType
+    {
+        Swim = 0,
+        Fly,
+        Climb
+    }
+
+    public enum SenseType
+    {
+        darkvision = 0,
     }
     public enum SizeType
     {

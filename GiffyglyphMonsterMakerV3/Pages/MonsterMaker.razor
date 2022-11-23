@@ -109,11 +109,11 @@
             </div>
         </div>
         <div class="col-9 w-50">
-            <div><span>Stat Blocks</span> <span class="fa-solid fa-plus" @onclick="addStatBlock" /></div>
+            <div><span>Stat Blocks</span> <span class="fa-solid fa-plus" @onclick="AddStatBlock" /></div>
             <div class="row overflow-auto px-1 d-block" style="height:250px;">
                 @foreach (var mon in monsters)
                 {
-                    <MonsterTitleCard model="mon" DeleteCallback="() => removeMonster(mon)" ActiveClick="() => ActiveClick(mon)" Focused="@(mon.ID == active.ID)" />
+                    <MonsterTitleCard model="mon" DeleteCallback="() => RemoveMonster(mon)" ActiveClick="() => ActiveClick(mon)" Focused="@(mon.ID == active.ID)" />
                 }
             </div>
             <div class="row overflow-auto my-1">
@@ -137,14 +137,14 @@
         monsters.Add(monster);
         UpdateValues();
     }
-    public void addStatBlock()
+    public void AddStatBlock()
     {
         var mon = new Monster();
         active = mon;
         monsters.Add(mon);
         UpdateValues();
     }
-    public void removeMonster(Monster mon)
+    public void RemoveMonster(Monster mon)
     {
         monsters.Remove(mon);
         if (monsters.Count == 0)
@@ -242,7 +242,8 @@
         active.Defenses.ArmorClass = (int)Math.Floor(ac);
         active.Defenses.SaveBonus = (int)Math.Floor(tst);
         active.Offense.Attack = (int)Math.Floor(atk);
-        active.Offense.Damage = (int)Math.Floor(dmg);
+        active.Offense.Damage = Math.Max((int)Math.Floor(dmg), 1);
         active.Offense.DifficultyCheck = (int)Math.Floor(dc);
+        active.WalkSpeed = 30;
     }
 }
