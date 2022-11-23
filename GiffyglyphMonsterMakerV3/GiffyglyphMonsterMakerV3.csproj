@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -13,6 +13,30 @@
 
   <ItemGroup>
     <None Include="compilerconfig.json" />
+    <None Include="wwwroot\lib\fontawesome\brands.scss" />
+    <None Include="wwwroot\lib\fontawesome\duotone.scss" />
+    <None Include="wwwroot\lib\fontawesome\fontawesome.scss" />
+    <None Include="wwwroot\lib\fontawesome\light.scss" />
+    <None Include="wwwroot\lib\fontawesome\regular.scss" />
+    <None Include="wwwroot\lib\fontawesome\sharp-solid.scss" />
+    <None Include="wwwroot\lib\fontawesome\solid.scss" />
+    <None Include="wwwroot\lib\fontawesome\thin.scss" />
+    <None Include="wwwroot\lib\fontawesome\v4-shims.scss" />
+    <None Include="wwwroot\lib\fontawesome\_animated.scss" />
+    <None Include="wwwroot\lib\fontawesome\_bordered-pulled.scss" />
+    <None Include="wwwroot\lib\fontawesome\_core.scss" />
+    <None Include="wwwroot\lib\fontawesome\_duotone-icons.scss" />
+    <None Include="wwwroot\lib\fontawesome\_fixed-width.scss" />
+    <None Include="wwwroot\lib\fontawesome\_functions.scss" />
+    <None Include="wwwroot\lib\fontawesome\_icons.scss" />
+    <None Include="wwwroot\lib\fontawesome\_list.scss" />
+    <None Include="wwwroot\lib\fontawesome\_mixins.scss" />
+    <None Include="wwwroot\lib\fontawesome\_rotated-flipped.scss" />
+    <None Include="wwwroot\lib\fontawesome\_screen-reader.scss" />
+    <None Include="wwwroot\lib\fontawesome\_shims.scss" />
+    <None Include="wwwroot\lib\fontawesome\_sizing.scss" />
+    <None Include="wwwroot\lib\fontawesome\_stacked.scss" />
+    <None Include="wwwroot\lib\fontawesome\_variables.scss" />
   </ItemGroup>
 
   <ItemGroup>

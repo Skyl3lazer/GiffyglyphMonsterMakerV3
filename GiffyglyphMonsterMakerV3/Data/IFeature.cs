@@ -10,8 +10,8 @@
     public enum FeatureType
     {
         Trait = 0,
-        FreeAction,
-        BonusAction,
+        Free,
+        Bonus,
         Action,
         Reaction,
         Countermeasure

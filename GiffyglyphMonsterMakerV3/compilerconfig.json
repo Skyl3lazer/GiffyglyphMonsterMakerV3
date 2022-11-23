@@ -6,5 +6,13 @@
   {
     "outputFile": "wwwroot/css/bootstrap.custom.css",
     "inputFile": "wwwroot/css/bootstrap.custom.scss"
+  },
+  {
+    "outputFile": "wwwroot/lib/fontawesome/fontawesome.css",
+    "inputFile": "wwwroot/lib/fontawesome/fontawesome.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/fa-custom.css",
+    "inputFile": "wwwroot/css/fa-custom.scss"
   }
 ]
