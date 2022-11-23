@@ -6,17 +6,107 @@
 <div class="container">
     <div class="row">
         <div class="col-3">
-            <span class="fs-2">Monster Details</span>
-            <div><span>Name: </span><input @bind="active.Name" @bind:event="oninput" /></div>
-            <div><span>Size: </span><InputSelect @bind-Value="active.Size">@foreach(var item in Enum.GetValues(typeof(SizeType))){<option value="@item">@item</option>}</InputSelect></div>
-            <div><span>Creature Type: </span><InputSelect @bind-Value="active.Type">@foreach(var item in Enum.GetValues(typeof(CreatureType))){<option value="@item">@item</option>}</InputSelect></div>
-            <div><span>Combat Level: </span><InputNumber @bind-Value="active.CombatLevel" min="0"/></div>
-            <div><span>STR: </span><InputSelect @bind-Value="active.Attributes.Strength">@for(int i=-5;i<6;i++){<option>@i</option>}</InputSelect>
-            <span>DEX: </span><InputSelect @bind-Value="active.Attributes.Dexterity">@for(int i=-5;i<6;i++){<option>@i</option>}</InputSelect>
-            <span>CON: </span><InputSelect @bind-Value="active.Attributes.Constitution">@for(int i=-5;i<6;i++){<option>@i</option>}</InputSelect></div>
-            <div><span>INT: </span><InputSelect @bind-Value="active.Attributes.Intelligence">@for(int i=-5;i<6;i++){<option>@i</option>}</InputSelect>
-            <span>WIS: </span><InputSelect @bind-Value="active.Attributes.Wisdom">@for(int i=-5;i<6;i++){<option>@i</option>}</InputSelect>
-            <span>CHA: </span><InputSelect @bind-Value="active.Attributes.Charisma">@for(int i=-5;i<6;i++){<option>@i</option>}</InputSelect></div>
+            <div class="row">
+                <div><span class="fs-2">Monster Details</span></div>
+                <div><span>Name: </span><input @bind="active.Name" @bind:event="oninput" /></div>
+                <div>
+                    <span>Size: </span><InputSelect @bind-Value="active.Size">
+                        @foreach (var item in Enum.GetValues(typeof(SizeType)))
+                        {
+                            <option value="@item">@item</option>
+                        }
+                    </InputSelect>
+                </div>
+                <div>
+                    <span>Creature Type: </span><InputSelect @bind-Value="active.Type">
+                        @foreach (var item in Enum.GetValues(typeof(CreatureType)))
+                        {
+                            <option value="@item">@item</option>
+                        }
+                    </InputSelect>
+                </div>
+                <div><span>Combat Level: </span><InputNumber Value="@active.CombatLevel" min="0" ValueChanged="(int i) => LevelChanged(i)" ValueExpression="() => active.CombatLevel" TValue="int"/></div>
+                <div><span>Proficiency Bonus:</span> @active.Proficiency</div>
+                <div>
+                    <span>Rank: </span><InputSelect Value="@active.MonsterRank" ValueChanged="(Rank i) => RankChanged(i)" ValueExpression="() => active.MonsterRank" TValue="Rank">
+                        @foreach (var item in Enum.GetValues(typeof(Rank)))
+                        {
+                            <option value="@item">@item</option>
+                        }
+                    </InputSelect>
+                </div>
+                <div>
+                    <span>Role: </span><InputSelect Value="@active.MonsterRole" ValueChanged="(Role i) => RoleChanged(i)" ValueExpression="() => active.MonsterRole" TValue="Role">
+                        @foreach (var item in Enum.GetValues(typeof(Role)))
+                        {
+                            <option value="@item">@item</option>
+                        }
+                    </InputSelect></div>
+                <div><span>Role Special Type: </span><input @bind="active.MonsterRoleDetail" @bind:event="oninput"/></div>
+                <div>
+                    <span>STR: </span><InputSelect @bind-Value="active.Attributes.Strength">
+                        @for (int i = -5; i < 6; i++)
+                        {
+                            <option>@i</option>
+                        }
+                    </InputSelect>
+                    <span>DEX: </span><InputSelect @bind-Value="active.Attributes.Dexterity">
+                        @for (int i = -5; i < 6; i++)
+                        {
+                            <option>@i</option>
+                        }
+                    </InputSelect>
+                    <span>CON: </span><InputSelect @bind-Value="active.Attributes.Constitution">
+                        @for (int i = -5; i < 6; i++)
+                        {
+                            <option>@i</option>
+                        }
+                    </InputSelect>
+                </div>
+                <div>
+                    <span>INT: </span><InputSelect @bind-Value="active.Attributes.Intelligence">
+                        @for (int i = -5; i < 6; i++)
+                        {
+                            <option>@i</option>
+                        }
+                    </InputSelect>
+                    <span>WIS: </span><InputSelect @bind-Value="active.Attributes.Wisdom">
+                        @for (int i = -5; i < 6; i++)
+                        {
+                            <option>@i</option>
+                        }
+                    </InputSelect>
+                    <span>CHA: </span><InputSelect @bind-Value="active.Attributes.Charisma">
+                        @for (int i = -5; i < 6; i++)
+                        {
+                            <option>@i</option>
+                        }
+                    </InputSelect>
+                </div>
+            </div>
+            <div class="row">
+                <div><span class="fs-2">Offense</span></div>
+                <div><span>Attack Bonus: </span><InputNumber @bind-Value="active.Offense.Attack" min="0" /></div>
+                <div><span>DC Mod: </span><InputNumber @bind-Value="active.Offense.DifficultyCheck" min="0" /></div>
+                <div><span>Damage Average: </span><InputNumber @bind-Value="active.Offense.Damage" min="0" /></div>
+            </div>
+            <div class="row">
+                <div><span class="fs-2">Defense</span></div>
+                <div><span>Armor Class: </span><InputNumber @bind-Value="active.Defenses.ArmorClass" min="0" /></div>
+                <div><span>Hit Points: </span><InputNumber @bind-Value="active.Defenses.HitPoints" min="0" /></div>
+                <div><span>Save Bonus: </span><InputNumber @bind-Value="active.Defenses.SaveBonus" min="0" /></div>
+                <div><span>Proficient Saves</span></div>
+                <div>
+                    <span>STR </span><InputCheckbox @bind-Value="active.Defenses.ProficientSavingThrows.Strength" />
+                    <span>DEX </span><InputCheckbox @bind-Value="active.Defenses.ProficientSavingThrows.Dexterity" />
+                    <span>CON </span><InputCheckbox @bind-Value="active.Defenses.ProficientSavingThrows.Constitution" />
+                </div>
+                <div>
+                    <span>INT </span><InputCheckbox @bind-Value="active.Defenses.ProficientSavingThrows.Intelligence" />
+                    <span>WIS </span><InputCheckbox @bind-Value="active.Defenses.ProficientSavingThrows.Wisdom" />
+                    <span>CHA </span><InputCheckbox @bind-Value="active.Defenses.ProficientSavingThrows.Charisma" />
+                </div>
+            </div>
         </div>
         <div class="col-9 w-50">
             <div><span>Stat Blocks</span> <span class="fa-solid fa-plus" @onclick="addStatBlock" /></div>
@@ -45,10 +135,14 @@
         Monster monster = new("My First Monster");
         active = monster;
         monsters.Add(monster);
+        UpdateValues();
     }
     public void addStatBlock()
     {
-        monsters.Add(new Monster());
+        var mon = new Monster();
+        active = mon;
+        monsters.Add(mon);
+        UpdateValues();
     }
     public void removeMonster(Monster mon)
     {
@@ -58,14 +152,97 @@
             Monster monster = new("My First Monster");
             active = monster;
             monsters.Add(monster);
+            UpdateValues();
         }
         else if (active.ID == mon.ID)
         {
             active = monsters[0];
+            UpdateValues();
         }
     }
     public void ActiveClick(Monster mon)
     {
         active = mon;
+    }
+
+    private void LevelChanged(int value)
+    {
+        active.CombatLevel = value;
+        UpdateValues();
+    }
+
+    private void RankChanged(Rank value)
+    {
+        active.MonsterRank = value;
+        UpdateValues();
+    }
+
+    private void RoleChanged(Role value)
+    {
+        active.MonsterRole = value;
+        UpdateValues();
+    }
+    public void UpdateValues()
+    { 
+        //Base formula is for a GRUNT STRIKER, everyone else is based off of that
+        double ac = 12 + (int)Math.Floor((double)active.CombatLevel / 4);
+        double hp = 16 + active.CombatLevel * 7;
+        double tst = 2;
+
+        double atk = active.Proficiency;
+        double dc = 8 + active.Proficiency;
+        double dmg = active.CombatLevel * 3;
+        switch (active.MonsterRole)
+        {
+            case Role.Controller:
+                ac += 2;
+                dmg *= 0.75;
+                break;
+            case Role.Defender:
+                ac += 4;
+                hp *= 0.75;
+                tst += 1;
+                break;
+            case Role.Lurker:
+                ac -= 4;
+                hp *= 0.75;
+                tst -= 1;
+                dmg *= 1.25;
+                break;
+            case Role.Skirmisher:
+                ac -= 2;
+                hp *= 0.75;
+                break;
+            case Role.Supporter:
+                hp *= 1.25;
+                dmg *= 0.75;
+                break;
+        }
+        switch (active.MonsterRank)
+        {
+            case Rank.Minion:
+                hp *= 0.2;
+                dmg *= 0.75;
+                break;
+            case Rank.Elite:
+                hp *= 2;
+                ac += 1;
+                tst += 1;
+                dmg *= 1.1;
+                break;
+            case Rank.Paragon:
+                ac += 2;
+                hp *= active.ParagonThreat;
+                tst += 1;
+                dmg *= 1.2;
+                break;
+        }
+
+        active.Defenses.HitPoints = (int)Math.Floor(hp);
+        active.Defenses.ArmorClass = (int)Math.Floor(ac);
+        active.Defenses.SaveBonus = (int)Math.Floor(tst);
+        active.Offense.Attack = (int)Math.Floor(atk);
+        active.Offense.Damage = (int)Math.Floor(dmg);
+        active.Offense.DifficultyCheck = (int)Math.Floor(dc);
     }
 }

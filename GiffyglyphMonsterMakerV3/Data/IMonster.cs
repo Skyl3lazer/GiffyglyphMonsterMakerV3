@@ -10,11 +10,12 @@
         public string MonsterRoleDetail { get; set; }
         public AttributeArray Attributes { get; set; }
         public DefenseArray Defenses { get; set; }
-        public int Proficiency { get; set; }
+        public int Proficiency { get; }
         public IEnumerable<IFeature> Features { get; set; }
         public SpeedArray Speed { get; set; }
-        public CombatArray Combat { get; set; }
-        public int InitiativeModifier { get; set; }
+        public int SpeedMod { get; }
+        public OffenseArray Offense { get; set; }
+        public int InitiativeModifier { get; }
         public SizeType Size { get; set; }
         public CreatureType Type { get; set; }
         public string TypeDetail { get; set; }
@@ -56,7 +57,9 @@
     public class DefenseArray
     {
         public int ArmorClass { get; set; }
-        public ProficientSaves SavingThrows { get; set; } = new();
+        public int HitPoints { get; set; }
+        public int SaveBonus { get; set; }
+        public ProficientSaves ProficientSavingThrows { get; set; } = new();
     }
     public class SpeedArray
     {
@@ -64,7 +67,7 @@
         public int Climb { get; set; }
         public int Fly { get; set; }
     }
-    public class CombatArray
+    public class OffenseArray
     {
         public int Attack { get; set; }
         public int DifficultyCheck { get; set; }
