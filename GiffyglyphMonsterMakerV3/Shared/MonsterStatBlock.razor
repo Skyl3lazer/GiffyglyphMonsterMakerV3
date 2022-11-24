@@ -1,5 +1,6 @@
 ﻿@using GiffyglyphMonsterMakerV3.Data
 @using System.Diagnostics
+@using GiffyglyphMonsterMakerV3.Utility
 <div class="@(Hidden ? "d-none" : "") border-black border-2 p-1">
     <div class="monsterPrimary px-2">
         <div class="name text-white fw-bold fs-2">@model.Name</div>
@@ -63,7 +64,12 @@
         <div>
             <span class="fa-solid fa-swords line-icon" /><span class="monsterPrimaryText fw-bold">ATK </span><span>+@(model.Offense.Attack).</span>
             <span class="monsterPrimaryText fw-bold">DC </span><span>+@(model.Offense.DifficultyCheck).</span>
-            <span class="monsterPrimaryText fw-bold">DMG </span><span>@(model.Offense.Damage).</span>
+            <span class="monsterPrimaryText fw-bold">DMG </span><span>@(model.Offense.Damage)
+                @if (model.Offense.RandomizeDamage)
+                {
+                    <span> (@(DiceTools.ConvertToDiceString(model.Offense.RandomDamageRange, model.Offense.Damage)))</span>
+                }
+            .</span>
             <span class="monsterPrimaryText fw-bold">Reach </span><span>@model.Offense.MaxReach ft.</span>
             @if (model.Offense.MaxRange > 0)
             {

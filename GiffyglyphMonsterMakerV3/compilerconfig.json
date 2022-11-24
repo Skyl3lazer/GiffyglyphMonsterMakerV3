@@ -14,5 +14,9 @@
   {
     "outputFile": "wwwroot/css/fontawesome/css/fa-solid.css",
     "inputFile": "wwwroot/lib/fontawesome/solid.scss"
+  },
+  {
+    "outputFile": "Pages/MonsterMaker.razor.css",
+    "inputFile": "Pages/MonsterMaker.razor.scss"
   }
 ]

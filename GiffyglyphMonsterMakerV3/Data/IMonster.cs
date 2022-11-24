@@ -1,4 +1,6 @@
-﻿namespace GiffyglyphMonsterMakerV3.Data
+﻿using GiffyglyphMonsterMakerV3.Utility;
+
+namespace GiffyglyphMonsterMakerV3.Data
 {
     public interface ICreature
     {
@@ -70,6 +72,8 @@
         public int Attack { get; set; }
         public int DifficultyCheck { get; set; }
         public int Damage { get; set; }
+        public bool RandomizeDamage { get; set; }
+        public DamageRange RandomDamageRange { get; set; }
         public int MaxRange { get;  }
         public int MaxReach { get; }
     }

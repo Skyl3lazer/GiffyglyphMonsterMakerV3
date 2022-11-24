@@ -1,5 +1,6 @@
 ﻿@page "/monstermaker"
 @using GiffyglyphMonsterMakerV3.Data
+@using GiffyglyphMonsterMakerV3.Utility
 @inject MonsterService MonsterService
 
 <PageTitle>Monster Statblock Maker V3</PageTitle>
@@ -25,7 +26,7 @@
                         }
                     </InputSelect>
                 </div>
-                <div><span>Combat Level: </span><InputNumber Value="@active.CombatLevel" min="0" ValueChanged="(int i) => LevelChanged(i)" ValueExpression="() => active.CombatLevel" TValue="int"/></div>
+                <div><span>Combat Level: </span><InputNumber Value="@active.CombatLevel" min="0" ValueChanged="(int i) => LevelChanged(i)" ValueExpression="() => active.CombatLevel" TValue="int" /></div>
                 <div><span>Proficiency Bonus:</span> @active.Proficiency</div>
                 <div>
                     <span>Rank: </span><InputSelect Value="@active.MonsterRank" ValueChanged="(Rank i) => RankChanged(i)" ValueExpression="() => active.MonsterRank" TValue="Rank">
@@ -46,8 +47,9 @@
                         {
                             <option value="@item">@item</option>
                         }
-                    </InputSelect></div>
-                <div><span>Role Special Type: </span><input @bind="active.MonsterRoleDetail" @bind:event="oninput"/></div>
+                    </InputSelect>
+                </div>
+                <div><span>Role Special Type: </span><input @bind="active.MonsterRoleDetail" @bind:event="oninput" /></div>
                 <div>
                     <span>STR: </span><InputSelect @bind-Value="active.Attributes.Strength">
                         @for (int i = -5; i < 6; i++)
@@ -91,9 +93,23 @@
             </div>
             <div class="row">
                 <div><span class="fs-2">Offense</span></div>
-                <div><span>Attack Bonus: </span><InputNumber @bind-Value="active.Offense.Attack" min="0" /></div>
+                <div><span>Attack Bonus: </span><span><InputNumber @bind-Value="active.Offense.Attack" min="0" /></span></div>
                 <div><span>DC Mod: </span><InputNumber @bind-Value="active.Offense.DifficultyCheck" min="0" /></div>
-                <div><span>Damage Average: </span><InputNumber @bind-Value="active.Offense.Damage" min="0" /></div>
+                <div>
+                    <span>Damage Average: </span><span>
+                        <InputNumber @bind-Value="active.Offense.Damage" min="0" /> Random: <InputCheckbox @bind-Value="active.Offense.RandomizeDamage" /> 
+                    </span>
+                </div>
+                <div><span>@if (active.Offense.RandomizeDamage)
+                           {
+                               <InputSelect @bind-Value="@active.Offense.RandomDamageRange" TValue="DamageRange">
+                                   @foreach (var item in Enum.GetValues(typeof(DamageRange)))
+                                   {
+                                       <option value="@item">@item</option>
+                                   }
+                               </InputSelect>
+                            <span>(@(DiceTools.ConvertToDiceString(active.Offense.RandomDamageRange, active.Offense.Damage)))</span>
+                           }</span></div>
             </div>
             <div class="row">
                 <div><span class="fs-2">Defense</span></div>
@@ -193,7 +209,7 @@
         UpdateValues();
     }
     public void UpdateValues()
-    { 
+    {
         //Base formula is for a GRUNT STRIKER, everyone else is based off of that
         double ac = 12 + (int)Math.Floor((double)active.CombatLevel / 4);
         double hp = 16 + active.CombatLevel * 7;
