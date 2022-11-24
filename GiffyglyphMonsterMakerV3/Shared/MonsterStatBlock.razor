@@ -84,7 +84,7 @@
                 <span class="fa-solid fa-bolt line-icon" /><span class="monsterPrimaryText fw-bold">Speed </span><span>@(model.WalkSpeed + model.SpeedMod) ft.</span>
                 @foreach (var item in model.OtherSpeeds)
                 {
-                    <span>@item.Key @(item.Value + model.SpeedMod) ft.</span>
+                    <span>, @item.Key @(item.Value + model.SpeedMod) ft.</span>
                 }
             </div>
             <div>

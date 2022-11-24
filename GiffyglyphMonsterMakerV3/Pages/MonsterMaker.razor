@@ -131,6 +131,9 @@
             <div class="row">
                 <div><span class="fs-2">Abilities</span></div>
                 <div>
+                    <_EnumAdder Dict="@active.OtherSpeeds" Header="Other Speeds" ValueChangedEvent="(a) => SpeedsUpdated(a)"></_EnumAdder>
+                </div>
+                <div>
                     <_EnumAdder Dict="@active.Senses" Header="Senses" ValueChangedEvent="(a) => SenseUpdated(a)"></_EnumAdder>
                 </div>
             </div>
@@ -169,6 +172,11 @@
     {
         var dict = (Dictionary<SenseType, int>)val;
         active.Senses = dict;
+    }
+    public void SpeedsUpdated(object? val)
+    {
+        var dict = (Dictionary<MovementType, int>)val;
+        active.OtherSpeeds = dict;
     }
     public void AddStatBlock()
     {

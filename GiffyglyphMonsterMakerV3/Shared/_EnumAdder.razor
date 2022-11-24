@@ -10,7 +10,7 @@
 @typeparam ValueType
 
 <div><span>@Header</span> <span class="fa-solid fa-plus" @onclick="AddItem" /></div>
-<div class="row overflow-auto" style="height:250px;">
+<div class="row">
     @foreach (var item in Dict)
     {
         <span>
@@ -21,6 +21,7 @@
                 }
             </select>
             <input @oninput="(val) => ValueChanged(item.Key, val.Value)" value="@item.Value"/>
+            <span class="fa-solid fa-x" @onclick="() => RemoveItem(item.Key)" />
         </span>
     }
 </div>
@@ -70,9 +71,10 @@
     }
     public void ValueChanged(KeyType key, object? newValue)
     {
-        if (newValue == null)
+        if (newValue == null || String.IsNullOrWhiteSpace(newValue.ToString()))
         {
-            RemoveItem(key);
+            Dict[key] = (ValueType)System.Convert.ChangeType(0, typeof(ValueType));
+            ValueChangedEvent.InvokeAsync(Dict);
         }
         var valueAsType = (ValueType?)System.Convert.ChangeType(newValue, typeof(ValueType));
         if (valueAsType != null && Dict[key] != null && (!Dict[key].Equals(valueAsType)))
