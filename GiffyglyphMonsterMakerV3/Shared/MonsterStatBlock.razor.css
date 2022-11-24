@@ -1,33 +1,53 @@
 ﻿.name {
     font-family: 'Alegreya Sans';
 }
-html{
+
+html {
     font-family: 'Libre Franklin';
 }
+
 .monsterPrimary {
     background-color: #831517;
 }
+
 .monsterPrimaryText {
     color: #831517;
 }
+
 .monsterAccent {
     background-color: #5f0709;
 }
+hr.monsterAccent {
+    background-color: #5f0709;
+    border-color: #5f0709 !important;
+}
+
 .monsterTertiary {
     background-color: #f6ebeb;
 }
+
 .ability-common {
     background-color: #1c922c;
 }
+
 .ability-uncommon {
     background-color: #b29403;
 }
+
 .ability-rare {
     background-color: #941212;
 }
-.border-black{
+
+.border-black {
     border-color: black;
 }
+
 .slant-45 {
     transform: skew(45deg);
+}
+
+.line-icon {
+    color: #831517;
+    width: 25px;
+    text-align: center !important;
 }

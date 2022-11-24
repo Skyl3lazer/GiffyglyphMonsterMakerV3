@@ -1,4 +1,5 @@
 ﻿@using GiffyglyphMonsterMakerV3.Data
+@using System.Diagnostics
 <div class="@(Hidden ? "d-none" : "") border-black border-2 p-1">
     <div class="monsterPrimary px-2">
         <div class="name text-white fw-bold fs-2">@model.Name</div>
@@ -10,25 +11,25 @@
     </div>
     <div class="p-1">
         <div class="row monsterAccent text-white">
-            <div class="col fs-5 border border-opacity-50 border-white">STR</div>
-            <div class="col fs-5 border border-opacity-50 border-white">DEX</div>
-            <div class="col fs-5 border border-opacity-50 border-white">CON</div>
-            <div class="col fs-5 border border-opacity-50 border-white">INT</div>
-            <div class="col fs-5 border border-opacity-50 border-white">WIS</div>
-            <div class="col fs-5 border border-opacity-50 border-white">CHA</div>
+            <div class="col fs-5 border border-opacity-50 border-white text-center fw-bold">STR</div>
+            <div class="col fs-5 border border-opacity-50 border-white text-center fw-bold">DEX</div>
+            <div class="col fs-5 border border-opacity-50 border-white text-center fw-bold">CON</div>
+            <div class="col fs-5 border border-opacity-50 border-white text-center fw-bold">INT</div>
+            <div class="col fs-5 border border-opacity-50 border-white text-center fw-bold">WIS</div>
+            <div class="col fs-5 border border-opacity-50 border-white text-center fw-bold">CHA</div>
         </div>
         <div class="row monsterPrimary text-white">
-            <div class="col fs-3 border border-opacity-50 border-white">@model.Attributes.Strength</div>
-            <div class="col fs-3 border border-opacity-50 border-white">@model.Attributes.Dexterity</div>
-            <div class="col fs-3 border border-opacity-50 border-white">@model.Attributes.Constitution</div>
-            <div class="col fs-3 border border-opacity-50 border-white">@model.Attributes.Intelligence</div>
-            <div class="col fs-3 border border-opacity-50 border-white">@model.Attributes.Wisdom</div>
-            <div class="col fs-3 border border-opacity-50 border-white">@model.Attributes.Charisma</div>
+            <div class="col fs-3 border border-opacity-50 border-white text-center fw-bold">@model.Attributes.Strength</div>
+            <div class="col fs-3 border border-opacity-50 border-white text-center fw-bold">@model.Attributes.Dexterity</div>
+            <div class="col fs-3 border border-opacity-50 border-white text-center fw-bold">@model.Attributes.Constitution</div>
+            <div class="col fs-3 border border-opacity-50 border-white text-center fw-bold">@model.Attributes.Intelligence</div>
+            <div class="col fs-3 border border-opacity-50 border-white text-center fw-bold">@model.Attributes.Wisdom</div>
+            <div class="col fs-3 border border-opacity-50 border-white text-center fw-bold">@model.Attributes.Charisma</div>
         </div>
     </div>
     <div>
         <div>
-            <span>Sh</span><span class="monsterPrimaryText fw-bold">AC </span><span>@(model.Defenses.ArmorClass).</span>
+            <span class="fa-solid fa-shield-halved line-icon" /><span class="monsterPrimaryText fw-bold">AC </span><span>@(model.Defenses.ArmorClass).</span>
             <span class="monsterPrimaryText fw-bold">Saving Throws</span>
             @if (model.Defenses.ProficientSavingThrows.Strength)
             {
@@ -57,10 +58,10 @@
             <span>.</span>
         </div>
         <div>
-            <span>He</span><span class="monsterPrimaryText fw-bold">HP </span><span>@(model.Defenses.HitPoints).</span>
+            <span class="fa-solid fa-heart line-icon" /><span class="monsterPrimaryText fw-bold">HP </span><span>@(model.Defenses.HitPoints).</span>
         </div>
         <div>
-            <span>Sw</span><span class="monsterPrimaryText fw-bold">ATK </span><span>@(model.Offense.Attack).</span>
+            <span class="fa-solid fa-swords line-icon" /><span class="monsterPrimaryText fw-bold">ATK </span><span>+@(model.Offense.Attack).</span>
             <span class="monsterPrimaryText fw-bold">DC </span><span>+@(model.Offense.DifficultyCheck).</span>
             <span class="monsterPrimaryText fw-bold">DMG </span><span>@(model.Offense.Damage).</span>
             <span class="monsterPrimaryText fw-bold">Reach </span><span>@model.Offense.MaxReach ft.</span>
@@ -71,17 +72,17 @@
                 <span>@model.Offense.MaxRange ft.</span>
             }
         </div>
-        <hr class="monsterAccent" />
+        <hr class="monsterAccent my-1 border border-2 border-opacity-100" />
         <div>
             <div>
-                <span>Li</span><span class="monsterPrimaryText fw-bold">Speed </span><span>@(model.WalkSpeed + model.SpeedMod) ft.</span>
+                <span class="fa-solid fa-bolt line-icon" /><span class="monsterPrimaryText fw-bold">Speed </span><span>@(model.WalkSpeed + model.SpeedMod) ft.</span>
                 @foreach (var item in model.OtherSpeeds)
                 {
                     <span>@item.Key @(item.Value + model.SpeedMod) ft.</span>
                 }
             </div>
             <div>
-                <span>Ey</span><span class="monsterPrimaryText fw-bold">Senses </span>
+                <span class="fa-solid fa-eye line-icon" /><span class="monsterPrimaryText fw-bold">Senses </span>
                 @foreach (var item in model.Senses)
                 {
                     <span>@item.Key @item.Value ft.</span>
@@ -89,25 +90,25 @@
                 <span class="">passive Perception </span><span>@(10 + model.Attributes.Wisdom).</span>
             </div>
             <div>
-                <span>Sp</span><span class="monsterPrimaryText fw-bold">Languages </span>
+                <span class="fa-solid fa-comment line-icon" /><span class="monsterPrimaryText fw-bold">Languages </span>
                 @if (model.Languages.Count() > 0)
                 {
                     <span>@(string.Join(",", model.Languages)).</span>
                 }
                 else
                 {
-                    <span>none.</span>
+                    <span>None.</span>
                 }
             </div>
             <div>
-                <span>Me</span><span class="monsterPrimaryText fw-bold">Proficiency </span><span>+@model.Proficiency</span>
+                <span class="fa-solid fa-award line-icon" /><span class="monsterPrimaryText fw-bold">Proficiency </span><span>+@model.Proficiency</span>
                 <span class="monsterPrimaryText fw-bold">CR </span>
                 <span class="monsterPrimaryText fw-bold">XP </span>
             </div>
             @if (model.Items.Count() > 0)
             {
                 <div>
-                    <span>Me</span><span class="monsterPrimaryText fw-bold">Items </span>
+                    <span class="fa-solid fa-sack line-icon" /><span class="monsterPrimaryText fw-bold">Items </span>
                     <span>@(string.Join(",", model.Items)).</span>
                 </div>
             }
@@ -115,11 +116,13 @@
         @foreach (var fType in model.Features.Select(a => a.Type))
         {
             <div>
-                <div class="monsterTertiary d-block"><span class="monsterPrimary text-white fw-bold h-100 d-inline-block" style="z-index: 10; position:relative">@(fType)s</span><span class="slant-45 monsterPrimary d-inline-flex" style="width: 48px; height: 24px; margin-left: -24px; position: relative; z-index: 1;"/></div>
-                <div class="monsterPrimary d-block" style="height:4px"/>
+                <div class="monsterTertiary d-block"><span class="monsterPrimary text-white fw-bold h-100 d-inline-block" style="z-index: 10; position:relative">@(fType)s</span><span class="slant-45 monsterPrimary d-inline-flex" style="width: 48px; height: 24px; margin-left: -24px; position: relative; z-index: 1;" /></div>
+                <div class="monsterPrimary d-block" style="height:4px" />
                 @foreach (var feature in model.Features.Where(b => b.Type == fType))
                 {
-                    <div>@feature.Name</div>
+                    <div class="py-1">
+                        <span class="line-icon"><span class="text-white fa-solid p-1 @feature.Icon @feature.RarityStyle"></span></span><span>@feature.Name</span>
+                    </div>
                 }
             </div>
         }

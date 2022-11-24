@@ -13,14 +13,14 @@
 
   <ItemGroup>
     <None Include="compilerconfig.json" />
-    <None Include="wwwroot\lib\webfonts\fa-brands-400.woff2" />
-    <None Include="wwwroot\lib\webfonts\fa-duotone-900.woff2" />
-    <None Include="wwwroot\lib\webfonts\fa-light-300.woff2" />
-    <None Include="wwwroot\lib\webfonts\fa-regular-400.woff2" />
-    <None Include="wwwroot\lib\webfonts\fa-sharp-solid-900.woff2" />
-    <None Include="wwwroot\lib\webfonts\fa-solid-900.woff2" />
-    <None Include="wwwroot\lib\webfonts\fa-thin-100.woff2" />
-    <None Include="wwwroot\lib\webfonts\fa-v4compatibility.woff2" />
+    <None Include="wwwroot\css\fontawesome\webfonts\fa-brands-400.woff2" />
+    <None Include="wwwroot\css\fontawesome\webfonts\fa-duotone-900.woff2" />
+    <None Include="wwwroot\css\fontawesome\webfonts\fa-light-300.woff2" />
+    <None Include="wwwroot\css\fontawesome\webfonts\fa-regular-400.woff2" />
+    <None Include="wwwroot\css\fontawesome\webfonts\fa-sharp-solid-900.woff2" />
+    <None Include="wwwroot\css\fontawesome\webfonts\fa-solid-900.woff2" />
+    <None Include="wwwroot\css\fontawesome\webfonts\fa-thin-100.woff2" />
+    <None Include="wwwroot\css\fontawesome\webfonts\fa-v4compatibility.woff2" />
     <None Include="wwwroot\lib\fontawesome\brands.scss" />
     <None Include="wwwroot\lib\fontawesome\duotone.scss" />
     <None Include="wwwroot\lib\fontawesome\fontawesome.scss" />
@@ -61,6 +61,10 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\css\fontawesome\NewFolder\" />
   </ItemGroup>
 
 </Project>

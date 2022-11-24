@@ -1,18 +1,18 @@
 ﻿[
   {
-    "outputFile": "wwwroot/lib/bootstrap/scss/bootstrap.css",
-    "inputFile": "wwwroot/lib/bootstrap/scss/bootstrap.scss"
-  },
-  {
     "outputFile": "wwwroot/css/bootstrap.custom.css",
     "inputFile": "wwwroot/css/bootstrap.custom.scss"
   },
   {
-    "outputFile": "wwwroot/lib/fontawesome/fontawesome.css",
-    "inputFile": "wwwroot/lib/fontawesome/fontawesome.scss"
+    "outputFile": "wwwroot/css/fa-custom.css",
+    "inputFile": "wwwroot/css/fontawesome/css/fa-custom.scss"
   },
   {
-    "outputFile": "wwwroot/css/fa-custom.css",
-    "inputFile": "wwwroot/css/fa-custom.scss"
+    "outputFile": "wwwroot/css/fontawesome/css/fa-regular.css",
+    "inputFile": "wwwroot/lib/fontawesome/regular.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/fontawesome/css/fa-solid.css",
+    "inputFile": "wwwroot/lib/fontawesome/solid.scss"
   }
 ]

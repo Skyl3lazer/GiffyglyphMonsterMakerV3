@@ -6,6 +6,8 @@
         public string Description { get; set; }
         public FeatureType Type { get; set; }
         public RarityType Rarity { get; set; }
+        public string Icon { get; set; }
+        public string RarityStyle { get; }
     }
     public enum FeatureType
     {

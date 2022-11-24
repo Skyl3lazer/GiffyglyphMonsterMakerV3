@@ -8476,6 +8476,22 @@ textarea.form-control-lg {
   visibility: hidden !important;
 }
 
+.rounded-start-top {
+  border-top-left-radius: var(--bs-border-radius) !important;
+}
+
+.rounded-start-bottom {
+  border-bottom-left-radius: var(--bs-border-radius) !important;
+}
+
+.rounded-end-top {
+  border-top-right-radius: var(--bs-border-radius) !important;
+}
+
+.rounded-end-bottom {
+  border-bottom-right-radius: var(--bs-border-radius) !important;
+}
+
 @media (min-width: 576px) {
   .float-sm-start {
     float: left !important;
