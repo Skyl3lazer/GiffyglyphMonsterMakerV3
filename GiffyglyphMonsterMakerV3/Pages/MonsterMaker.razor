@@ -34,6 +34,11 @@
                             <option value="@item">@item</option>
                         }
                     </InputSelect>
+                    @if (active.MonsterRank == Rank.Paragon)
+                    {
+                        <span> Threat: </span>
+                        <InputNumber Value="active.ParagonThreat" min="1" ValueChanged="(int i) => ParagonChanged(i)" TValue="int" ValueExpression="() => active.ParagonThreat" />
+                    }
                 </div>
                 <div>
                     <span>Role: </span><InputSelect Value="@active.MonsterRole" ValueChanged="(Role i) => RoleChanged(i)" ValueExpression="() => active.MonsterRole" TValue="Role">
@@ -168,6 +173,11 @@
     private void LevelChanged(int value)
     {
         active.CombatLevel = value;
+        UpdateValues();
+    }
+    private void ParagonChanged(int value)
+    {
+        active.ParagonThreat = value;
         UpdateValues();
     }
 

@@ -30,7 +30,7 @@ public class Monster : ICreature
         Features.Add(new Action() { Name = "Hit Them", Rarity = RarityType.Common, Description = "one target", Range = 5, Distance = RangeType.Melee, Icon = "fa-sword", Type = FeatureType.Action });
     }
 
-    public int ParagonThreat { get; set; }
+    public int ParagonThreat { get; set; } = 3;
 
     public int MaxRange
     {
