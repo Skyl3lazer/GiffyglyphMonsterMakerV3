@@ -1,0 +1,93 @@
+﻿@using GiffyglyphMonsterMakerV3.Data
+@using System.Collections
+@using Microsoft.AspNetCore.Mvc.ModelBinding.Binders
+@using Microsoft.AspNetCore.Mvc.ViewFeatures
+@using Microsoft.EntityFrameworkCore.Metadata.Internal
+@using System.Linq;
+@using System.Linq.Expressions;
+@using Microsoft.AspNetCore.Http.Features
+@typeparam KeyType
+@typeparam ValueType
+
+<div><span>@Header</span> <span class="fa-solid fa-plus" @onclick="AddItem" /></div>
+<div class="row overflow-auto" style="height:250px;">
+    @foreach (var item in Dict)
+    {
+        <span>
+            <select @onchange="(val) => KeyChanged(item.Key, val)" value="@item.Key">
+                @foreach (var k in Enum.GetValues(typeof(KeyType)))
+                {
+                        <option value="@((KeyType)k)">@((KeyType)k)</option>
+                }
+            </select>
+            <input @oninput="(val) => ValueChanged(item.Key, val.Value)" value="@item.Value"/>
+        </span>
+    }
+</div>
+
+
+@code {
+    [Parameter]
+    public Dictionary<KeyType, ValueType> Dict { get; set; }
+    [Parameter]
+    public string Header { get; set; }
+    [Parameter]
+    public EventCallback ValueChangedEvent { get; set; }
+    public void AddItem()
+    {
+        var listOfUnused = (Enum.GetValues(typeof(KeyType))).Cast<KeyType>().Where(a => !Dict.ContainsKey(a));
+        if (listOfUnused.Count() > 0)
+        {
+            Dict.Add(listOfUnused.First(), (ValueType)System.Convert.ChangeType(0, typeof(ValueType)));
+            ValueChangedEvent.InvokeAsync(Dict);
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (!typeof(KeyType).IsEnum)
+            throw new InvalidDataException("Parameter was not an enumerator");
+    }
+
+    public void KeyChanged(KeyType key, ChangeEventArgs changeArgs)
+    {
+        var newKey = (KeyType)Enum.Parse(typeof(KeyType), changeArgs.Value.ToString());
+        if (newKey != null && Dict.ContainsKey(key) && !Dict.ContainsKey(newKey))
+        {
+            var val = Dict[key];
+            Dict.Remove(key);
+            Dict.Add(newKey, val);
+            ValueChangedEvent.InvokeAsync(Dict);
+        }
+        else if (newKey != null && Dict.ContainsKey(newKey))
+        {
+            var val = Dict[key];
+            Dict.Remove(key);
+            Dict.Remove(newKey);
+            Dict.Add(newKey, val);
+            ValueChangedEvent.InvokeAsync(Dict);
+        }
+    }
+    public void ValueChanged(KeyType key, object? newValue)
+    {
+        if (newValue == null)
+        {
+            RemoveItem(key);
+        }
+        var valueAsType = (ValueType?)System.Convert.ChangeType(newValue, typeof(ValueType));
+        if (valueAsType != null && Dict[key] != null && (!Dict[key].Equals(valueAsType)))
+        {
+            Dict[key] = valueAsType;
+            ValueChangedEvent.InvokeAsync(Dict);
+        }
+    }
+
+    public void RemoveItem(KeyType key)
+    {
+        if (Dict.ContainsKey(key))
+        {
+            Dict.Remove(key);
+            ValueChangedEvent.InvokeAsync(Dict);
+        }
+    }
+}

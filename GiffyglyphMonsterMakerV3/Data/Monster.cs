@@ -28,6 +28,7 @@ public class Monster : ICreature
         Items = new List<string>();
         Features = new List<IFeature>(); 
         Features.Add(new Action() { Name = "Hit Them", Rarity = RarityType.Common, Description = "one target", Range = 5, Distance = RangeType.Melee, Icon = "fa-sword", Type = FeatureType.Action });
+        Senses.Add(SenseType.darkvision, 30);
     }
 
     public int ParagonThreat { get; set; } = 3;

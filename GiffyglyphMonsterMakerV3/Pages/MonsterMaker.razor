@@ -108,7 +108,7 @@
                                        <option value="@item">@item</option>
                                    }
                                </InputSelect>
-                            <span>(@(DiceTools.ConvertToDiceString(active.Offense.RandomDamageRange, active.Offense.Damage)))</span>
+                               <span>(@(DiceTools.ConvertToDiceString(active.Offense.RandomDamageRange, active.Offense.Damage)))</span>
                            }</span></div>
             </div>
             <div class="row">
@@ -126,6 +126,12 @@
                     <span>INT </span><InputCheckbox @bind-Value="active.Defenses.ProficientSavingThrows.Intelligence" />
                     <span>WIS </span><InputCheckbox @bind-Value="active.Defenses.ProficientSavingThrows.Wisdom" />
                     <span>CHA </span><InputCheckbox @bind-Value="active.Defenses.ProficientSavingThrows.Charisma" />
+                </div>
+            </div>
+            <div class="row">
+                <div><span class="fs-2">Abilities</span></div>
+                <div>
+                    <_EnumAdder Dict="@active.Senses" Header="Senses" ValueChangedEvent="(a) => SenseUpdated(a)"></_EnumAdder>
                 </div>
             </div>
         </div>
@@ -150,13 +156,19 @@
 @code {
     private List<Monster> monsters { get; set; } = new();
     private Monster active { get; set; }
-
+    
     protected override async Task OnInitializedAsync()
     {
         Monster monster = new("My First Monster");
         active = monster;
         monsters.Add(monster);
         UpdateValues();
+    }
+
+    public void SenseUpdated(object? val)
+    {
+        var dict = (Dictionary<SenseType, int>)val;
+        active.Senses = dict;
     }
     public void AddStatBlock()
     {

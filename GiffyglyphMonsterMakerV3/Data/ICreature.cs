@@ -87,7 +87,10 @@ namespace GiffyglyphMonsterMakerV3.Data
 
     public enum SenseType
     {
-        darkvision = 0,
+        blindsight = 0,
+        darkvision,
+        tremorsense,
+        truesight
     }
     public enum SizeType
     {
