@@ -8,6 +8,7 @@
         public string OverrideMarkup { get; set; }
         public FeatureType Type { get; init; }
         public RarityType Rarity { get; set; }
+        public AttributeType RelevantAttribute { get; set; }
         public string Icon { get; set; }
         public string RarityStyle { get; }
         public bool HasSave { get; set; }

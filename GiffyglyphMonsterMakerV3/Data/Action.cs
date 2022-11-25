@@ -62,11 +62,11 @@ namespace GiffyglyphMonsterMakerV3.Data
 
                 if (HasSave)
                 {
-                    desc += "DC" + (Parent.Offense.DifficultyCheck + Parent.Attributes.HighStat + Parent.Attributes.AttributeMod) + " vs " + SaveVs + ", ";
+                    desc += "DC" + (Parent.Offense.DifficultyCheck + Parent.Attributes.Dict[RelevantAttribute] + Parent.Attributes.AttributeMod) + " vs " + SaveVs + ", ";
                 }
                 else
                 {
-                    desc += "+" + (Parent.Offense.Attack + Parent.Attributes.HighStat + Parent.Attributes.AttributeMod) + " to hit, ";
+                    desc += ((Parent.Offense.Attack + Parent.Attributes.Dict[RelevantAttribute] + Parent.Attributes.AttributeMod) >= 0 ? "+":"") + (Parent.Offense.Attack + Parent.Attributes.Dict[RelevantAttribute] + Parent.Attributes.AttributeMod) + " to hit, ";
                 }
 
                 switch (Distance)
@@ -131,6 +131,7 @@ namespace GiffyglyphMonsterMakerV3.Data
         {
             _parent.Offense = (OffenseArray)sender;
         }
+        public AttributeType RelevantAttribute { get; set; }
         public string OverrideMarkup { get; set; }
         public virtual FeatureType Type { get; init; } = FeatureType.Action;
         public RangeType Distance { get; set; }

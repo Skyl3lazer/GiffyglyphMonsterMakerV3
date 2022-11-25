@@ -26,6 +26,7 @@ public class Monster : ICreature
             ActionDamageType = DamageType.bludgeoning,
             DealsDamage = true,
             Shape = TargetShape.target,
+            RelevantAttribute = AttributeType.Strength,
             Parent = this
         });
         _features.Add(new Action()
@@ -40,6 +41,7 @@ public class Monster : ICreature
             ActionDamageType = DamageType.bludgeoning,
             DealsDamage = true,
             Shape = TargetShape.target,
+            RelevantAttribute = AttributeType.Dexterity,
             Parent = this,
             Frequency = new FeatureFrequency()
             {
@@ -58,6 +60,7 @@ public class Monster : ICreature
             Icon = "fa-bow-arrow",
             Targets = 0,
             ActionDamageType = DamageType.psychic,
+            RelevantAttribute = AttributeType.Intelligence,
             DealsDamage = true,
             Parent = this,
             Frequency = new FeatureFrequency()
@@ -76,6 +79,7 @@ public class Monster : ICreature
             Icon = "fa-sword",
             Targets = 1,
             ActionDamageType = DamageType.bludgeoning,
+            RelevantAttribute = AttributeType.Strength,
             DealsDamage = true,
             Shape = TargetShape.target,
             Parent = this,
@@ -106,6 +110,7 @@ public class Monster : ICreature
             ActionDamageType = DamageType.bludgeoning,
             DealsDamage = true,
             Shape = TargetShape.target,
+            RelevantAttribute = AttributeType.Strength,
             Parent = this
         });
 

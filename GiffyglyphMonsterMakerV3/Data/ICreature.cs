@@ -51,14 +51,30 @@ namespace GiffyglyphMonsterMakerV3.Data
         Common,
         Undercommon
     }
+
+    public enum AttributeType
+    {
+        Strength = 0,
+        Dexterity,
+        Constitution,
+        Intelligence,
+        Wisdom,
+        Charisma
+    }
     public class AttributeArray : INotifyPropertyChanged
     {
-        private int _strength;
-        private int _dexterity;
-        private int _constitution;
-        private int _intelligence;
-        private int _wisdom;
-        private int _charisma;
+        public Dictionary<AttributeType, int> Dict { get; }
+
+        public AttributeArray()
+        {
+            Dict = new ();
+            Dict[AttributeType.Strength] = 0;
+            Dict[AttributeType.Constitution] = 0;
+            Dict[AttributeType.Intelligence] = 0;
+            Dict[AttributeType.Wisdom] = 0;
+            Dict[AttributeType.Charisma] = 0;
+            Dict[AttributeType.Dexterity] = 0;
+        }
         
         public int AttributeMod { get; set; }
 
@@ -66,49 +82,57 @@ namespace GiffyglyphMonsterMakerV3.Data
         {
             get
             {
-                return (int)Math.Max(Dexterity, Math.Max(Strength, Math.Max(Charisma, Math.Max(Constitution, Math.Max(Intelligence,Wisdom)))));
+                return Dict.Values.Max();
             }
         }
         public int Strength
         {
-            get => _strength;
-            set { _strength = value;
+            get => Dict[AttributeType.Strength];
+            set
+            {
+                Dict[AttributeType.Strength] = value;
                 PropertyChanged?.Invoke(this,
                 new PropertyChangedEventArgs(nameof(Strength)));
             }
         }
         public int Dexterity
         {
-            get => _dexterity;
-            set { _dexterity = value; PropertyChanged?.Invoke(this,
+            get => Dict[AttributeType.Dexterity];
+            set {
+                Dict[AttributeType.Dexterity] = value; PropertyChanged?.Invoke(this,
                 new PropertyChangedEventArgs(nameof(Dexterity)));
             }
         }
         public int Constitution
         {
-            get => _constitution;
-            set { _constitution = value; PropertyChanged?.Invoke(this,
+            get => Dict[AttributeType.Constitution];
+            set
+            {
+                Dict[AttributeType.Constitution] = value; PropertyChanged?.Invoke(this,
                 new PropertyChangedEventArgs(nameof(Constitution)));
             }
         }
         public int Intelligence
         {
-            get => _intelligence;
-            set { _intelligence = value; PropertyChanged?.Invoke(this,
+            get => Dict[AttributeType.Intelligence];
+            set {
+                Dict[AttributeType.Intelligence] = value; PropertyChanged?.Invoke(this,
                 new PropertyChangedEventArgs(nameof(Intelligence)));
             }
         }
         public int Wisdom
         {
-            get => _wisdom;
-            set { _wisdom = value; PropertyChanged?.Invoke(this,
+            get => Dict[AttributeType.Wisdom];
+            set {
+                Dict[AttributeType.Wisdom] = value; PropertyChanged?.Invoke(this,
                 new PropertyChangedEventArgs(nameof(Wisdom)));
             }
         }
         public int Charisma
         {
-            get => _charisma;
-            set { _charisma = value; PropertyChanged?.Invoke(this,
+            get => Dict[AttributeType.Charisma];
+            set {
+                Dict[AttributeType.Charisma] = value; PropertyChanged?.Invoke(this,
                 new PropertyChangedEventArgs(nameof(Charisma)));
             }
         }
