@@ -21,6 +21,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+var connectionString = builder.Configuration["ConnectionStrings:ggmonstermaker"];
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();

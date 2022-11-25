@@ -1,28 +1,39 @@
 ﻿using System;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using GiffyglyphMonsterMakerV3.Pages;
 using GiffyglyphMonsterMakerV3.Utility;
+using Microsoft.EntityFrameworkCore;
 
 namespace GiffyglyphMonsterMakerV3.Data
 {
     public interface ICreature : INotifyPropertyChanged
     {
-        public Guid ID { get; init; }
+        [Required]
+        public Guid Id { get; init; }
+        [Required]
         public string Name { get; set; }
+        [Required]
         public int CombatLevel { get; set; }
+        [Required]
         public Rank MonsterRank { get; set; }
         public Role MonsterRole { get; set; }
         public string MonsterRoleDetail { get; set; }
+        [Required]
         public AttributeArray Attributes { get; set; }
+        [Required]
         public DefenseArray Defenses { get; set; }
         public int Proficiency { get; }
         public List<IFeature> Features { get; set; }
         public int WalkSpeed { get; set; }
         public Dictionary<MovementType, int> OtherSpeeds { get; set; }
         public int SpeedMod { get; }
+        [Required]
         public OffenseArray Offense { get; set; }
         public int InitiativeModifier { get; }
+        [Required]
         public SizeType Size { get; set; }
+        [Required]
         public CreatureType Type { get; set; }
         public string TypeDetail { get; set; }
         public Dictionary<SenseType, int> Senses { get; set; }
@@ -77,14 +88,6 @@ namespace GiffyglyphMonsterMakerV3.Data
         }
         
         public int AttributeMod { get; set; }
-
-        public int HighStat
-        {
-            get
-            {
-                return Dict.Values.Max();
-            }
-        }
         public int Strength
         {
             get => Dict[AttributeType.Strength];

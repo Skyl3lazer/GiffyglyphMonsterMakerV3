@@ -186,14 +186,14 @@
             <div class="row overflow-auto px-1 d-block" style="height:250px;">
                 @foreach (var mon in Monsters)
                 {
-                    <MonsterTitleCard model="mon" DeleteCallback="() => RemoveMonster(mon)" ActiveClick="() => ActiveClick(mon)" Focused="@(mon.ID == active.ID)" />
+                    <MonsterTitleCard model="mon" DeleteCallback="() => RemoveMonster(mon)" ActiveClick="() => ActiveClick(mon)" Focused="@(mon.Id == active.Id)" />
                 }
             </div>
             <div class="row my-1">
                 @foreach (var mon in Monsters)
                 {
                     <div class="col-8">
-                        <MonsterStatBlock model="mon" Hidden="@(mon.ID != active.ID)" />
+                        <MonsterStatBlock model="mon" Hidden="@(mon.Id != active.Id)" />
                     </div>
                 }
             </div>
@@ -273,7 +273,7 @@
             Monsters.Add(monster);
             UpdateValues();
         }
-        else if (active.ID == mon.ID)
+        else if (active.Id == mon.Id)
         {
             active = Monsters[0];
             UpdateValues();

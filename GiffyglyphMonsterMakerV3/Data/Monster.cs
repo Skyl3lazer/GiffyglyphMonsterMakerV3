@@ -1,13 +1,15 @@
 using System.ComponentModel;
+using Microsoft.EntityFrameworkCore;
 
 namespace GiffyglyphMonsterMakerV3.Data;
 
+[PrimaryKey("Id")]
 public class Monster : ICreature
 {
     public Monster(string name)
     {
         Name = name;
-        ID = Guid.NewGuid();
+        Id = Guid.NewGuid();
         Offense = new OffenseArray();
         Defenses = new DefenseArray();
         OtherSpeeds = new Dictionary<MovementType, int>();
@@ -15,7 +17,7 @@ public class Monster : ICreature
         Languages = new List<string>();
         Items = new List<string>();
         var _features = new List<IFeature>();
-        _features.Add(new Action()
+        _features.Add(new MonsterAction()
         {
             Name = "Hit Them",
             Rarity = RarityType.Common,
@@ -29,7 +31,7 @@ public class Monster : ICreature
             RelevantAttribute = AttributeType.Strength,
             Parent = this
         });
-        _features.Add(new Action()
+        _features.Add(new MonsterAction()
         {
             Name = "Hit Them Twice",
             Rarity = RarityType.Uncommon,
@@ -49,7 +51,7 @@ public class Monster : ICreature
                 Value = 2
             }
         });
-        _features.Add(new Action()
+        _features.Add(new MonsterAction()
         {
             Name = "Deadly Spell",
             Rarity = RarityType.Rare,
@@ -70,7 +72,7 @@ public class Monster : ICreature
             }
         });
 
-        _features.Add(new BonusAction()
+        _features.Add(new MonsterBonusAction()
         {
             Name = "Bonus Smack",
             Rarity = RarityType.Common,
@@ -91,7 +93,7 @@ public class Monster : ICreature
     public Monster()
     {
         Name = "My New Monster";
-        ID = Guid.NewGuid();
+        Id = Guid.NewGuid();
         Offense = new OffenseArray();
         Defenses = new DefenseArray();
         OtherSpeeds = new Dictionary<MovementType, int>();
@@ -99,7 +101,7 @@ public class Monster : ICreature
         Languages = new List<string>();
         Items = new List<string>();
         var _features = new List<IFeature>();
-        _features.Add(new Action()
+        _features.Add(new MonsterAction()
         {
             Name = "Hit Them",
             Rarity = RarityType.Common,
@@ -126,9 +128,9 @@ public class Monster : ICreature
         {
             var rangedFeatures = Features.Where(a =>
                 a.Type == FeatureType.Action &&
-                ((Action)a).Distance == RangeType.Ranged).Select(b => (Action)b);
+                ((MonsterAction)a).Distance == RangeType.Ranged).Select(b => (MonsterAction)b);
             rangedFeatures.OrderByDescending(b => b.Distance);
-            return rangedFeatures.FirstOrDefault(new Action { Range = 0 }).Range;
+            return rangedFeatures.FirstOrDefault(new MonsterAction { Range = 0 }).Range;
         }
     }
 
@@ -138,13 +140,13 @@ public class Monster : ICreature
         {
             var meleeFeatures = Features.Where(a =>
                 a.Type == FeatureType.Action &&
-                ((Action)a).Distance == RangeType.Melee).Select(b => (Action)b);
+                ((MonsterAction)a).Distance == RangeType.Melee).Select(b => (MonsterAction)b);
             meleeFeatures.OrderByDescending(b => b.Distance);
-            return meleeFeatures.FirstOrDefault(new Action { Range = 5 }).Range;
+            return meleeFeatures.FirstOrDefault(new MonsterAction { Range = 5 }).Range;
         }
     }
 
-    public Guid ID { get; init; }
+    public Guid Id { get; init; }
     public event PropertyChangedEventHandler? PropertyChanged;
     public string Name { get; set; } = "";
     public int CombatLevel { get; set; }

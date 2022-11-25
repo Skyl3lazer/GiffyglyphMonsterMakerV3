@@ -3,10 +3,13 @@ using GiffyglyphMonsterMakerV3.Utility;
 using Ganss.Xss;
 using Microsoft.AspNetCore.Components;
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace GiffyglyphMonsterMakerV3.Data
 {
-    public class Action : IFeature
+    [PrimaryKey("Id")]
+    public class MonsterAction : IFeature
     {
         public string Name { get; set; } = "";
 
@@ -105,9 +108,9 @@ namespace GiffyglyphMonsterMakerV3.Data
                 return desc;
             }
         }
-
         public Guid Id { get; init; } = Guid.NewGuid();
-        private ICreature _parent;
+        [ForeignKey("Id")]
+        private Monster _parent;
         public ICreature Parent
         {
             get
@@ -116,7 +119,7 @@ namespace GiffyglyphMonsterMakerV3.Data
             }
             init
             {
-                _parent = value;
+                _parent = (Monster)value;
                 _parent.Offense.PropertyChanged += UpdateOffenses;
                 _parent.Attributes.PropertyChanged += UpdateAttributes;
             }
