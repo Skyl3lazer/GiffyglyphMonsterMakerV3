@@ -6,135 +6,153 @@
 <PageTitle>Monster Statblock Maker V3</PageTitle>
 <div class="container">
     <div class="row">
-        <div class="col-3">
+        <div class="col-3" id="monsterSettings">
             <div class="row">
-                <div><span class="fs-2">Monster Details</span></div>
-                <div><span>Name: </span><input @bind="active.Name" @bind:event="oninput" /></div>
-                <div>
-                    <span>Size: </span><InputSelect @bind-Value="active.Size">
-                        @foreach (var item in Enum.GetValues(typeof(SizeType)))
+                <div><span class="fs-2" data-bs-toggle="collapse" data-bs-target="#monsterDetails" aria-expanded="true" aria-controls="monsterDetails">Monster Details</span></div>
+                <div id="monsterDetails" class="collapse show">
+                    <div><span>Name: </span><input @bind="active.Name" @bind:event="oninput" /></div>
+                    <div>
+                        <span>Size: </span><InputSelect @bind-Value="active.Size">
+                            @foreach (var item in Enum.GetValues(typeof(SizeType)))
+                            {
+                                <option value="@item">@item</option>
+                            }
+                        </InputSelect>
+                    </div>
+                    <div>
+                        <span>Creature Type: </span><InputSelect @bind-Value="active.Type">
+                            @foreach (var item in Enum.GetValues(typeof(CreatureType)))
+                            {
+                                <option value="@item">@item</option>
+                            }
+                        </InputSelect>
+                    </div>
+                    <div><span>Combat Level: </span><InputNumber Value="@active.CombatLevel" min="0" ValueChanged="(int i) => LevelChanged(i)" ValueExpression="() => active.CombatLevel" TValue="int" /></div>
+                    <div><span>Proficiency Bonus:</span> @active.Proficiency</div>
+                    <div>
+                        <span>Rank: </span><InputSelect Value="@active.MonsterRank" ValueChanged="(Rank i) => RankChanged(i)" ValueExpression="() => active.MonsterRank" TValue="Rank">
+                            @foreach (var item in Enum.GetValues(typeof(Rank)))
+                            {
+                                <option value="@item">@item</option>
+                            }
+                        </InputSelect>
+                        @if (active.MonsterRank == Rank.Paragon)
                         {
-                            <option value="@item">@item</option>
+                            <span> Threat: </span>
+                            <InputNumber Value="active.ParagonThreat" min="1" ValueChanged="(int i) => ParagonChanged(i)" TValue="int" ValueExpression="() => active.ParagonThreat" />
                         }
-                    </InputSelect>
-                </div>
-                <div>
-                    <span>Creature Type: </span><InputSelect @bind-Value="active.Type">
-                        @foreach (var item in Enum.GetValues(typeof(CreatureType)))
-                        {
-                            <option value="@item">@item</option>
-                        }
-                    </InputSelect>
-                </div>
-                <div><span>Combat Level: </span><InputNumber Value="@active.CombatLevel" min="0" ValueChanged="(int i) => LevelChanged(i)" ValueExpression="() => active.CombatLevel" TValue="int" /></div>
-                <div><span>Proficiency Bonus:</span> @active.Proficiency</div>
-                <div>
-                    <span>Rank: </span><InputSelect Value="@active.MonsterRank" ValueChanged="(Rank i) => RankChanged(i)" ValueExpression="() => active.MonsterRank" TValue="Rank">
-                        @foreach (var item in Enum.GetValues(typeof(Rank)))
-                        {
-                            <option value="@item">@item</option>
-                        }
-                    </InputSelect>
-                    @if (active.MonsterRank == Rank.Paragon)
-                    {
-                        <span> Threat: </span>
-                        <InputNumber Value="active.ParagonThreat" min="1" ValueChanged="(int i) => ParagonChanged(i)" TValue="int" ValueExpression="() => active.ParagonThreat" />
-                    }
-                </div>
-                <div>
-                    <span>Role: </span><InputSelect Value="@active.MonsterRole" ValueChanged="(Role i) => RoleChanged(i)" ValueExpression="() => active.MonsterRole" TValue="Role">
-                        @foreach (var item in Enum.GetValues(typeof(Role)))
-                        {
-                            <option value="@item">@item</option>
-                        }
-                    </InputSelect>
-                </div>
-                <div><span>Role Special Type: </span><input @bind="active.MonsterRoleDetail" @bind:event="oninput" /></div>
-                <div>
-                    <span>STR: </span><InputSelect @bind-Value="active.Attributes.Strength">
-                        @for (int i = -5; i < 6; i++)
-                        {
-                            <option>@i</option>
-                        }
-                    </InputSelect>
-                    <span>DEX: </span><InputSelect @bind-Value="active.Attributes.Dexterity">
-                        @for (int i = -5; i < 6; i++)
-                        {
-                            <option>@i</option>
-                        }
-                    </InputSelect>
-                    <span>CON: </span><InputSelect @bind-Value="active.Attributes.Constitution">
-                        @for (int i = -5; i < 6; i++)
-                        {
-                            <option>@i</option>
-                        }
-                    </InputSelect>
-                </div>
-                <div>
-                    <span>INT: </span><InputSelect @bind-Value="active.Attributes.Intelligence">
-                        @for (int i = -5; i < 6; i++)
-                        {
-                            <option>@i</option>
-                        }
-                    </InputSelect>
-                    <span>WIS: </span><InputSelect @bind-Value="active.Attributes.Wisdom">
-                        @for (int i = -5; i < 6; i++)
-                        {
-                            <option>@i</option>
-                        }
-                    </InputSelect>
-                    <span>CHA: </span><InputSelect @bind-Value="active.Attributes.Charisma">
-                        @for (int i = -5; i < 6; i++)
-                        {
-                            <option>@i</option>
-                        }
-                    </InputSelect>
+                    </div>
+                    <div>
+                        <span>Role: </span><InputSelect Value="@active.MonsterRole" ValueChanged="(Role i) => RoleChanged(i)" ValueExpression="() => active.MonsterRole" TValue="Role">
+                            @foreach (var item in Enum.GetValues(typeof(Role)))
+                            {
+                                <option value="@item">@item</option>
+                            }
+                        </InputSelect>
+                    </div>
+                    <div><span>Role Special Type: </span><input @bind="active.MonsterRoleDetail" @bind:event="oninput" /></div>
+                    <div>
+                        <span>STR: </span><InputSelect @bind-Value="active.Attributes.Strength">
+                            @for (int i = -5; i < 6; i++)
+                            {
+                                <option>@i</option>
+                            }
+                        </InputSelect>
+                        <span>DEX: </span><InputSelect @bind-Value="active.Attributes.Dexterity">
+                            @for (int i = -5; i < 6; i++)
+                            {
+                                <option>@i</option>
+                            }
+                        </InputSelect>
+                        <span>CON: </span><InputSelect @bind-Value="active.Attributes.Constitution">
+                            @for (int i = -5; i < 6; i++)
+                            {
+                                <option>@i</option>
+                            }
+                        </InputSelect>
+                    </div>
+                    <div>
+                        <span>INT: </span><InputSelect @bind-Value="active.Attributes.Intelligence">
+                            @for (int i = -5; i < 6; i++)
+                            {
+                                <option>@i</option>
+                            }
+                        </InputSelect>
+                        <span>WIS: </span><InputSelect @bind-Value="active.Attributes.Wisdom">
+                            @for (int i = -5; i < 6; i++)
+                            {
+                                <option>@i</option>
+                            }
+                        </InputSelect>
+                        <span>CHA: </span><InputSelect @bind-Value="active.Attributes.Charisma">
+                            @for (int i = -5; i < 6; i++)
+                            {
+                                <option>@i</option>
+                            }
+                        </InputSelect>
+                    </div>
                 </div>
             </div>
             <div class="row">
-                <div><span class="fs-2">Offense</span></div>
-                <div><span>Attack Bonus: </span><span><InputNumber @bind-Value="active.Offense.Attack" min="0" /></span></div>
-                <div><span>DC Mod: </span><InputNumber @bind-Value="active.Offense.DifficultyCheck" min="0" /></div>
-                <div>
-                    <span>Damage Average: </span><span>
-                        <InputNumber @bind-Value="active.Offense.Damage" min="0" /> Random: <InputCheckbox @bind-Value="active.Offense.RandomizeDamage" /> 
-                    </span>
-                </div>
-                <div><span>@if (active.Offense.RandomizeDamage)
-                           {
-                               <InputSelect @bind-Value="@active.Offense.RandomDamageRange" TValue="DamageRange">
-                                   @foreach (var item in Enum.GetValues(typeof(DamageRange)))
-                                   {
-                                       <option value="@item">@item</option>
-                                   }
-                               </InputSelect>
-                               <span>(@(DiceTools.ConvertToDiceString(active.Offense.RandomDamageRange, active.Offense.Damage)))</span>
-                           }</span></div>
-            </div>
-            <div class="row">
-                <div><span class="fs-2">Defense</span></div>
-                <div><span>Armor Class: </span><InputNumber @bind-Value="active.Defenses.ArmorClass" min="0" /></div>
-                <div><span>Hit Points: </span><InputNumber @bind-Value="active.Defenses.HitPoints" min="0" /></div>
-                <div><span>Save Bonus: </span><InputNumber @bind-Value="active.Defenses.SaveBonus" min="0" /></div>
-                <div><span>Proficient Saves</span></div>
-                <div>
-                    <span>STR </span><InputCheckbox @bind-Value="active.Defenses.ProficientSavingThrows.Strength" />
-                    <span>DEX </span><InputCheckbox @bind-Value="active.Defenses.ProficientSavingThrows.Dexterity" />
-                    <span>CON </span><InputCheckbox @bind-Value="active.Defenses.ProficientSavingThrows.Constitution" />
-                </div>
-                <div>
-                    <span>INT </span><InputCheckbox @bind-Value="active.Defenses.ProficientSavingThrows.Intelligence" />
-                    <span>WIS </span><InputCheckbox @bind-Value="active.Defenses.ProficientSavingThrows.Wisdom" />
-                    <span>CHA </span><InputCheckbox @bind-Value="active.Defenses.ProficientSavingThrows.Charisma" />
+                <div><span class="fs-2" data-bs-toggle="collapse" data-bs-target="#monsterOffense" aria-expanded="true" aria-controls="monsterOffense">Offense</span></div>
+                <div id="monsterOffense" class="collapse">
+                    <div><span>Attack Bonus: </span><span><InputNumber @bind-Value="active.Offense.Attack" min="0" /></span></div>
+                    <div><span>DC Mod: </span><InputNumber @bind-Value="active.Offense.DifficultyCheck" min="0" /></div>
+                    <div>
+                        <span>Damage Average: </span><span>
+                            <InputNumber @bind-Value="active.Offense.Damage" min="0" /> Random: <InputCheckbox @bind-Value="active.Offense.RandomizeDamage" />
+                        </span>
+                    </div>
+                    <div>
+                        <span>
+                            @if (active.Offense.RandomizeDamage)
+                            {
+                                <InputSelect @bind-Value="@active.Offense.RandomDamageRange" TValue="DamageRange">
+                                    @foreach (var item in Enum.GetValues(typeof(DamageRange)))
+                                    {
+                                        <option value="@item">@item</option>
+                                    }
+                                </InputSelect>
+                                <span>(@(DiceTools.ConvertToDiceString(active.Offense.RandomDamageRange, active.Offense.Damage)))</span>
+                            }
+                        </span>
+                    </div>
                 </div>
             </div>
             <div class="row">
-                <div><span class="fs-2">Abilities</span></div>
-                <div>
-                    <_EnumAdder Dict="@active.OtherSpeeds" Header="Other Speeds" ValueChangedEvent="(a) => SpeedsUpdated(a)"></_EnumAdder>
+                <div><span class="fs-2" data-bs-toggle="collapse" data-bs-target="#monsterDefense" aria-expanded="true" aria-controls="monsterDefense">Defense</span></div>
+                <div id="monsterDefense" class="collapse">
+                    <div><span>Armor Class: </span><InputNumber @bind-Value="active.Defenses.ArmorClass" min="0" /></div>
+                    <div><span>Hit Points: </span><InputNumber @bind-Value="active.Defenses.HitPoints" min="0" /></div>
+                    <div><span>Save Bonus: </span><InputNumber @bind-Value="active.Defenses.SaveBonus" min="0" /></div>
+                    <div><span>Proficient Saves</span></div>
+                    <div>
+                        <span>STR </span><InputCheckbox @bind-Value="active.Defenses.ProficientSavingThrows.Strength" />
+                        <span>DEX </span><InputCheckbox @bind-Value="active.Defenses.ProficientSavingThrows.Dexterity" />
+                        <span>CON </span><InputCheckbox @bind-Value="active.Defenses.ProficientSavingThrows.Constitution" />
+                    </div>
+                    <div>
+                        <span>INT </span><InputCheckbox @bind-Value="active.Defenses.ProficientSavingThrows.Intelligence" />
+                        <span>WIS </span><InputCheckbox @bind-Value="active.Defenses.ProficientSavingThrows.Wisdom" />
+                        <span>CHA </span><InputCheckbox @bind-Value="active.Defenses.ProficientSavingThrows.Charisma" />
+                    </div>
                 </div>
-                <div>
-                    <_EnumAdder Dict="@active.Senses" Header="Senses" ValueChangedEvent="(a) => SenseUpdated(a)"></_EnumAdder>
+            </div>
+            <div class="row">
+                <div><span class="fs-2" data-bs-toggle="collapse" data-bs-target="#monsterAbilities" aria-expanded="true" aria-controls="monsterAbilities">Abilities</span></div>
+                <div id="monsterAbilities" class="collapse">
+                    <div>
+                        <_EnumAdder Dict="@active.OtherSpeeds" Header="Other Speeds" ValueChangedEvent="(a) => SpeedsUpdated(a)"></_EnumAdder>
+                    </div>
+                    <div>
+                        <_EnumAdder Dict="@active.Senses" Header="Senses" ValueChangedEvent="(a) => SenseUpdated(a)"></_EnumAdder>
+                    </div>
+                    <div>
+                        <_stringAdder Header="Languages" ValueList="@active.Languages" ValueChangedEvent="(a) => LanguagesUpdated(a)" DefaultList="Enum.GetNames(typeof(DefaultLanguages)).ToList()"></_stringAdder>
+                    </div>
+                    <div>
+                        <_stringAdder Header="Items" ValueList="@active.Items" ValueChangedEvent="(a) => ItemsUpdated(a)"></_stringAdder>
+                    </div>
                 </div>
             </div>
         </div>
@@ -146,7 +164,7 @@
                     <MonsterTitleCard model="mon" DeleteCallback="() => RemoveMonster(mon)" ActiveClick="() => ActiveClick(mon)" Focused="@(mon.ID == active.ID)" />
                 }
             </div>
-            <div class="row overflow-auto my-1">
+            <div class="row my-1">
                 @foreach (var mon in monsters)
                 {
                     <MonsterStatBlock model="mon" Hidden="@(mon.ID != active.ID)" />
@@ -159,7 +177,7 @@
 @code {
     private List<Monster> monsters { get; set; } = new();
     private Monster active { get; set; }
-    
+
     protected override async Task OnInitializedAsync()
     {
         Monster monster = new("My First Monster");
@@ -177,6 +195,16 @@
     {
         var dict = (Dictionary<MovementType, int>)val;
         active.OtherSpeeds = dict;
+    }
+    public void ItemsUpdated(object? val)
+    {
+        var itemList = (List<string>)val;
+        active.Items = itemList;
+    }
+    public void LanguagesUpdated(object? val)
+    {
+        var itemList = (List<string>)val;
+        active.Languages = itemList;
     }
     public void AddStatBlock()
     {

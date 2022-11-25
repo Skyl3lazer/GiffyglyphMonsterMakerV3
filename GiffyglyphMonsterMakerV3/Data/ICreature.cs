@@ -1,8 +1,9 @@
-﻿using GiffyglyphMonsterMakerV3.Utility;
+﻿using System.ComponentModel;
+using GiffyglyphMonsterMakerV3.Utility;
 
 namespace GiffyglyphMonsterMakerV3.Data
 {
-    public interface ICreature
+    public interface ICreature : INotifyPropertyChanged
     {
         public Guid ID { get; init; }
         public string Name { get; set; }
@@ -42,6 +43,12 @@ namespace GiffyglyphMonsterMakerV3.Data
         Striker,
         Supporter
     }
+
+    public enum DefaultLanguages
+    {
+        Common,
+        Undercommon
+    }
     public class AttributeArray
     {
         public int Strength { get; set; }
@@ -67,15 +74,55 @@ namespace GiffyglyphMonsterMakerV3.Data
         public int SaveBonus { get; set; }
         public ProficientSaves ProficientSavingThrows { get; set; } = new();
     }
-    public class OffenseArray
+    public class OffenseArray : INotifyPropertyChanged
     {
-        public int Attack { get; set; }
-        public int DifficultyCheck { get; set; }
-        public int Damage { get; set; }
-        public bool RandomizeDamage { get; set; }
-        public DamageRange RandomDamageRange { get; set; }
-        public int MaxRange { get;  }
-        public int MaxReach { get; }
+        private int _attack;
+        private int _difficultyCheck;
+        private int _damage;
+        private bool _randomizeDamage;
+        private DamageRange _randomDamageRange;
+
+        public int Attack
+        {
+            get => _attack;
+            set { _attack = value; PropertyChanged?.Invoke(this,
+                new PropertyChangedEventArgs(nameof(Attack)));
+            }
+        }
+
+        public int DifficultyCheck
+        {
+            get => _difficultyCheck;
+            set { _difficultyCheck = value; PropertyChanged?.Invoke(this,
+                new PropertyChangedEventArgs(nameof(DifficultyCheck)));
+            }
+        }
+
+        public int Damage
+        {
+            get => _damage;
+            set { _damage = value; PropertyChanged?.Invoke(this,
+                new PropertyChangedEventArgs(nameof(Damage)));
+            }
+        }
+
+        public bool RandomizeDamage
+        {
+            get => _randomizeDamage;
+            set { _randomizeDamage = value; PropertyChanged?.Invoke(this,
+                new PropertyChangedEventArgs(nameof(RandomizeDamage)));
+            }
+        }
+
+        public DamageRange RandomDamageRange
+        {
+            get => _randomDamageRange;
+            set { _randomDamageRange = value; PropertyChanged?.Invoke(this,
+                new PropertyChangedEventArgs(nameof(RandomDamageRange)));
+            }
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
     }
 
     public enum MovementType

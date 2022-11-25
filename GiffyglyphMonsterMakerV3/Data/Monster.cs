@@ -1,3 +1,5 @@
+using System.ComponentModel;
+
 namespace GiffyglyphMonsterMakerV3.Data;
 
 public class Monster : ICreature
@@ -12,8 +14,49 @@ public class Monster : ICreature
         Senses = new Dictionary<SenseType, int>();
         Languages = new List<string>();
         Items = new List<string>();
-        Features = new List<IFeature>();
-        Features.Add(new Action() { Name = "Hit Them", Rarity = RarityType.Common, Description = "one target", Range = 5, Distance = RangeType.Melee, Icon = "fa-sword", Type = FeatureType.Action});
+        var _features = new List<IFeature>();
+        _features.Add(new Action()
+        {
+            Name = "Hit Them", 
+            Rarity = RarityType.Common, 
+            Range = 5, 
+            Distance = RangeType.Melee, 
+            Icon = "fa-sword", 
+            Targets = 1, 
+            ActionDamageType = DamageType.bludgeoning, 
+            DealsDamage = true, 
+            Shape = TargetShape.target,
+            Parent = this
+        });
+        _features.Add(new Action()
+        {
+            Name = "Hit Them Twice",
+            Rarity = RarityType.Uncommon,
+            Range = 5,
+            MultiAttack = 2,
+            Distance = RangeType.Melee,
+            Icon = "fa-sword",
+            Targets = 1,
+            ActionDamageType = DamageType.bludgeoning,
+            DealsDamage = true,
+            Shape = TargetShape.target,
+            Parent = this
+        });
+        _features.Add(new Action()
+        {
+            Name = "Deadly Spell",
+            Rarity = RarityType.Rare,
+            Range = 30,
+            Distance = RangeType.Ranged,
+            HasSave = true,
+            SaveVs = "DEX",
+            Icon = "fa-bow-arrow",
+            Targets = 0,
+            ActionDamageType = DamageType.psychic,
+            DealsDamage = true,
+            Parent = this
+        });
+        Features = _features;
     }
 
     public Monster()
@@ -26,8 +69,22 @@ public class Monster : ICreature
         Senses = new Dictionary<SenseType, int>();
         Languages = new List<string>();
         Items = new List<string>();
-        Features = new List<IFeature>(); 
-        Features.Add(new Action() { Name = "Hit Them", Rarity = RarityType.Common, Description = "one target", Range = 5, Distance = RangeType.Melee, Icon = "fa-sword", Type = FeatureType.Action });
+        var _features = new List<IFeature>();
+        _features.Add(new Action()
+        {
+            Name = "Hit Them",
+            Rarity = RarityType.Common,
+            Range = 5,
+            Distance = RangeType.Melee,
+            Icon = "fa-sword",
+            Targets = 1,
+            ActionDamageType = DamageType.bludgeoning,
+            DealsDamage = true,
+            Shape = TargetShape.target,
+            Parent = this
+        });
+
+        Features = _features;
         Senses.Add(SenseType.darkvision, 30);
     }
 
@@ -58,13 +115,28 @@ public class Monster : ICreature
     }
 
     public Guid ID { get; init; }
+    public event PropertyChangedEventHandler? PropertyChanged;
     public string Name { get; set; } = "";
     public int CombatLevel { get; set; }
     public Rank MonsterRank { get; set; }
     public Role MonsterRole { get; set; }
     public string MonsterRoleDetail { get; set; }
     public AttributeArray Attributes { get; set; } = new();
-    public List<IFeature> Features { get; set; }
+    private List<IFeature> _features;
+
+    public List<IFeature> Features
+    {
+        get
+        {
+            return _features;
+        }
+        set
+        {
+            _features = value;
+            PropertyChanged?.Invoke(this,
+                new PropertyChangedEventArgs(nameof(Features)));
+        }
+    }
     public DefenseArray Defenses { get; set; }
 
     public int Proficiency => (int)Math.Floor(1 + ((double)CombatLevel + 3) / 4.0);

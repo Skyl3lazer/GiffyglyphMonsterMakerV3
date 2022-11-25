@@ -1,0 +1,61 @@
+﻿@using GiffyglyphMonsterMakerV3.Data
+<div><span class="fw-bold">@Header</span></div>
+<div class="row">
+    @if (DefaultList != null && DefaultList.Count() > 0)
+    {
+        <span><InputSelect @bind-Value="@_listboxValue">
+                @foreach (string k in DefaultList)
+                {
+                    <option value="@k">@k</option>
+                }
+            </InputSelect>
+            <span class="fas fa-plus" @onclick="() => AddItem(_listboxValue)" /></span>
+    }
+    <span><input @bind="_boxValue" /><span class="fas fa-plus ms-1" @onclick="() => AddItem(_boxValue)" /></span>
+    @foreach (string val in ValueList)
+    {
+        <div><span>@val</span><span class="fas fa-x ms-1" @onclick="() => RemoveItem(val)"/></div>
+    }
+</div>
+
+@code
+{
+    [Parameter]
+    public List<string>? DefaultList { get; set; }
+    [Parameter]
+    public string Header { get; set; }
+    [Parameter]
+    public List<string> ValueList { get; set; }
+    [Parameter]
+    public EventCallback ValueChangedEvent { get; set; }
+
+    private string _boxValue { get; set; }
+    private string _listboxValue { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (DefaultList != null && DefaultList.Count > 0)
+        {
+            _listboxValue = DefaultList.First();
+        }
+    }
+
+    private void AddItem(string val)
+    {
+        if (!ValueList.Contains(val) && !string.IsNullOrWhiteSpace(val))
+        {
+            ValueList.Add(val);
+            _boxValue = "";
+            ValueChangedEvent.InvokeAsync(ValueList);
+        }
+    }
+
+    private void RemoveItem(string val)
+    {
+        if (ValueList.Contains(val))
+        {
+            ValueList.Remove(val);
+            ValueChangedEvent.InvokeAsync(ValueList);
+        }
+    }
+}
