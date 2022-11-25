@@ -11805,6 +11805,19 @@ textarea.form-control-lg {
     display: none !important;
   }
 }
+@media print {
+  .rows-print-as-pages .row {
+    page-break-before: always;
+  }
+
+  .rows-print-as-pages .row:first-child {
+    page-break-before: avoid;
+  }
+
+  .rows-print-as-pages {
+    float: none;
+  }
+}
 html, body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }

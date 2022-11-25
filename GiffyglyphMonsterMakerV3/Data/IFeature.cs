@@ -5,6 +5,7 @@
         public Guid Id { get; init; }
         public string Name { get; set; }
         public string MarkupDescription { get; }
+        public string OverrideMarkup { get; set; }
         public FeatureType Type { get; init; }
         public RarityType Rarity { get; set; }
         public string Icon { get; set; }
@@ -18,8 +19,8 @@
     {
         Trait = 0,
         Free,
-        Bonus,
         Action,
+        Bonus,
         Reaction,
         Countermeasure
     }

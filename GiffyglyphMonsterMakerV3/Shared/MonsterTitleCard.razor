@@ -1,8 +1,8 @@
 ﻿@using GiffyglyphMonsterMakerV3.Data
 <div class="row vw-100 @(Focused ? "border border-primary border-2" : "border border-secondary border-1") gx-2 p-1 my-1" style="height:49px;">
-    <div class="col" @onclick="Activate">
+    <div class="col text-nowrap overflow-hidden" @onclick="Activate">
         <span class="fs-3">@model.Name</span>
-        <spawn class="fs-5 m">Level @model.CombatLevel @model.MonsterRank @model.MonsterRole</spawn>
+        <spawn class="fs-5">Level @model.CombatLevel @model.MonsterRank @model.MonsterRole</spawn>
     </div>
     <div class="col-3">
         <button type="button" @onclick="Delete" class="btn btn-danger">

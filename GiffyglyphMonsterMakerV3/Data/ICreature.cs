@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
+using GiffyglyphMonsterMakerV3.Pages;
 using GiffyglyphMonsterMakerV3.Utility;
 
 namespace GiffyglyphMonsterMakerV3.Data
@@ -49,14 +51,69 @@ namespace GiffyglyphMonsterMakerV3.Data
         Common,
         Undercommon
     }
-    public class AttributeArray
+    public class AttributeArray : INotifyPropertyChanged
     {
-        public int Strength { get; set; }
-        public int Dexterity { get; set; }
-        public int Constitution { get; set; }
-        public int Intelligence { get; set; }
-        public int Wisdom { get; set; }
-        public int Charisma { get; set; }
+        private int _strength;
+        private int _dexterity;
+        private int _constitution;
+        private int _intelligence;
+        private int _wisdom;
+        private int _charisma;
+        
+        public int AttributeMod { get; set; }
+
+        public int HighStat
+        {
+            get
+            {
+                return (int)Math.Max(Dexterity, Math.Max(Strength, Math.Max(Charisma, Math.Max(Constitution, Math.Max(Intelligence,Wisdom)))));
+            }
+        }
+        public int Strength
+        {
+            get => _strength;
+            set { _strength = value;
+                PropertyChanged?.Invoke(this,
+                new PropertyChangedEventArgs(nameof(Strength)));
+            }
+        }
+        public int Dexterity
+        {
+            get => _dexterity;
+            set { _dexterity = value; PropertyChanged?.Invoke(this,
+                new PropertyChangedEventArgs(nameof(Dexterity)));
+            }
+        }
+        public int Constitution
+        {
+            get => _constitution;
+            set { _constitution = value; PropertyChanged?.Invoke(this,
+                new PropertyChangedEventArgs(nameof(Constitution)));
+            }
+        }
+        public int Intelligence
+        {
+            get => _intelligence;
+            set { _intelligence = value; PropertyChanged?.Invoke(this,
+                new PropertyChangedEventArgs(nameof(Intelligence)));
+            }
+        }
+        public int Wisdom
+        {
+            get => _wisdom;
+            set { _wisdom = value; PropertyChanged?.Invoke(this,
+                new PropertyChangedEventArgs(nameof(Wisdom)));
+            }
+        }
+        public int Charisma
+        {
+            get => _charisma;
+            set { _charisma = value; PropertyChanged?.Invoke(this,
+                new PropertyChangedEventArgs(nameof(Charisma)));
+            }
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
     }
     public class ProficientSaves
     {
@@ -81,7 +138,6 @@ namespace GiffyglyphMonsterMakerV3.Data
         private int _damage;
         private bool _randomizeDamage;
         private DamageRange _randomDamageRange;
-
         public int Attack
         {
             get => _attack;

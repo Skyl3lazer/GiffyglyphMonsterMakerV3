@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel;
 using GiffyglyphMonsterMakerV3.Utility;
+using Ganss.Xss;
 using Microsoft.AspNetCore.Components;
+using System;
 
 namespace GiffyglyphMonsterMakerV3.Data
 {
@@ -12,6 +14,15 @@ namespace GiffyglyphMonsterMakerV3.Data
         {
             get
             {
+                //If you want to just totally override a thing, go for it
+                if (!string.IsNullOrWhiteSpace(OverrideMarkup))
+                {
+                    var sanitizer = new HtmlSanitizer();
+                    (new List<string>{"fst-italic", "fw-bold"}).ForEach(item => sanitizer.AllowedClasses.Add(item));
+                    var html = OverrideMarkup;
+                    return sanitizer.Sanitize(html);
+                }
+
                 string desc = @"<span class=""fw-bold"">" + Name;
                 if (Frequency.Type != FrequencyType.passive)
                 {
@@ -45,16 +56,17 @@ namespace GiffyglyphMonsterMakerV3.Data
                             if (Targets > 1)
                                 shapeText += "s";
                         }
+                        shapeText += ".";
                         break;
                 }
 
                 if (HasSave)
                 {
-                    desc += "DC" + Parent.Offense.DifficultyCheck + " vs " + SaveVs + ", ";
+                    desc += "DC" + (Parent.Offense.DifficultyCheck + Parent.Attributes.HighStat + Parent.Attributes.AttributeMod) + " vs " + SaveVs + ", ";
                 }
                 else
                 {
-                    desc += "+" + Parent.Offense.Attack + " to hit, ";
+                    desc += "+" + (Parent.Offense.Attack + Parent.Attributes.HighStat + Parent.Attributes.AttributeMod) + " to hit, ";
                 }
 
                 switch (Distance)
@@ -77,13 +89,11 @@ namespace GiffyglyphMonsterMakerV3.Data
                 }
                 desc += " " + shapeText;
 
-                desc += ".";
-
                 desc += " <span class=\"fst-italic\">Hit</span>: ";
 
                 if (DealsDamage)
                 {
-                    var dam = (int)Math.Max(Math.Floor((double)(Parent.Offense.Damage) / MultiAttack), 1);
+                    var dam = (int)Math.Max(Math.Floor((double)(Parent.Offense.Damage * DamageMultiplier) / MultiAttack), 1);
                     desc += dam + (Parent.Offense.RandomizeDamage ? " (" + DiceTools.ConvertToDiceString(Parent.Offense.RandomDamageRange, dam)+")" : "") + " " + ActionDamageType +
                             " damage.";
                 }
@@ -108,18 +118,25 @@ namespace GiffyglyphMonsterMakerV3.Data
             {
                 _parent = value;
                 _parent.Offense.PropertyChanged += UpdateOffenses;
+                _parent.Attributes.PropertyChanged += UpdateAttributes;
             }
+        }
+
+        private void UpdateAttributes(object? sender, PropertyChangedEventArgs e)
+        {
+            _parent.Attributes = (AttributeArray)sender;
         }
 
         private void UpdateOffenses(object? sender, PropertyChangedEventArgs e)
         {
             _parent.Offense = (OffenseArray)sender;
         }
-
-        public FeatureType Type { get; init; } = FeatureType.Action;
+        public string OverrideMarkup { get; set; }
+        public virtual FeatureType Type { get; init; } = FeatureType.Action;
         public RangeType Distance { get; set; }
         public bool HasSave { get; set; }
         public string SaveVs { get; set; }
+
         public int Range { get; set; }
         public int Radius { get; set; }
         public RarityType Rarity { get; set; }
@@ -128,6 +145,7 @@ namespace GiffyglyphMonsterMakerV3.Data
         public string SpellDesc { get; set; }
         public bool DealsDamage { get; set; }
         public int MultiAttack { get; set; } = 1;
+        public double DamageMultiplier { get; set; } = 1;
         public string OtherEffect { get; set; }
         public string MissEffect { get; set; }
         public DamageType ActionDamageType { get; set; }

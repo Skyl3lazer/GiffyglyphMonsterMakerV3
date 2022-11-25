@@ -66,3 +66,52 @@ a, .btn-link {
     .blazor-error-boundary::after {
         content: "An error has occurred."
     }
+
+.monsterTertiary {
+    background-color: #f6ebeb;
+}
+
+.ability-common {
+    background-color: #1c922c;
+}
+
+.ability-uncommon {
+    background-color: #b29403;
+}
+
+.ability-rare {
+    background-color: #941212;
+}
+
+.monsterPrimary {
+    background-color: #831517;
+}
+
+.monsterPrimaryText {
+    color: #831517;
+}
+
+.monsterAccent {
+    background-color: #5f0709;
+}
+
+hr.monsterAccent {
+    background-color: #5f0709;
+    border-color: #5f0709 !important;
+}
+
+
+
+.border-black {
+    border-color: black;
+}
+
+.slant-45 {
+    transform: skew(45deg);
+}
+
+.line-icon {
+    color: #831517;
+    width: 25px;
+    text-align: center !important;
+}

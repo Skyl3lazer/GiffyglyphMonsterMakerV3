@@ -1,3 +1,4 @@
+using Append.Blazor.Printing;
 using GiffyglyphMonsterMakerV3.Data;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
@@ -8,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<MonsterService>();
+builder.Services.AddScoped<IPrintingService, PrintingService>();
 
 var app = builder.Build();
 

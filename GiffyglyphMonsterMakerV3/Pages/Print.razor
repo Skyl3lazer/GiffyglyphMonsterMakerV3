@@ -1,0 +1,36 @@
+﻿@page "/print"
+@using GiffyglyphMonsterMakerV3.Data
+
+<PageTitle>Print Statblocks</PageTitle>
+
+<div class="container-xxl" id="print">
+    @for(int i=0; i < Math.Ceiling(Monsters.Count / 2.0); i++)
+    {
+        <div class="row">
+            @if (popQueue.Count > 0)
+            {
+                <div class="col-6">
+                    <MonsterStatBlock model="popQueue.Dequeue()" Hidden="false"/>
+                </div>
+            }
+            @if (popQueue.Count > 0)
+            {
+                <div class="col-6">
+                    <MonsterStatBlock model="popQueue.Dequeue()" Hidden="false"/>
+                </div>
+            }
+        </div>
+        <div class="my-1" style="page-break-after: always">&nbsp;</div>
+    }
+</div>
+@code {
+    [CascadingParameter]
+    protected List<Monster> Monsters { get; set; }
+
+    private Queue<Monster> popQueue { get; set; }
+
+    protected override void OnInitialized()
+    {
+        popQueue = new Queue<Monster>(Monsters);
+    }
+}

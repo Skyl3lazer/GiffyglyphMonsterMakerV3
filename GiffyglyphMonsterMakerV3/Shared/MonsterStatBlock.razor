@@ -1,7 +1,7 @@
 ﻿@using GiffyglyphMonsterMakerV3.Data
 @using System.Diagnostics
 @using GiffyglyphMonsterMakerV3.Utility
-<div class="@(Hidden ? "d-none" : "") border-black border-2 p-1">
+<div class="@(Hidden ? "d-none " : "")border-black border-2 p-1 px-2 card">
     <div class="monsterPrimary px-2">
         <div class="name text-white fw-bold fs-2">@model.Name</div>
         <div class="text-white fst-italic">@model.Size @model.Type @(String.IsNullOrWhiteSpace(model.TypeDetail) ? "" : "(" + model.TypeDetail + ")")</div>
@@ -12,20 +12,20 @@
     </div>
     <div class="p-1">
         <div class="row monsterAccent text-white">
-            <div class="col fs-5 border border-opacity-50 border-white text-center fw-bold">STR</div>
-            <div class="col fs-5 border border-opacity-50 border-white text-center fw-bold">DEX</div>
-            <div class="col fs-5 border border-opacity-50 border-white text-center fw-bold">CON</div>
-            <div class="col fs-5 border border-opacity-50 border-white text-center fw-bold">INT</div>
-            <div class="col fs-5 border border-opacity-50 border-white text-center fw-bold">WIS</div>
-            <div class="col fs-5 border border-opacity-50 border-white text-center fw-bold">CHA</div>
+            <div class="col col-2 fs-6 border border-1 border-opacity-50 border-white text-center fw-bold">STR</div>
+            <div class="col col-2 fs-6 border border-1 border-opacity-50 border-white text-center fw-bold">DEX</div>
+            <div class="col col-2 fs-6 border border-1 border-opacity-50 border-white text-center fw-bold">CON</div>
+            <div class="col col-2 fs-6 border border-1 border-opacity-50 border-white text-center fw-bold">INT</div>
+            <div class="col col-2 fs-6 border border-1 border-opacity-50 border-white text-center fw-bold">WIS</div>
+            <div class="col col-2 fs-6 border border-1 border-opacity-50 border-white text-center fw-bold">CHA</div>
         </div>
         <div class="row monsterPrimary text-white">
-            <div class="col fs-3 border border-opacity-50 border-white text-center fw-bold">@model.Attributes.Strength</div>
-            <div class="col fs-3 border border-opacity-50 border-white text-center fw-bold">@model.Attributes.Dexterity</div>
-            <div class="col fs-3 border border-opacity-50 border-white text-center fw-bold">@model.Attributes.Constitution</div>
-            <div class="col fs-3 border border-opacity-50 border-white text-center fw-bold">@model.Attributes.Intelligence</div>
-            <div class="col fs-3 border border-opacity-50 border-white text-center fw-bold">@model.Attributes.Wisdom</div>
-            <div class="col fs-3 border border-opacity-50 border-white text-center fw-bold">@model.Attributes.Charisma</div>
+                <div class="col fs-4 border border-opacity-50 border-white text-center fw-bold">@(model.Attributes.Strength+model.Attributes.AttributeMod)</div>
+                <div class="col fs-4 border border-opacity-50 border-white text-center fw-bold">@(model.Attributes.Dexterity + model.Attributes.AttributeMod)</div>
+                <div class="col fs-4 border border-opacity-50 border-white text-center fw-bold">@(model.Attributes.Constitution + model.Attributes.AttributeMod)</div>
+                <div class="col fs-4 border border-opacity-50 border-white text-center fw-bold">@(model.Attributes.Intelligence + model.Attributes.AttributeMod)</div>
+                <div class="col fs-4 border border-opacity-50 border-white text-center fw-bold">@(model.Attributes.Wisdom + model.Attributes.AttributeMod)</div>
+                <div class="col fs-4 border border-opacity-50 border-white text-center fw-bold">@(model.Attributes.Charisma + model.Attributes.AttributeMod)</div>
         </div>
     </div>
     <div>
@@ -34,27 +34,27 @@
             <span class="monsterPrimaryText fw-bold">Saving Throws</span>
             @if (model.Defenses.ProficientSavingThrows.Strength)
             {
-                <span> Str +@(model.Attributes.Strength + model.Defenses.SaveBonus)</span>
+                <span> Str +@(model.Attributes.Strength + model.Defenses.SaveBonus + model.Attributes.AttributeMod)</span>
             }
             @if (model.Defenses.ProficientSavingThrows.Dexterity)
             {
-                <span> Dex +@(model.Attributes.Dexterity + model.Defenses.SaveBonus)</span>
+                <span> Dex +@(model.Attributes.Dexterity + model.Defenses.SaveBonus + model.Attributes.AttributeMod)</span>
             }
             @if (model.Defenses.ProficientSavingThrows.Constitution)
             {
-                <span> Con +@(model.Attributes.Constitution + model.Defenses.SaveBonus)</span>
+                <span> Con +@(model.Attributes.Constitution + model.Defenses.SaveBonus + model.Attributes.AttributeMod)</span>
             }
             @if (model.Defenses.ProficientSavingThrows.Intelligence)
             {
-                <span> Int +@(model.Attributes.Intelligence + model.Defenses.SaveBonus)</span>
+                <span> Int +@(model.Attributes.Intelligence + model.Defenses.SaveBonus + model.Attributes.AttributeMod)</span>
             }
             @if (model.Defenses.ProficientSavingThrows.Wisdom)
             {
-                <span> Wis +@(model.Attributes.Wisdom + model.Defenses.SaveBonus)</span>
+                <span> Wis +@(model.Attributes.Wisdom + model.Defenses.SaveBonus + model.Attributes.AttributeMod)</span>
             }
             @if (model.Defenses.ProficientSavingThrows.Charisma)
             {
-                <span> Cha +@(model.Attributes.Charisma + model.Defenses.SaveBonus)</span>
+                <span> Cha +@(model.Attributes.Charisma + model.Defenses.SaveBonus + model.Attributes.AttributeMod)</span>
             }
             <span>.</span>
         </div>
@@ -69,13 +69,12 @@
                 @if (model.Offense.RandomizeDamage)
                 {
                     <span> (@(DiceTools.ConvertToDiceString(model.Offense.RandomDamageRange, model.Offense.Damage)))</span>
-                }
-                .
+                }.
             </span>
             <span class="monsterPrimaryText fw-bold">Reach </span><span>@model.MaxReach ft.</span>
             @if (model.MaxRange > 0)
             {
-                <span class="monsterPrimaryText fw-bold">Range </span>
+                <span class="monsterPrimaryText fw-bold"> Range </span>
 
                 <span>@model.MaxRange ft.</span>
             }
@@ -110,8 +109,8 @@
             </div>
             <div>
                 <span class="fa-solid fa-award line-icon" /><span class="monsterPrimaryText fw-bold">Proficiency </span><span>+@model.Proficiency</span>
-                <span class="monsterPrimaryText fw-bold">CR </span>
-                <span class="monsterPrimaryText fw-bold">XP </span>
+                @*<span class="monsterPrimaryText fw-bold">CR </span>
+                <span class="monsterPrimaryText fw-bold">XP </span>*@
             </div>
             @if (model.Items.Count() > 0)
             {
@@ -121,10 +120,10 @@
                 </div>
             }
         </div>
-        @foreach (var fType in model.Features.GroupBy(a => a.Type).Select(a => a.First().Type))
+        @foreach (var fType in model.Features.GroupBy(a => a.Type).Select(a => a.OrderByDescending(b=> b.Type).First().Type))
         {
             <div>
-                <div class="monsterTertiary d-block"><span class="monsterPrimary text-white fw-bold h-100 d-inline-block ps-1" style="z-index: 10; position:relative">@(fType)s</span><span class="slant-45 monsterPrimary d-inline-flex" style="width: 48px; height: 24px; margin-left: -30px; margin-bottom: -6px; position: relative; z-index: 1;" /></div>
+                <div class="monsterTertiary" style="height: 24px"><span class="monsterPrimary text-white fw-bold h-100 d-inline-block ps-1 align-top" style="z-index: 10; position:relative">@fType@(fType.ToString().EndsWith("s") ? "" : "s")</span><span class="slant-45 monsterPrimary d-inline-block h-100 align-top" style="width: 48px; margin-left: -30px; position: relative; z-index: 1;" /></div>
                 <div class="monsterPrimary d-block" style="height:4px" />
                 @foreach (var feature in model.Features.Where(b => b.Type == fType).OrderBy(d => d.Rarity).ThenByDescending(c => c.Name))
                 {

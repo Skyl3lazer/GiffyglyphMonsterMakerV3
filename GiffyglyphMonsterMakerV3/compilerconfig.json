@@ -18,5 +18,9 @@
   {
     "outputFile": "Pages/MonsterMaker.razor.css",
     "inputFile": "Pages/MonsterMaker.razor.scss"
+  },
+  {
+    "outputFile": "Pages/Print.razor.css",
+    "inputFile": "Pages/Print.razor.scss"
   }
 ]

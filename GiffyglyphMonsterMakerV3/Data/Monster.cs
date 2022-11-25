@@ -17,14 +17,14 @@ public class Monster : ICreature
         var _features = new List<IFeature>();
         _features.Add(new Action()
         {
-            Name = "Hit Them", 
-            Rarity = RarityType.Common, 
-            Range = 5, 
-            Distance = RangeType.Melee, 
-            Icon = "fa-sword", 
-            Targets = 1, 
-            ActionDamageType = DamageType.bludgeoning, 
-            DealsDamage = true, 
+            Name = "Hit Them",
+            Rarity = RarityType.Common,
+            Range = 5,
+            Distance = RangeType.Melee,
+            Icon = "fa-sword",
+            Targets = 1,
+            ActionDamageType = DamageType.bludgeoning,
+            DealsDamage = true,
             Shape = TargetShape.target,
             Parent = this
         });
@@ -40,7 +40,12 @@ public class Monster : ICreature
             ActionDamageType = DamageType.bludgeoning,
             DealsDamage = true,
             Shape = TargetShape.target,
-            Parent = this
+            Parent = this,
+            Frequency = new FeatureFrequency()
+            {
+                Type = FrequencyType.shortrest,
+                Value = 2
+            }
         });
         _features.Add(new Action()
         {
@@ -54,7 +59,27 @@ public class Monster : ICreature
             Targets = 0,
             ActionDamageType = DamageType.psychic,
             DealsDamage = true,
-            Parent = this
+            Parent = this,
+            Frequency = new FeatureFrequency()
+            {
+                Type = FrequencyType.cooldown,
+                Value = 3
+            }
+        });
+
+        _features.Add(new BonusAction()
+        {
+            Name = "Bonus Smack",
+            Rarity = RarityType.Common,
+            Range = 5,
+            Distance = RangeType.Melee,
+            Icon = "fa-sword",
+            Targets = 1,
+            ActionDamageType = DamageType.bludgeoning,
+            DealsDamage = true,
+            Shape = TargetShape.target,
+            Parent = this,
+            DamageMultiplier = 0.5
         });
         Features = _features;
     }
@@ -118,11 +143,21 @@ public class Monster : ICreature
     public event PropertyChangedEventHandler? PropertyChanged;
     public string Name { get; set; } = "";
     public int CombatLevel { get; set; }
-    public Rank MonsterRank { get; set; }
+
+    public Rank MonsterRank
+    {
+        get => _monsterRank;
+        set { _monsterRank = value; Attributes.AttributeMod = MonsterRank == Rank.Elite ? 1 : MonsterRank == Rank.Paragon ? 2 : 0;
+            PropertyChanged?.Invoke(this,
+                new PropertyChangedEventArgs(nameof(MonsterRank)));
+        }
+    }
+
     public Role MonsterRole { get; set; }
-    public string MonsterRoleDetail { get; set; }
+    public string MonsterRoleDetail { get; set; } = "";
     public AttributeArray Attributes { get; set; } = new();
     private List<IFeature> _features;
+    private Rank _monsterRank;
 
     public List<IFeature> Features
     {
@@ -178,7 +213,7 @@ public class Monster : ICreature
 
     public SizeType Size { get; set; }
     public CreatureType Type { get; set; }
-    public string TypeDetail { get; set; }
+    public string TypeDetail { get; set; } = "";
     public Dictionary<SenseType, int> Senses { get; set; }
     public List<string> Languages { get; set; }
     public List<string> Items { get; set; }
