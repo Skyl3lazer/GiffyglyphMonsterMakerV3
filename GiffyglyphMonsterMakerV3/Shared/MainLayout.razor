@@ -1,5 +1,6 @@
 ﻿@inherits LayoutComponentBase
 @using GiffyglyphMonsterMakerV3.Data;
+@inject MonsterService _MonsterService;
 
 <PageTitle>GiffyglyphMonsterMakerV3</PageTitle>
 
@@ -21,9 +22,14 @@
 {
     private List<Monster> Monsters { get; set; } = new();
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        Monster monster = new("My First Monster");
-        Monsters.Add(monster);
+        Monsters = await Task.Run(() => _MonsterService.GetAllMonstersAsync());
+        if (Monsters.Count == 0)
+        {
+            Monster monster = new("My First Monster");
+            Monsters.Add(monster);
+            await _MonsterService.InsertMonsterAsync(monster);
+        }
     }
 }

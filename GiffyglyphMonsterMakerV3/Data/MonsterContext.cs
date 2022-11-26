@@ -9,8 +9,7 @@ namespace GiffyglyphMonsterMakerV3.Data
     public class MonsterContext : DbContext
     {
         public DbSet<Monster> Monsters { get; set; }
-        public DbSet<Action> Actions { get; set; }
-        public DbSet<BonusAction> BonusActions { get; set; }
+        public DbSet<Feature> Features { get; set; }
 
         public MonsterContext(DbContextOptions<MonsterContext> options) : base(options)
         {
@@ -18,6 +17,12 @@ namespace GiffyglyphMonsterMakerV3.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+            modelBuilder.Entity<Monster>()
+                .HasBaseType<Creature>();
+            modelBuilder.Entity<Action>()
+                .HasBaseType<Feature>();
+
             modelBuilder.Entity<Creature>()
                 .Property(e => e.Senses)
                 .IsRequired()
@@ -36,7 +41,14 @@ namespace GiffyglyphMonsterMakerV3.Data
                     ? new Dictionary<MovementType, int>()
                     : JsonSerializer.Deserialize<Dictionary<MovementType, int>>(v, JsonSerializerOptions.Default)
                     );
-            modelBuilder.Entity<Creature>().HasMany(i => i.Features).WithOne();
+            //modelBuilder.Entity<Feature>().HasOne<Creature>(f => f.Parent).WithMany(c => c.Features)
+             //   .HasForeignKey(f => f.Parent).OnDelete(DeleteBehavior.Cascade);
+            /* modelBuilder.Entity<Creature>().OwnsMany<Feature>(c => c.Features, a =>
+             {
+                 a.WithOwner().HasForeignKey("ParentId");
+                 a.Navigation(b => b.Parent).UsePropertyAccessMode(PropertyAccessMode.Property);
+             });*/
+
             modelBuilder.Entity<Creature>()
                 .Property(e => e.Items)
                 .HasConversion(
@@ -49,9 +61,6 @@ namespace GiffyglyphMonsterMakerV3.Data
                     v => string.Join('+', v),
                     v => v.Split('+', StringSplitOptions.RemoveEmptyEntries).ToList()
                 );
-            modelBuilder.Entity<Action>()
-                .HasOne(p => p.Parent)
-                .WithMany();
         }
     }
 }

@@ -16,7 +16,7 @@ public class Monster : Creature
         Senses = new Dictionary<SenseType, int>();
         Languages = new List<string>();
         Items = new List<string>();
-        _features.Add(new Action()
+        Features.Add(new Action()
         {
             Name = "Hit Them",
             Rarity = RarityType.Common,
@@ -30,7 +30,7 @@ public class Monster : Creature
             RelevantAttribute = AttributeType.Strength,
             Parent = this
         });
-        _features.Add(new Action()
+        Features.Add(new Action()
         {
             Name = "Hit Them Twice",
             Rarity = RarityType.Uncommon,
@@ -50,7 +50,7 @@ public class Monster : Creature
                 Value = 2
             }
         });
-        _features.Add(new Action()
+        Features.Add(new Action()
         {
             Name = "Deadly Spell",
             Rarity = RarityType.Rare,
@@ -71,7 +71,7 @@ public class Monster : Creature
             }
         });
 
-        _features.Add(new BonusAction()
+        Features.Add(new BonusAction()
         {
             Name = "Bonus Smack",
             Rarity = RarityType.Common,
@@ -98,7 +98,7 @@ public class Monster : Creature
         Senses = new Dictionary<SenseType, int>();
         Languages = new List<string>();
         Items = new List<string>();
-        _features.Add(new Action()
+        Features.Add(new Action()
         {
             Name = "Hit Them",
             Rarity = RarityType.Common,
@@ -115,21 +115,7 @@ public class Monster : Creature
         
         Senses.Add(SenseType.darkvision, 30);
     }
-    public override event PropertyChangedEventHandler? PropertyChanged;
-
-
-    private List<Feature> _features = new();
-
-    public override List<Feature> Features
-    {
-        get => _features;
-        set
-        {
-            _features = value;
-            PropertyChanged?.Invoke(this,
-                new PropertyChangedEventArgs(nameof(Features)));
-        }
-    }
+    
     
     public override int SpeedMod
     {

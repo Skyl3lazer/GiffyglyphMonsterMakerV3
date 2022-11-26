@@ -1,6 +1,7 @@
 ﻿@page "/monstermaker"
 @using GiffyglyphMonsterMakerV3.Data
 @using GiffyglyphMonsterMakerV3.Utility
+@inject MonsterService _ms;
 
 <PageTitle>Monster Statblock Maker V3</PageTitle>
 <div class="container-xxl">
@@ -181,11 +182,11 @@
             </div>
         </div>
         <div class="col-9 w-50">
-            <div><span>Stat Blocks</span> <span class="fa-solid fa-plus" @onclick="AddStatBlock" /></div>
+            <div><span>Stat Blocks</span> <span class="fa-solid fa-plus" @onclick="AddMonster" /></div>
             <div class="row overflow-auto px-1 d-block" style="height:250px;">
                 @foreach (var mon in Monsters)
                 {
-                    <MonsterTitleCard model="mon" DeleteCallback="() => RemoveMonster(mon)" ActiveClick="() => ActiveClick(mon)" Focused="@(mon.Id == active.Id)" />
+                    <MonsterTitleCard model="mon" DeleteCallback="() => RemoveMonster(mon)" ActiveClick="() => ActiveClick(mon)" Focused="@(mon.Id == active.Id)" SaveCallback="(m) => SaveMonsterAsync((Monster)m)" />
                 }
             </div>
             <div class="row my-1">
@@ -196,6 +197,9 @@
                     </div>
                 }
             </div>
+            <div class="row my-1">
+                <button class="btn btn-primary" @onclick="() => SaveActiveMonster()"><span class="mx-1 fas fa-floppy-disk"/>Save Monster</button>
+            </div>
         </div>
     </div>
 </div>
@@ -205,6 +209,7 @@
     protected List<Monster> Monsters { get; set; }
 
     private Monster active { get; set; }
+
     bool FeatureModalShow { get; set; } = false;
 
     private int HighStat
@@ -223,6 +228,16 @@
     private int LowStat
     {
         get { return (int)Math.Floor(active.CombatLevel / 12.0) - 1 ; }
+    }
+
+    private void SaveActiveMonster()
+    {
+        SaveMonsterAsync(active);
+    }
+
+    public async void SaveMonsterAsync(Monster mon)
+    {
+        await _ms.UpdateMonsterAsync(mon);
     }
 
     protected override async Task OnInitializedAsync()
@@ -255,21 +270,25 @@
         var itemList = (List<string>)val;
         active.Languages = itemList;
     }
-    public void AddStatBlock()
+    public async void AddMonster()
     {
         var mon = new Monster();
         active = mon;
         Monsters.Add(mon);
+        await _ms.InsertMonsterAsync(mon);
         UpdateValues();
     }
-    public void RemoveMonster(Monster mon)
+    public async void RemoveMonster(Monster mon)
     {
         Monsters.Remove(mon);
+        await _ms.DeleteMonsterAsync(mon);
+
         if (Monsters.Count == 0)
         {
             Monster monster = new("My First Monster");
             active = monster;
             Monsters.Add(monster);
+            await _ms.InsertMonsterAsync(monster);
             UpdateValues();
         }
         else if (active.Id == mon.Id)
@@ -305,7 +324,7 @@
         active.MonsterRole = value;
         UpdateValues();
     }
-    public void UpdateValues()
+    public async void UpdateValues()
     {
         //Base formula is for a GRUNT STRIKER, everyone else is based off of that
         double ac = 12 + (int)Math.Floor((double)active.CombatLevel / 4);
@@ -368,5 +387,6 @@
         active.Offense.Damage = Math.Max((int)Math.Floor(dmg), 1);
         active.Offense.DifficultyCheck = (int)Math.Floor(dc);
         active.WalkSpeed = 30;
+        await _ms.UpdateMonsterAsync(active);
     }
 }

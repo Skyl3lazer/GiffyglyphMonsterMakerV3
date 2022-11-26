@@ -39,7 +39,7 @@ namespace GiffyglyphMonsterMakerV3.Data
             return true;
         }
 
-        public async Task<bool> DeleteMonster(Monster monster)
+        public async Task<bool> DeleteMonsterAsync(Monster monster)
         {
             _context.Remove(monster);
             await _context.SaveChangesAsync();

@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GiffyglyphMonsterMakerV3.Data
 {
+    [Owned]
     public class Action : Feature
     {
         public override string MarkupDescription
@@ -107,7 +108,7 @@ namespace GiffyglyphMonsterMakerV3.Data
             }
         }
         private Creature _parent = new();
-
+        [ForeignKey("Id")]
         public override Creature Parent
         {
             get

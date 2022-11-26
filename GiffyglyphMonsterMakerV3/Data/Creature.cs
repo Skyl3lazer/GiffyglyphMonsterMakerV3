@@ -12,8 +12,8 @@ namespace GiffyglyphMonsterMakerV3.Data
     {
         [Required]
         public Guid Id { get; init; }
-        [Required]
-        public string Name { get; set; }
+
+        [Required] public string Name { get; set; } = "";
         [Required]
         public int CombatLevel { get; set; }
         private Rank _monsterRank;
@@ -29,14 +29,23 @@ namespace GiffyglyphMonsterMakerV3.Data
             }
         }
         public Role MonsterRole { get; set; }
-        public string MonsterRoleDetail { get; set; }
+        public string MonsterRoleDetail { get; set; } = "";
         [Required]
         public AttributeArray Attributes { get; set; } = new();
         [Required]
         public DefenseArray Defenses { get; set; } = new();
         public int Proficiency => (int)Math.Floor(1 + ((double)CombatLevel + 3) / 4.0);
-        [ForeignKey("FeaturesId")]
-        public virtual List<Feature> Features { get; set; } = new();
+        private ICollection<Feature> _features = new List<Feature>();
+        public ICollection<Feature> Features
+        {
+            get => _features;
+            set
+            {
+                _features = value;
+                PropertyChanged?.Invoke(this,
+                    new PropertyChangedEventArgs(nameof(Features)));
+            }
+        }
         public int WalkSpeed { get; set; }
         [ForeignKey("SpeedsId")]
         public Dictionary<MovementType, int> OtherSpeeds { get; set; } = new();
@@ -50,7 +59,8 @@ namespace GiffyglyphMonsterMakerV3.Data
         public SizeType Size { get; set; }
         [Required]
         public CreatureType Type { get; set; }
-        public string TypeDetail { get; set; }
+
+        public string TypeDetail { get; set; } = "";
         [ForeignKey("SensesId")]
         public Dictionary<SenseType, int> Senses { get; set; } = new();
         public List<string> Languages { get; set; } = new();
@@ -83,7 +93,7 @@ namespace GiffyglyphMonsterMakerV3.Data
         }
 
 
-        public virtual event PropertyChangedEventHandler? PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
     }
     public enum Rank
     {

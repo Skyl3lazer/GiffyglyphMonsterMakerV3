@@ -5,8 +5,11 @@
         <spawn class="fs-5">Level @model.CombatLevel @model.MonsterRank @model.MonsterRole</spawn>
     </div>
     <div class="col-3">
+        <button type="button" @onclick="Save" class="btn btn-secondary">
+            <span class="fa-solid fa-x ms-2" /><span> Save</span>
+        </button>
         <button type="button" @onclick="Delete" class="btn btn-danger">
-            <span class="fa-solid fa-x ms-2" /><span> Delete</span>
+            <span class="fa-solid fa-x ms-2"/><span> Delete</span>
         </button>
     </div>
 </div>
@@ -18,6 +21,8 @@
     [Parameter]
     public EventCallback ActiveClick { get; set; }
     [Parameter]
+    public EventCallback SaveCallback { get; set; }
+    [Parameter]
     public bool Focused { get; set; }
 
     protected async Task Delete()
@@ -25,6 +30,10 @@
         await DeleteCallback.InvokeAsync();
     }
 
+    protected async Task Save()
+    {
+        await SaveCallback.InvokeAsync(model);
+    }
     protected async Task Activate()
     {
         await ActiveClick.InvokeAsync();
