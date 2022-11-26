@@ -1,10 +1,10 @@
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 
 namespace GiffyglyphMonsterMakerV3.Data;
 
-[PrimaryKey("Id")]
-public class Monster : ICreature
+public class Monster : Creature
 {
     public Monster(string name)
     {
@@ -16,8 +16,7 @@ public class Monster : ICreature
         Senses = new Dictionary<SenseType, int>();
         Languages = new List<string>();
         Items = new List<string>();
-        var _features = new List<IFeature>();
-        _features.Add(new MonsterAction()
+        _features.Add(new Action()
         {
             Name = "Hit Them",
             Rarity = RarityType.Common,
@@ -31,7 +30,7 @@ public class Monster : ICreature
             RelevantAttribute = AttributeType.Strength,
             Parent = this
         });
-        _features.Add(new MonsterAction()
+        _features.Add(new Action()
         {
             Name = "Hit Them Twice",
             Rarity = RarityType.Uncommon,
@@ -51,7 +50,7 @@ public class Monster : ICreature
                 Value = 2
             }
         });
-        _features.Add(new MonsterAction()
+        _features.Add(new Action()
         {
             Name = "Deadly Spell",
             Rarity = RarityType.Rare,
@@ -72,7 +71,7 @@ public class Monster : ICreature
             }
         });
 
-        _features.Add(new MonsterBonusAction()
+        _features.Add(new BonusAction()
         {
             Name = "Bonus Smack",
             Rarity = RarityType.Common,
@@ -87,7 +86,6 @@ public class Monster : ICreature
             Parent = this,
             DamageMultiplier = 0.5
         });
-        Features = _features;
     }
 
     public Monster()
@@ -100,8 +98,7 @@ public class Monster : ICreature
         Senses = new Dictionary<SenseType, int>();
         Languages = new List<string>();
         Items = new List<string>();
-        var _features = new List<IFeature>();
-        _features.Add(new MonsterAction()
+        _features.Add(new Action()
         {
             Name = "Hit Them",
             Rarity = RarityType.Common,
@@ -115,63 +112,17 @@ public class Monster : ICreature
             RelevantAttribute = AttributeType.Strength,
             Parent = this
         });
-
-        Features = _features;
+        
         Senses.Add(SenseType.darkvision, 30);
     }
+    public override event PropertyChangedEventHandler? PropertyChanged;
 
-    public int ParagonThreat { get; set; } = 3;
 
-    public int MaxRange
+    private List<Feature> _features = new();
+
+    public override List<Feature> Features
     {
-        get
-        {
-            var rangedFeatures = Features.Where(a =>
-                a.Type == FeatureType.Action &&
-                ((MonsterAction)a).Distance == RangeType.Ranged).Select(b => (MonsterAction)b);
-            rangedFeatures.OrderByDescending(b => b.Distance);
-            return rangedFeatures.FirstOrDefault(new MonsterAction { Range = 0 }).Range;
-        }
-    }
-
-    public int MaxReach
-    {
-        get
-        {
-            var meleeFeatures = Features.Where(a =>
-                a.Type == FeatureType.Action &&
-                ((MonsterAction)a).Distance == RangeType.Melee).Select(b => (MonsterAction)b);
-            meleeFeatures.OrderByDescending(b => b.Distance);
-            return meleeFeatures.FirstOrDefault(new MonsterAction { Range = 5 }).Range;
-        }
-    }
-
-    public Guid Id { get; init; }
-    public event PropertyChangedEventHandler? PropertyChanged;
-    public string Name { get; set; } = "";
-    public int CombatLevel { get; set; }
-
-    public Rank MonsterRank
-    {
-        get => _monsterRank;
-        set { _monsterRank = value; Attributes.AttributeMod = MonsterRank == Rank.Elite ? 1 : MonsterRank == Rank.Paragon ? 2 : 0;
-            PropertyChanged?.Invoke(this,
-                new PropertyChangedEventArgs(nameof(MonsterRank)));
-        }
-    }
-
-    public Role MonsterRole { get; set; }
-    public string MonsterRoleDetail { get; set; } = "";
-    public AttributeArray Attributes { get; set; } = new();
-    private List<IFeature> _features;
-    private Rank _monsterRank;
-
-    public List<IFeature> Features
-    {
-        get
-        {
-            return _features;
-        }
+        get => _features;
         set
         {
             _features = value;
@@ -179,14 +130,8 @@ public class Monster : ICreature
                 new PropertyChangedEventArgs(nameof(Features)));
         }
     }
-    public DefenseArray Defenses { get; set; }
-
-    public int Proficiency => (int)Math.Floor(1 + ((double)CombatLevel + 3) / 4.0);
-
-    public int WalkSpeed { get; set; }
-    public Dictionary<MovementType, int> OtherSpeeds { get; set; }
-
-    public int SpeedMod
+    
+    public override int SpeedMod
     {
         get
         {
@@ -197,10 +142,8 @@ public class Monster : ICreature
             return 0;
         }
     }
-
-    public OffenseArray Offense { get; set; }
-
-    public int InitiativeModifier
+    
+    public override int InitiativeModifier
     {
         get
         {
@@ -217,11 +160,4 @@ public class Monster : ICreature
             return mod;
         }
     }
-
-    public SizeType Size { get; set; }
-    public CreatureType Type { get; set; }
-    public string TypeDetail { get; set; } = "";
-    public Dictionary<SenseType, int> Senses { get; set; }
-    public List<string> Languages { get; set; }
-    public List<string> Items { get; set; }
 }

@@ -1,20 +1,28 @@
-﻿namespace GiffyglyphMonsterMakerV3.Data
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace GiffyglyphMonsterMakerV3.Data
 {
-    public interface IFeature
+    [PrimaryKey("Id")]
+    public class Feature
     {
+        [Key]
         public Guid Id { get; init; }
         public string Name { get; set; }
-        public string MarkupDescription { get; }
+        public virtual string MarkupDescription { get; }
         public string OverrideMarkup { get; set; }
-        public FeatureType Type { get; init; }
+        public virtual FeatureType Type { get; init; }
         public RarityType Rarity { get; set; }
         public AttributeType RelevantAttribute { get; set; }
         public string Icon { get; set; }
-        public string RarityStyle { get; }
+        public virtual string RarityStyle { get; }
         public bool HasSave { get; set; }
         public string SaveVs { get; set; }
-        public FeatureFrequency Frequency { get; set; }
-        public ICreature Parent { get; init; }
+        public FeatureFrequency Frequency { get; set; } = new();
+
+        [ForeignKey("ParentCreatureId")]
+        public virtual Creature Parent { get; init; } = new();
     }
     public enum FeatureType
     {
@@ -41,6 +49,8 @@
     }
     public class FeatureFrequency
     {
+        [Key]
+        public Guid Id { get; set; }
         public FrequencyType Type { get; set; }
         public int Value { get; set; }
 

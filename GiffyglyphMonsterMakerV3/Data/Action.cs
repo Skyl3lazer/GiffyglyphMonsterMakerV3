@@ -3,17 +3,15 @@ using GiffyglyphMonsterMakerV3.Utility;
 using Ganss.Xss;
 using Microsoft.AspNetCore.Components;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
 namespace GiffyglyphMonsterMakerV3.Data
 {
-    [PrimaryKey("Id")]
-    public class MonsterAction : IFeature
+    public class Action : Feature
     {
-        public string Name { get; set; } = "";
-
-        public string MarkupDescription
+        public override string MarkupDescription
         {
             get
             {
@@ -108,10 +106,9 @@ namespace GiffyglyphMonsterMakerV3.Data
                 return desc;
             }
         }
-        public Guid Id { get; init; } = Guid.NewGuid();
-        [ForeignKey("Id")]
-        private Monster _parent;
-        public ICreature Parent
+        private Creature _parent = new();
+
+        public override Creature Parent
         {
             get
             {
@@ -119,7 +116,7 @@ namespace GiffyglyphMonsterMakerV3.Data
             }
             init
             {
-                _parent = (Monster)value;
+                _parent = value;
                 _parent.Offense.PropertyChanged += UpdateOffenses;
                 _parent.Attributes.PropertyChanged += UpdateAttributes;
             }
@@ -134,17 +131,10 @@ namespace GiffyglyphMonsterMakerV3.Data
         {
             _parent.Offense = (OffenseArray)sender;
         }
-        public AttributeType RelevantAttribute { get; set; }
-        public string OverrideMarkup { get; set; }
-        public virtual FeatureType Type { get; init; } = FeatureType.Action;
+        public override FeatureType Type { get; init; } = FeatureType.Action;
         public RangeType Distance { get; set; }
-        public bool HasSave { get; set; }
-        public string SaveVs { get; set; }
-
         public int Range { get; set; }
         public int Radius { get; set; }
-        public RarityType Rarity { get; set; }
-        public string Icon { get; set; }
         public bool IsSpell { get; set; }
         public string SpellDesc { get; set; }
         public bool DealsDamage { get; set; }
@@ -153,10 +143,9 @@ namespace GiffyglyphMonsterMakerV3.Data
         public string OtherEffect { get; set; }
         public string MissEffect { get; set; }
         public DamageType ActionDamageType { get; set; }
-        public FeatureFrequency Frequency { get; set; } = new();
         public int Targets { get; set; } = 0;
         public TargetShape Shape { get; set; }
-        public string RarityStyle
+        public override string RarityStyle
         {
             get
             {

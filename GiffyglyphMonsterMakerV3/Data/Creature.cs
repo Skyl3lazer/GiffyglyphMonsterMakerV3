@@ -1,13 +1,14 @@
 ﻿using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using GiffyglyphMonsterMakerV3.Pages;
 using GiffyglyphMonsterMakerV3.Utility;
 using Microsoft.EntityFrameworkCore;
 
 namespace GiffyglyphMonsterMakerV3.Data
 {
-    public interface ICreature : INotifyPropertyChanged
+    public class Creature : INotifyPropertyChanged
     {
         [Required]
         public Guid Id { get; init; }
@@ -15,30 +16,74 @@ namespace GiffyglyphMonsterMakerV3.Data
         public string Name { get; set; }
         [Required]
         public int CombatLevel { get; set; }
+        private Rank _monsterRank;
         [Required]
-        public Rank MonsterRank { get; set; }
+        public Rank MonsterRank
+        {
+            get => _monsterRank;
+            set
+            {
+                _monsterRank = value; Attributes.AttributeMod = MonsterRank == Rank.Elite ? 1 : MonsterRank == Rank.Paragon ? 2 : 0;
+                PropertyChanged?.Invoke(this,
+                    new PropertyChangedEventArgs(nameof(MonsterRank)));
+            }
+        }
         public Role MonsterRole { get; set; }
         public string MonsterRoleDetail { get; set; }
         [Required]
-        public AttributeArray Attributes { get; set; }
+        public AttributeArray Attributes { get; set; } = new();
         [Required]
-        public DefenseArray Defenses { get; set; }
-        public int Proficiency { get; }
-        public List<IFeature> Features { get; set; }
+        public DefenseArray Defenses { get; set; } = new();
+        public int Proficiency => (int)Math.Floor(1 + ((double)CombatLevel + 3) / 4.0);
+        [ForeignKey("FeaturesId")]
+        public virtual List<Feature> Features { get; set; } = new();
         public int WalkSpeed { get; set; }
-        public Dictionary<MovementType, int> OtherSpeeds { get; set; }
-        public int SpeedMod { get; }
+        [ForeignKey("SpeedsId")]
+        public Dictionary<MovementType, int> OtherSpeeds { get; set; } = new();
+
+        public virtual int SpeedMod { get; } = 0;
         [Required]
-        public OffenseArray Offense { get; set; }
-        public int InitiativeModifier { get; }
+        public OffenseArray Offense { get; set; } = new();
+
+        public virtual int InitiativeModifier { get; } = 0;
         [Required]
         public SizeType Size { get; set; }
         [Required]
         public CreatureType Type { get; set; }
         public string TypeDetail { get; set; }
-        public Dictionary<SenseType, int> Senses { get; set; }
-        public List<string> Languages { get; set; }
-        public List<string> Items { get; set; }
+        [ForeignKey("SensesId")]
+        public Dictionary<SenseType, int> Senses { get; set; } = new();
+        public List<string> Languages { get; set; } = new();
+        public List<string> Items { get; set; } = new();
+
+        public int ParagonThreat { get; set; } = 3;
+
+        public int MaxRange
+        {
+            get
+            {
+                var rangedFeatures = Features.Where(a =>
+                    a.Type == FeatureType.Action &&
+                    ((Action)a).Distance == RangeType.Ranged).Select(b => (Action)b);
+                rangedFeatures.OrderByDescending(b => b.Distance);
+                return rangedFeatures.FirstOrDefault(new Action { Range = 0 }).Range;
+            }
+        }
+
+        public int MaxReach
+        {
+            get
+            {
+                var meleeFeatures = Features.Where(a =>
+                    a.Type == FeatureType.Action &&
+                    ((Action)a).Distance == RangeType.Melee).Select(b => (Action)b);
+                meleeFeatures.OrderByDescending(b => b.Distance);
+                return meleeFeatures.FirstOrDefault(new Action { Range = 5 }).Range;
+            }
+        }
+
+
+        public virtual event PropertyChangedEventHandler? PropertyChanged;
     }
     public enum Rank
     {
@@ -74,6 +119,8 @@ namespace GiffyglyphMonsterMakerV3.Data
     }
     public class AttributeArray : INotifyPropertyChanged
     {
+        [Key]
+        public Guid Id { get; set; }
         public Dictionary<AttributeType, int> Dict { get; }
 
         public AttributeArray()
@@ -144,6 +191,8 @@ namespace GiffyglyphMonsterMakerV3.Data
     }
     public class ProficientSaves
     {
+        [Key]
+        public Guid Id { get; set; }
         public bool Strength { get; set; }
         public bool Dexterity { get; set; }
         public bool Constitution { get; set; }
@@ -153,6 +202,8 @@ namespace GiffyglyphMonsterMakerV3.Data
     }
     public class DefenseArray
     {
+        [Key]
+        public Guid Id { get; set; }
         public int ArmorClass { get; set; }
         public int HitPoints { get; set; }
         public int SaveBonus { get; set; }
@@ -160,6 +211,8 @@ namespace GiffyglyphMonsterMakerV3.Data
     }
     public class OffenseArray : INotifyPropertyChanged
     {
+        [Key]
+        public Guid Id { get; set; }
         private int _attack;
         private int _difficultyCheck;
         private int _damage;

@@ -2,7 +2,7 @@
 
 namespace GiffyglyphMonsterMakerV3.Data
 {
-    public class MonsterBonusAction : MonsterAction
+    public class BonusAction : Action
     {
         public override FeatureType Type { get; init; } = FeatureType.Bonus;
     }

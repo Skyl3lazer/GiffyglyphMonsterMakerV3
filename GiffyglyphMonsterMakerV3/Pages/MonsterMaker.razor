@@ -1,7 +1,6 @@
 ﻿@page "/monstermaker"
 @using GiffyglyphMonsterMakerV3.Data
 @using GiffyglyphMonsterMakerV3.Utility
-@inject MonsterService MonsterService
 
 <PageTitle>Monster Statblock Maker V3</PageTitle>
 <div class="container-xxl">
@@ -232,7 +231,7 @@
         UpdateValues();
     }
 
-    public void RemoveFeature(IFeature feature)
+    public void RemoveFeature(Feature feature)
     {
         active.Features.Remove(feature);
     }

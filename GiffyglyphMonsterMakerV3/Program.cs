@@ -2,14 +2,17 @@ using Append.Blazor.Printing;
 using GiffyglyphMonsterMakerV3.Data;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddSingleton<MonsterService>();
 builder.Services.AddScoped<IPrintingService, PrintingService>();
+
+var connectionString = builder.Configuration["ConnectionStrings:ggmonstermaker"];
+builder.Services.AddDbContext<MonsterContext>(item => item.UseSqlServer(connectionString));
 
 var app = builder.Build();
 
@@ -21,7 +24,6 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-var connectionString = builder.Configuration["ConnectionStrings:ggmonstermaker"];
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
