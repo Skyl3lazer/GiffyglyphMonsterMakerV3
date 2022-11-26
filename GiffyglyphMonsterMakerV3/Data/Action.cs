@@ -107,7 +107,7 @@ namespace GiffyglyphMonsterMakerV3.Data
             }
         }
 
-        private Creature _parent { get; init; }
+        private Creature _parent { get; set; }
         [ForeignKey("Id")]
         [Required]
         [Column("parentID")]
@@ -116,11 +116,14 @@ namespace GiffyglyphMonsterMakerV3.Data
         {
             get =>_parent;
             
-            init
+            set
             {
                 _parent = value;
-                _parent.Offense.PropertyChanged += UpdateOffenses;
-                _parent.Attributes.PropertyChanged += UpdateAttributes;
+                if (_parent != null)
+                {
+                    _parent.Offense.PropertyChanged += UpdateOffenses;
+                    _parent.Attributes.PropertyChanged += UpdateAttributes;
+                }
             }
         }
 

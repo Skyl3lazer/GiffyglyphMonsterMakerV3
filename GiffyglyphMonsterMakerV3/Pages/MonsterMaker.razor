@@ -1,6 +1,7 @@
 ﻿@page "/monstermaker"
 @using GiffyglyphMonsterMakerV3.Data
 @using GiffyglyphMonsterMakerV3.Utility
+@using Action = GiffyglyphMonsterMakerV3.Data.Action
 @inject MonsterService _ms;
 
 <PageTitle>Monster Statblock Maker V3</PageTitle>
@@ -182,7 +183,7 @@
             </div>
         </div>
         <div class="col-9 w-50">
-            <div><span>Stat Blocks</span> <span class="fa-solid fa-plus" @onclick="AddMonster" /></div>
+            <div><span>Stat Blocks</span> <span class="fa-solid fa-plus" @onclick="() => AddMonster()" /></div>
             <div class="row overflow-auto px-1 d-block" style="height:250px;">
                 @foreach (var mon in Monsters)
                 {
@@ -207,12 +208,8 @@
 @code {
     [CascadingParameter]
     protected List<Monster> Monsters { get; set; }
-
-    private Monster _active;
-    private Monster active { 
-        get => _active;
-        set { _active = _ms.GetMonsterById(value.Id); }
-    }
+    
+    private Monster active {get; set; }
 
     bool FeatureModalShow { get; set; } = false;
 
@@ -246,8 +243,93 @@
 
     protected override async Task OnInitializedAsync()
     {
-        active = Monsters.First();
-        UpdateValues();
+        if (Monsters.Count == 0)
+        {
+            CreateFirstMonster();
+        }
+        else
+        {
+            active = Monsters.First();
+        }
+    }
+
+    private async void CreateFirstMonster()
+    {
+            Monster monster = new("My First Monster");
+            monster.Features.Add(new Action()
+                {
+                    Name = "Hit Them",
+                    Rarity = RarityType.Common,
+                    Range = 5,
+                    Distance = RangeType.Melee,
+                    Icon = "fa-sword",
+                    Targets = 1,
+                    ActionDamageType = DamageType.bludgeoning,
+                    DealsDamage = true,
+                    Shape = TargetShape.target,
+                    RelevantAttribute = AttributeType.Strength,
+                    Parent = monster
+                });
+            monster.Features.Add(new Action()
+                {
+                    Name = "Hit Them Twice",
+                    Rarity = RarityType.Uncommon,
+                    Range = 5,
+                    MultiAttack = 2,
+                    Distance = RangeType.Melee,
+                    Icon = "fa-sword",
+                    Targets = 1,
+                    ActionDamageType = DamageType.bludgeoning,
+                    DealsDamage = true,
+                    Shape = TargetShape.target,
+                    RelevantAttribute = AttributeType.Dexterity,
+                    Frequency = new FeatureFrequency()
+                    {
+                        Type = FrequencyType.shortrest,
+                        Value = 2
+                    },
+                    Parent = monster
+                });
+            monster.Features.Add(new Action()
+                {
+                    Name = "Deadly Spell",
+                    Rarity = RarityType.Rare,
+                    Range = 30,
+                    Distance = RangeType.Ranged,
+                    HasSave = true,
+                    SaveVs = "DEX",
+                    Icon = "fa-bow-arrow",
+                    Targets = 0,
+                    ActionDamageType = DamageType.psychic,
+                    RelevantAttribute = AttributeType.Intelligence,
+                    DealsDamage = true,
+                    Frequency = new FeatureFrequency()
+                    {
+                        Type = FrequencyType.cooldown,
+                        Value = 3
+                    },
+                    Parent = monster
+                });
+
+            monster.Features.Add(new BonusAction()
+                {
+                    Name = "Bonus Smack",
+                    Rarity = RarityType.Common,
+                    Range = 5,
+                    Distance = RangeType.Melee,
+                    Icon = "fa-sword",
+                    Targets = 1,
+                    ActionDamageType = DamageType.bludgeoning,
+                    RelevantAttribute = AttributeType.Strength,
+                    DealsDamage = true,
+                    Shape = TargetShape.target,
+                    DamageMultiplier = 0.5,
+                    Parent = monster
+                });
+            Monsters.Add(monster);
+            active = monster;
+            await _ms.InsertMonsterAsync(monster);
+            UpdateValues();
     }
 
     public void RemoveFeature(Feature feature)
@@ -274,9 +356,10 @@
         var itemList = (List<string>)val;
         active.Languages = itemList;
     }
-    public async void AddMonster()
+
+    public async void AddMonster(string name = "My New Monster")
     {
-        var mon = new Monster();
+        var mon = new Monster(name);
         active = mon;
         Monsters.Add(mon);
         await _ms.InsertMonsterAsync(mon);
@@ -289,11 +372,7 @@
 
         if (Monsters.Count == 0)
         {
-            Monster monster = new("My First Monster");
-            active = monster;
-            Monsters.Add(monster);
-            await _ms.InsertMonsterAsync(monster);
-            UpdateValues();
+            CreateFirstMonster();
         }
         else if (active.Id == mon.Id)
         {
@@ -392,5 +471,6 @@
         active.Offense.DifficultyCheck = (int)Math.Floor(dc);
         active.WalkSpeed = 30;
         await _ms.UpdateMonsterAsync(active);
+        StateHasChanged();
     }
 }

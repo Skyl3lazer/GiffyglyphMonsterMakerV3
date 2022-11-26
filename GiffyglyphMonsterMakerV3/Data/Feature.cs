@@ -25,7 +25,7 @@ namespace GiffyglyphMonsterMakerV3.Data
         public virtual Creature Parent
         {
             get => _parent;
-            init => _parent = value;
+            set => _parent = value;
         }
         public Guid ParentId { get; init; }
     }

@@ -12,6 +12,7 @@ namespace GiffyglyphMonsterMakerV3.Data
     {
         #region Property
 
+        private bool Loading = false;
         private readonly MonsterContext _context;
         #endregion
 
@@ -40,22 +41,61 @@ namespace GiffyglyphMonsterMakerV3.Data
         }
         public async Task<bool> InsertMonsterAsync(Monster monster)
         {
-            await _context.Monsters.AddAsync(monster);
-            await _context.SaveChangesAsync();
+            if (Loading)
+            {
+                return false;
+            }
+
+            try
+            {
+                Loading = true;
+                await _context.AddAsync(monster);
+                await _context.SaveChangesAsync();
+            }
+            finally
+            {
+                Loading = false;
+            }
             return true;
         }
 
         public async Task<bool> UpdateMonsterAsync(Monster monster)
         {
-            _context.Monsters.Update(monster);
-            await _context.SaveChangesAsync();
+            if (Loading)
+            {
+                return false;
+            }
+
+            try
+            {
+                Loading = true;
+                _context.Update(monster);
+                await _context.SaveChangesAsync();
+            }
+            finally
+            {
+                Loading = false;
+            }
             return true;
         }
 
         public async Task<bool> DeleteMonsterAsync(Monster monster)
         {
-            _context.Remove(monster);
-            await _context.SaveChangesAsync();
+            if (Loading)
+            {
+                return false;
+            }
+
+            try
+            {
+                Loading = true;
+                _context.Remove(monster);
+                await _context.SaveChangesAsync();
+            }
+            finally
+            {
+                Loading = false;
+            }
             return true;
         }
     }
