@@ -17,11 +17,12 @@ namespace GiffyglyphMonsterMakerV3.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
             modelBuilder.Entity<Monster>()
                 .HasBaseType<Creature>();
             modelBuilder.Entity<Action>()
-                .HasBaseType<Feature>();
+                .HasBaseType<Feature>(); 
+            modelBuilder.Entity<BonusAction>()
+                .HasBaseType<Action>();
 
             modelBuilder.Entity<Creature>()
                 .Property(e => e.Senses)
@@ -41,13 +42,12 @@ namespace GiffyglyphMonsterMakerV3.Data
                     ? new Dictionary<MovementType, int>()
                     : JsonSerializer.Deserialize<Dictionary<MovementType, int>>(v, JsonSerializerOptions.Default)
                     );
-            //modelBuilder.Entity<Feature>().HasOne<Creature>(f => f.Parent).WithMany(c => c.Features)
-             //   .HasForeignKey(f => f.Parent).OnDelete(DeleteBehavior.Cascade);
-            /* modelBuilder.Entity<Creature>().OwnsMany<Feature>(c => c.Features, a =>
-             {
-                 a.WithOwner().HasForeignKey("ParentId");
-                 a.Navigation(b => b.Parent).UsePropertyAccessMode(PropertyAccessMode.Property);
-             });*/
+           modelBuilder.Entity<Feature>()
+               .HasOne<Creature>(a => a.Parent)
+               .WithMany(a=>a.Features)
+               .HasForeignKey(a=>a.ParentId)
+               .IsRequired()
+               .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Creature>()
                 .Property(e => e.Items)

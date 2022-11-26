@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GiffyglyphMonsterMakerV3.Data
 {
-    [Owned]
     public class Feature
     {
         [Key]
@@ -20,8 +19,8 @@ namespace GiffyglyphMonsterMakerV3.Data
         public bool HasSave { get; set; }
         public string SaveVs { get; set; } = "";
         public FeatureFrequency Frequency { get; set; } = new();
-        [ForeignKey("Id")]
-        public virtual Creature Parent { get; init; } = new();
+        public virtual Creature Parent { get; init; }
+        public Guid ParentId { get; init; }
     }
     public enum FeatureType
     {

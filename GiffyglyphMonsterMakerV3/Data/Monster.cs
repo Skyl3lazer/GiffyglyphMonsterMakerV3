@@ -43,12 +43,12 @@ public class Monster : Creature
             DealsDamage = true,
             Shape = TargetShape.target,
             RelevantAttribute = AttributeType.Dexterity,
-            Parent = this,
             Frequency = new FeatureFrequency()
             {
                 Type = FrequencyType.shortrest,
                 Value = 2
-            }
+            },
+            Parent = this
         });
         Features.Add(new Action()
         {
@@ -63,12 +63,12 @@ public class Monster : Creature
             ActionDamageType = DamageType.psychic,
             RelevantAttribute = AttributeType.Intelligence,
             DealsDamage = true,
-            Parent = this,
             Frequency = new FeatureFrequency()
             {
                 Type = FrequencyType.cooldown,
                 Value = 3
-            }
+            },
+            Parent = this
         });
 
         Features.Add(new BonusAction()
@@ -83,8 +83,8 @@ public class Monster : Creature
             RelevantAttribute = AttributeType.Strength,
             DealsDamage = true,
             Shape = TargetShape.target,
-            Parent = this,
-            DamageMultiplier = 0.5
+            DamageMultiplier = 0.5,
+            Parent = this
         });
     }
 

@@ -11,7 +11,7 @@ namespace GiffyglyphMonsterMakerV3.Data
     public class Creature : INotifyPropertyChanged
     {
         [Required]
-        public Guid Id { get; init; }
+        public Guid Id { get; init; } = Guid.NewGuid();
 
         [Required] public string Name { get; set; } = "";
         [Required]
@@ -76,7 +76,7 @@ namespace GiffyglyphMonsterMakerV3.Data
                     a.Type == FeatureType.Action &&
                     ((Action)a).Distance == RangeType.Ranged).Select(b => (Action)b);
                 rangedFeatures.OrderByDescending(b => b.Distance);
-                return rangedFeatures.FirstOrDefault(new Action { Range = 0 }).Range;
+                return rangedFeatures.Count() > 0 ? rangedFeatures.First().Range : 0;
             }
         }
 
@@ -88,7 +88,7 @@ namespace GiffyglyphMonsterMakerV3.Data
                     a.Type == FeatureType.Action &&
                     ((Action)a).Distance == RangeType.Melee).Select(b => (Action)b);
                 meleeFeatures.OrderByDescending(b => b.Distance);
-                return meleeFeatures.FirstOrDefault(new Action { Range = 5 }).Range;
+                return meleeFeatures.Count() > 0 ? meleeFeatures.First().Range : 0;
             }
         }
 

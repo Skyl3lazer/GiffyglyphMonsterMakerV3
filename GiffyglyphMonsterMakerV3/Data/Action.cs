@@ -9,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GiffyglyphMonsterMakerV3.Data
 {
-    [Owned]
     public class Action : Feature
     {
         public override string MarkupDescription
@@ -107,14 +106,13 @@ namespace GiffyglyphMonsterMakerV3.Data
                 return desc;
             }
         }
-        private Creature _parent = new();
         [ForeignKey("Id")]
+        [Required]
+        [Column("parentID")]
+        private Creature _parent;
         public override Creature Parent
         {
-            get
-            {
-                return _parent;
-            }
+            get => _parent;
             init
             {
                 _parent = value;
@@ -137,12 +135,12 @@ namespace GiffyglyphMonsterMakerV3.Data
         public int Range { get; set; }
         public int Radius { get; set; }
         public bool IsSpell { get; set; }
-        public string SpellDesc { get; set; }
+        public string SpellDesc { get; set; } = "";
         public bool DealsDamage { get; set; }
         public int MultiAttack { get; set; } = 1;
         public double DamageMultiplier { get; set; } = 1;
-        public string OtherEffect { get; set; }
-        public string MissEffect { get; set; }
+        public string OtherEffect { get; set; } = "";
+        public string MissEffect { get; set; } = "";
         public DamageType ActionDamageType { get; set; }
         public int Targets { get; set; } = 0;
         public TargetShape Shape { get; set; }
