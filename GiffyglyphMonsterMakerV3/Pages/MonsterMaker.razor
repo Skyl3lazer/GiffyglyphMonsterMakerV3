@@ -208,7 +208,11 @@
     [CascadingParameter]
     protected List<Monster> Monsters { get; set; }
 
-    private Monster active { get; set; }
+    private Monster _active;
+    private Monster active { 
+        get => _active;
+        set { _active = _ms.GetMonsterById(value.Id); }
+    }
 
     bool FeatureModalShow { get; set; } = false;
 

@@ -42,6 +42,10 @@ namespace GiffyglyphMonsterMakerV3.Data
                     ? new Dictionary<MovementType, int>()
                     : JsonSerializer.Deserialize<Dictionary<MovementType, int>>(v, JsonSerializerOptions.Default)
                     );
+            modelBuilder.Entity<Feature>()
+                .Navigation(f => f.Parent)
+                .HasField("_parent")
+                .UsePropertyAccessMode(PropertyAccessMode.Property);
            modelBuilder.Entity<Feature>()
                .HasOne<Creature>(a => a.Parent)
                .WithMany(a=>a.Features)

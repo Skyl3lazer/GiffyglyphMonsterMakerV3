@@ -1,5 +1,6 @@
 ﻿@inherits LayoutComponentBase
 @using GiffyglyphMonsterMakerV3.Data;
+@using Action = GiffyglyphMonsterMakerV3.Data.Action
 @inject MonsterService _MonsterService;
 
 <PageTitle>GiffyglyphMonsterMakerV3</PageTitle>
@@ -28,6 +29,76 @@
         if (Monsters.Count == 0)
         {
             Monster monster = new("My First Monster");
+            monster.Features.Add(new Action()
+                {
+                    Name = "Hit Them",
+                    Rarity = RarityType.Common,
+                    Range = 5,
+                    Distance = RangeType.Melee,
+                    Icon = "fa-sword",
+                    Targets = 1,
+                    ActionDamageType = DamageType.bludgeoning,
+                    DealsDamage = true,
+                    Shape = TargetShape.target,
+                    RelevantAttribute = AttributeType.Strength,
+                    Parent = monster
+                });
+            monster.Features.Add(new Action()
+                {
+                    Name = "Hit Them Twice",
+                    Rarity = RarityType.Uncommon,
+                    Range = 5,
+                    MultiAttack = 2,
+                    Distance = RangeType.Melee,
+                    Icon = "fa-sword",
+                    Targets = 1,
+                    ActionDamageType = DamageType.bludgeoning,
+                    DealsDamage = true,
+                    Shape = TargetShape.target,
+                    RelevantAttribute = AttributeType.Dexterity,
+                    Frequency = new FeatureFrequency()
+                    {
+                        Type = FrequencyType.shortrest,
+                        Value = 2
+                    },
+                    Parent = monster
+                });
+            monster.Features.Add(new Action()
+                {
+                    Name = "Deadly Spell",
+                    Rarity = RarityType.Rare,
+                    Range = 30,
+                    Distance = RangeType.Ranged,
+                    HasSave = true,
+                    SaveVs = "DEX",
+                    Icon = "fa-bow-arrow",
+                    Targets = 0,
+                    ActionDamageType = DamageType.psychic,
+                    RelevantAttribute = AttributeType.Intelligence,
+                    DealsDamage = true,
+                    Frequency = new FeatureFrequency()
+                    {
+                        Type = FrequencyType.cooldown,
+                        Value = 3
+                    },
+                    Parent = monster
+                });
+
+            monster.Features.Add(new BonusAction()
+                {
+                    Name = "Bonus Smack",
+                    Rarity = RarityType.Common,
+                    Range = 5,
+                    Distance = RangeType.Melee,
+                    Icon = "fa-sword",
+                    Targets = 1,
+                    ActionDamageType = DamageType.bludgeoning,
+                    RelevantAttribute = AttributeType.Strength,
+                    DealsDamage = true,
+                    Shape = TargetShape.target,
+                    DamageMultiplier = 0.5,
+                    Parent = monster
+                });
             Monsters.Add(monster);
             await _MonsterService.InsertMonsterAsync(monster);
         }

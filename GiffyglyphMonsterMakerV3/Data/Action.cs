@@ -106,13 +106,16 @@ namespace GiffyglyphMonsterMakerV3.Data
                 return desc;
             }
         }
+
+        private Creature _parent { get; init; }
         [ForeignKey("Id")]
         [Required]
         [Column("parentID")]
-        private Creature _parent;
+        [BackingField(nameof(_parent))]
         public override Creature Parent
         {
-            get => _parent;
+            get =>_parent;
+            
             init
             {
                 _parent = value;

@@ -19,7 +19,14 @@ namespace GiffyglyphMonsterMakerV3.Data
         public bool HasSave { get; set; }
         public string SaveVs { get; set; } = "";
         public FeatureFrequency Frequency { get; set; } = new();
-        public virtual Creature Parent { get; init; }
+        private Creature _parent;
+        [Required]
+        [BackingField(nameof(_parent))]
+        public virtual Creature Parent
+        {
+            get => _parent;
+            init => _parent = value;
+        }
         public Guid ParentId { get; init; }
     }
     public enum FeatureType
