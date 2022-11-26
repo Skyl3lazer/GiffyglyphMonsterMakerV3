@@ -366,3 +366,4 @@ FodyWeavers.xsd
 #Custom
 GiffyglyphMonsterMakerV3/GiffyglyphMonsterMakerV3/wwwroot/lib/
 node_modules/
+/GiffyglyphMonsterMakerV3/Migrations
