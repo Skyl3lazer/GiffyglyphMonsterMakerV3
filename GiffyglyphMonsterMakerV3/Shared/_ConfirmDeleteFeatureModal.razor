@@ -1,0 +1,32 @@
+﻿@using GiffyglyphMonsterMakerV3.Data
+
+<div class="modal fade" id="confirmDeleteFeatureModal" tabindex="-1" aria-labelledby="confirmDeleteFeatureModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteFeatureModalLabel">Delete Feature?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you wish to delete feature <span class="fw-bold">@(TargetFeature?.Name)?</span></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @onclick="() => DeleteResult(false)">No</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @onclick="() => DeleteResult(true)">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback Result { get; set; }
+    [Parameter]
+    public Feature? TargetFeature { get; set; }
+
+    private void DeleteResult(bool result)
+    {
+        if(result)
+            Result.InvokeAsync(TargetFeature);
+    }
+}

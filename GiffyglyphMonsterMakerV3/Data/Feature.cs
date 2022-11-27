@@ -12,7 +12,11 @@ namespace GiffyglyphMonsterMakerV3.Data
         public Guid Id { get; set; }
         public Guid? TemplateId { get; set; }
         public string Name { get; set; } = "";
-        public virtual string MarkupDescription { get; } = "";
+
+        public virtual string MarkupDescription(Creature parentCreature)
+        {
+            return "";
+        }
         public string OverrideMarkup { get; set; } = "";
         public virtual FeatureType Type { get; init; }
         public RarityType Rarity { get; set; }
@@ -45,14 +49,8 @@ namespace GiffyglyphMonsterMakerV3.Data
         public bool HasSave { get; set; }
         public string SaveVs { get; set; } = "";
         public FeatureFrequency Frequency { get; set; } = new();
-        private Creature _parent;
         [Required]
-        [BackingField(nameof(_parent))]
-        public virtual Creature Parent
-        {
-            get => _parent;
-            set => _parent = value;
-        }
+        [ForeignKey("Id")]
         public Guid ParentId { get; set; }
 
         public virtual void UpdateThisToMatch(object o)

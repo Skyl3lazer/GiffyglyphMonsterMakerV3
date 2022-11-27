@@ -10,10 +10,8 @@ namespace GiffyglyphMonsterMakerV3.Data
             Type = FeatureType.Countermeasure;
         }
 
-        public override string MarkupDescription
+        public override string MarkupDescription(Creature parentCreature)
         {
-            get
-            {
                 //If you want to just totally override a thing, go for it
                 if (!string.IsNullOrWhiteSpace(OverrideMarkup))
                 {
@@ -28,7 +26,7 @@ namespace GiffyglyphMonsterMakerV3.Data
                 desc += @"<span class=""fw-bold"">" + Name;
                 desc += "</span>";
                 return desc;
-            }
+            
         }
         public override void UpdateThisToMatch(Object o)
         {

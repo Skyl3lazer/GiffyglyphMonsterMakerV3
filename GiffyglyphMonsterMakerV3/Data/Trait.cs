@@ -9,10 +9,8 @@ namespace GiffyglyphMonsterMakerV3.Data
             Name = "New Trait";
             Type = FeatureType.Trait;
         }
-        public override string MarkupDescription
+        public override string MarkupDescription(Creature parentCreature)
         {
-            get
-            {
                 //If you want to just totally override a thing, go for it
                 if (!string.IsNullOrWhiteSpace(OverrideMarkup))
                 {
@@ -28,7 +26,6 @@ namespace GiffyglyphMonsterMakerV3.Data
                 desc += "</span>";
 
                 return desc;
-            }
         }
         public override void UpdateThisToMatch(Object o)
         {

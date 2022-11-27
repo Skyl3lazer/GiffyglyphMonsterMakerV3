@@ -15,10 +15,8 @@ namespace GiffyglyphMonsterMakerV3.Data
         {
             Name = "New Action";
         }
-        public override string MarkupDescription
+        public override string MarkupDescription(Creature parentCreature)
         {
-            get
-            {
                
                 //If you want to just totally override a thing, go for it
                 if (!string.IsNullOrWhiteSpace(OverrideMarkup))
@@ -70,11 +68,11 @@ namespace GiffyglyphMonsterMakerV3.Data
 
                 if (HasSave)
                 {
-                    desc += "DC" + (Parent.Offense.DifficultyCheck + Parent.Attributes.Dict[RelevantAttribute] + Parent.Attributes.AttributeMod) + " vs " + SaveVs + ", ";
+                    desc += "DC" + (parentCreature.Offense.DifficultyCheck + parentCreature.Attributes.Dict[RelevantAttribute] + parentCreature.Attributes.AttributeMod) + " vs " + SaveVs + ", ";
                 }
                 else
                 {
-                    desc += ((Parent.Offense.Attack + Parent.Attributes.Dict[RelevantAttribute] + Parent.Attributes.AttributeMod) >= 0 ? "+":"") + (Parent.Offense.Attack + Parent.Attributes.Dict[RelevantAttribute] + Parent.Attributes.AttributeMod) + " to hit, ";
+                    desc += ((parentCreature.Offense.Attack + parentCreature.Attributes.Dict[RelevantAttribute] + parentCreature.Attributes.AttributeMod) >= 0 ? "+":"") + (parentCreature.Offense.Attack + parentCreature.Attributes.Dict[RelevantAttribute] + parentCreature.Attributes.AttributeMod) + " to hit, ";
                 }
 
                 switch (Distance)
@@ -101,8 +99,8 @@ namespace GiffyglyphMonsterMakerV3.Data
 
                 if (DealsDamage)
                 {
-                    var dam = (int)Math.Max(Math.Floor((double)(Parent.Offense.Damage * DamageMultiplier) / MultiAttack), 1);
-                    desc += dam + (Parent.Offense.RandomizeDamage ? " (" + DiceTools.ConvertToDiceString(Parent.Offense.RandomDamageRange, dam)+")" : "") + " " + ActionDamageType +
+                    var dam = (int)Math.Max(Math.Floor((double)(parentCreature.Offense.Damage * DamageMultiplier) / MultiAttack), 1);
+                    desc += dam + (parentCreature.Offense.RandomizeDamage ? " (" + DiceTools.ConvertToDiceString(parentCreature.Offense.RandomDamageRange, dam)+")" : "") + " " + ActionDamageType +
                             " damage.";
                 }
 
@@ -112,7 +110,7 @@ namespace GiffyglyphMonsterMakerV3.Data
                     desc += " " + MissEffect;
                 desc += "</span>";
                 return desc;
-            }
+            
         }
         
         public override string Icon
@@ -129,36 +127,6 @@ namespace GiffyglyphMonsterMakerV3.Data
                         throw new ArgumentOutOfRangeException();
                 }
             }
-        }
-
-        private Creature _parent { get; set; }
-        [ForeignKey("Id")]
-        [Required]
-        [Column("parentID")]
-        [BackingField(nameof(_parent))]
-        public override Creature Parent
-        {
-            get =>_parent;
-            
-            set
-            {
-                _parent = value;
-                if (_parent != null)
-                {
-                    _parent.Offense.PropertyChanged += UpdateOffenses;
-                    _parent.Attributes.PropertyChanged += UpdateAttributes;
-                }
-            }
-        }
-
-        private void UpdateAttributes(object? sender, PropertyChangedEventArgs e)
-        {
-            _parent.Attributes = (AttributeArray)sender;
-        }
-
-        private void UpdateOffenses(object? sender, PropertyChangedEventArgs e)
-        {
-            _parent.Offense = (OffenseArray)sender;
         }
         public override FeatureType Type { get; init; } = FeatureType.Action;
         public RangeType Distance { get; set; }

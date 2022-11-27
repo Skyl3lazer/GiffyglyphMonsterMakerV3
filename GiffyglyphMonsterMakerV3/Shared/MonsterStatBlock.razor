@@ -133,7 +133,7 @@
                 @foreach (var feature in model.Features.Where(b => b.Type == fType).OrderBy(d => d.Rarity).ThenByDescending(c => c.Name))
                 {
                     <div class="py-1">
-                        <span>@((MarkupString)feature.MarkupDescription)</span>
+                        <span>@((MarkupString)feature.MarkupDescription(model))</span>
                     </div>
                 }
             </div>

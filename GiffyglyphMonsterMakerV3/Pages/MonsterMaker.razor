@@ -17,6 +17,7 @@
 else
 {
     <_FeatureModal ActiveMonster="active" SpecificFeature="EditFeature" FeatureChangedCallback="(f) => FeaturesUpdated(f)" SelectedFeatureCallback="(f) => EditFeatureChanged(f)" SaveMonster="() => SaveActiveMonster()" />
+    <_ConfirmDeleteFeatureModal TargetFeature="DeleteFeatureModalTarget" Result="(a) => ConfirmDeleteFeatureModalResult((Feature)a)" />
 
     <PageTitle>Monster Statblock Maker V3</PageTitle>
     <div class="container-xxl">
@@ -202,7 +203,11 @@ else
                                 @foreach (var feature in active.Features.Where(a=>a.Type == fType).OrderBy(d => d.Rarity).ThenByDescending(c => c.Name))
                                 {
                                     <div class="py-1">
-                                        <span><span class="line-icon"><span class="text-white fa-solid p-1 @feature.Icon @feature.RarityStyle"></span></span><span class="ms-1">@feature.Name</span><span class="fa-solid fa-pencil ms-1" data-bs-toggle="modal" data-bs-target="#featureModal" @onclick="() => EditFeature = feature" /><span class="fa-solid fa-x ms-1" @onclick="() => RemoveFeature(feature)" /></span>
+                                        <span>
+                                            <span class="line-icon"><span class="text-white fa-solid p-1 @feature.Icon @feature.RarityStyle"></span></span><span class="ms-1">@feature.Name</span>
+                                            <span class="fa-solid fa-pencil ms-1" data-bs-toggle="modal" data-bs-target="#featureModal" @onclick="() => EditFeature = feature"/>
+                                            <span class="fa-solid fa-circle-xmark ms-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteFeatureModal" @onclick="() => DeleteFeatureModalTarget = feature" />
+                                        </span>
                                     </div>
                                 }
                             </div>
@@ -242,6 +247,13 @@ else
     private Monster? active { get; set; }
 
     private Feature? EditFeature { get; set; }
+    
+    private Feature? DeleteFeatureModalTarget { get; set; }
+
+    private async Task ConfirmDeleteFeatureModalResult(Feature target)
+    {
+        await RemoveFeature(target);
+    }
 
     private int HighStat
     {
@@ -300,7 +312,7 @@ else
                 DealsDamage = true,
                 Shape = TargetShape.target,
                 RelevantAttribute = AttributeType.Strength,
-                Parent = monster
+                ParentId = monster.Id
             });
         monster.Features.Add(new Action()
             {
@@ -319,7 +331,7 @@ else
                     Type = FrequencyType.shortrest,
                     Value = 2
                 },
-                Parent = monster
+                ParentId = monster.Id
             });
         monster.Features.Add(new Action()
             {
@@ -338,7 +350,7 @@ else
                     Type = FrequencyType.cooldown,
                     Value = 3
                 },
-                Parent = monster
+                ParentId = monster.Id
             });
 
         monster.Features.Add(new BonusAction()
@@ -353,7 +365,7 @@ else
                 DealsDamage = true,
                 Shape = TargetShape.target,
                 DamageMultiplier = 0.5,
-                Parent = monster
+                ParentId = monster.Id
             });
         Monsters.Add(monster);
         active = monster;

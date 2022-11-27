@@ -4,11 +4,11 @@
 @using Action = GiffyglyphMonsterMakerV3.Data.Action
 @inject FeatureService _fs;
 
-<div class="modal fade" id="featureModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+<div class="modal fade" id="featureModal" tabindex="-1" aria-labelledby="featureModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">@(SpecificFeature != null ? "Editing " + SpecificFeature.Type + ": " + SpecificFeature.Name : "Feature Editor")</h5>
+                <h5 class="modal-title" id="featureModalLabel">@(SpecificFeature != null ? "Editing " + SpecificFeature.Type + ": " + SpecificFeature.Name : "Feature Editor")</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -74,9 +74,13 @@
                     }
                     else
                     {
+                        if (SpecificFeature.TemplateId != null)
+                        {
+                            <div><span class="fw-bold">From Template: </span><span></span></div>
+                        }
                         <div>
                             <span>Preview: </span>
-                            <span class="">@((MarkupString)SpecificFeature.MarkupDescription)</span>
+                            <span class="">@((MarkupString)SpecificFeature.MarkupDescription(ActiveMonster))</span>
                         </div>
                         @switch(SpecificFeature.Type)
                         {
@@ -140,6 +144,8 @@
             SpecificFeature = null;
 
         FeatureTemplates = await _fs.GetAllFeatureTemplatesAsync();
+        if (SpecificFeature != null && SpecificFeature.TemplateId != null)
+            SelectedFeatureTemplate = FeatureTemplates.First(a => a.Id == SpecificFeature.Id);
     }
 
     private async Task NewFeature(FeatureType type)
@@ -148,7 +154,6 @@
         {
             case FeatureType.Trait:
                 var trait = new Trait();
-                trait.Parent = ActiveMonster;
                 trait.ParentId = ActiveMonster.Id;
                 ActiveMonster.Features.Add(trait);
                 await FeatureChangedCallback.InvokeAsync(ActiveMonster.Features);
@@ -156,7 +161,6 @@
                 break;
             case FeatureType.Free:
                 var free = new FreeAction();
-                free.Parent = ActiveMonster;
                 free.ParentId = ActiveMonster.Id;
                 ActiveMonster.Features.Add(free);
                 await FeatureChangedCallback.InvokeAsync(ActiveMonster.Features);
@@ -164,7 +168,6 @@
                 break;
             case FeatureType.Action:
                 var action = new Action();
-                action.Parent = ActiveMonster;
                 action.ParentId = ActiveMonster.Id;
                 ActiveMonster.Features.Add(action);
                 await FeatureChangedCallback.InvokeAsync(ActiveMonster.Features);
@@ -172,7 +175,6 @@
                 break;
             case FeatureType.Bonus:
                 var bonus = new BonusAction();
-                bonus.Parent = ActiveMonster;
                 bonus.ParentId = ActiveMonster.Id;
                 ActiveMonster.Features.Add(bonus);
                 await FeatureChangedCallback.InvokeAsync(ActiveMonster.Features);
@@ -180,7 +182,6 @@
                 break;
             case FeatureType.Reaction:
                 var reaction = new Reaction();
-                reaction.Parent = ActiveMonster;
                 reaction.ParentId = ActiveMonster.Id;
                 ActiveMonster.Features.Add(reaction);
                 await FeatureChangedCallback.InvokeAsync(ActiveMonster.Features);
@@ -188,7 +189,6 @@
                 break;
             case FeatureType.Countermeasure:
                 var countermeasure = new Countermeasure();
-                countermeasure.Parent = ActiveMonster;
                 countermeasure.ParentId = ActiveMonster.Id;
                 ActiveMonster.Features.Add(countermeasure);
                 await FeatureChangedCallback.InvokeAsync(ActiveMonster.Features);
@@ -209,7 +209,6 @@
         var newFeat = SelectedFeatureTemplate.Clone();
         newFeat.TemplateId = newFeat.Id;
         newFeat.Id = Guid.NewGuid();
-        newFeat.Parent = ActiveMonster;
         newFeat.ParentId = ActiveMonster.Id;
         ActiveMonster.Features.Add(newFeat);
         await FeatureChangedCallback.InvokeAsync(ActiveMonster.Features);
@@ -228,11 +227,11 @@
         }
         else
         {
-            var newTemplateFeat = SelectedFeatureTemplate.Clone();
+            var newTemplateFeat = SpecificFeature.Clone();
             newTemplateFeat.Id = Guid.NewGuid();
             SpecificFeature.TemplateId = newTemplateFeat.Id;
-            newTemplateFeat.Parent = new Monster(){Id = new Guid()};
             newTemplateFeat.ParentId = new Guid();
+            SelectedFeatureTemplate = newTemplateFeat;
             await _fs.UpdateFeatureAsync(SpecificFeature);
             await _fs.InsertFeatureAsync(newTemplateFeat);
         }
