@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using System.Threading;
 
 namespace GiffyglyphMonsterMakerV3.Data
 {
@@ -25,7 +26,14 @@ namespace GiffyglyphMonsterMakerV3.Data
         {
             await using var _context = await _dbContextFactory.CreateDbContextAsync();
             
-            await _context.Monsters.Include(a => a.Features).LoadAsync();
+            await _context.Monsters
+                .Include(a => a.Features)
+                    .ThenInclude(f => f.Frequency)
+                .Include(m => m.Offense)
+                .Include(m => m.Defenses)
+                    .ThenInclude(d=>d.ProficientSavingThrows)
+                .Include(m => m.Attributes)
+                .LoadAsync();
             return await _context.Monsters.ToListAsync();
         }
 
@@ -39,7 +47,6 @@ namespace GiffyglyphMonsterMakerV3.Data
             await using var _context = await _dbContextFactory.CreateDbContextAsync();
 
             var monster = _context.Monsters.Single(a => a.Id == id);
-            await _context.Entry(monster).Collection(b => b.Features).LoadAsync();
             return monster;
         }
         public Monster GetMonsterById(Guid id)
@@ -80,7 +87,6 @@ namespace GiffyglyphMonsterMakerV3.Data
 
             try
             {
-                Loading = true;
                 _context.Update(monster);
                 await _context.SaveChangesAsync();
             }
