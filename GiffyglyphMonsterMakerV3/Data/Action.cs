@@ -110,6 +110,22 @@ namespace GiffyglyphMonsterMakerV3.Data
                 return desc;
             }
         }
+        
+        public override string Icon
+        {
+            get
+            {
+                switch (Distance)
+                {
+                    case RangeType.Melee:
+                        return "fa-sword";
+                    case RangeType.Ranged:
+                        return "fa-bow-arrow";
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+        }
 
         private Creature _parent { get; set; }
         [ForeignKey("Id")]
@@ -154,29 +170,6 @@ namespace GiffyglyphMonsterMakerV3.Data
         public DamageType ActionDamageType { get; set; }
         public int Targets { get; set; } = 0;
         public TargetShape Shape { get; set; }
-        public override string RarityStyle
-        {
-            get
-            {
-                string style = "";
-                switch (Rarity)
-                {
-                    case RarityType.Common:
-                        style += "ability-common rounded-circle";
-                        break;
-                    case RarityType.Uncommon:
-                        style += "ability-uncommon rounded-end rounded-start-bottom";
-                        break;
-                    case RarityType.Rare:
-                        style += "ability-rare rounded-end-top rounded-start-bottom";
-                        break;
-                    default:
-                        style += "";
-                        break;
-                }
-                return style;
-            }
-        }
         public override void UpdateThisToMatch(Object o)
         {
             if (o is not Action a)

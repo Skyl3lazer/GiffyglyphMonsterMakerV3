@@ -7,8 +7,8 @@ namespace GiffyglyphMonsterMakerV3.Data
         public BonusAction()
         {
             Name = "New Bonus Action";
+            Type = FeatureType.Bonus;
         }
-        public override FeatureType Type { get; init; } = FeatureType.Bonus;
 
         public override void UpdateThisToMatch(Object o)
         {

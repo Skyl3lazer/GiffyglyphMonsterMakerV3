@@ -13,6 +13,7 @@ namespace GiffyglyphMonsterMakerV3.Data
 
         public MonsterContext(DbContextOptions<MonsterContext> options) : base(options)
         {
+            this.ChangeTracker.LazyLoadingEnabled = false;
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

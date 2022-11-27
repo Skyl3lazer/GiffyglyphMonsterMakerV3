@@ -15,7 +15,7 @@
 }
 else
 {
-   <_FeatureModal ActiveMonster="active" SpecificFeature="@EditFeature" FeatureCallback="(f) => FeaturesUpdated(f)" />
+   <_FeatureModal ActiveMonster="active" SpecificFeature="EditFeature" FeatureChangedCallback="(f) => FeaturesUpdated(f)" SelectedFeatureCallback="(f) => EditFeatureChanged(f)"/>
 
     <PageTitle>Monster Statblock Maker V3</PageTitle>
     <div class="container-xxl">
@@ -211,6 +211,7 @@ else
                         <MonsterTitleCard model="mon" DeleteCallback="() => RemoveMonster(mon)" ActiveClick="() => ActiveClick(mon)" Focused="@(mon.Id == active.Id)" SaveCallback="(m) => SaveMonsterAsync((Monster)m)" />
                     }
                 </div>
+                @*<div class="alert alert-warning">You Have Unsaved Changes!</div>*@
                 <div class="row my-1">
                     @foreach (var mon in Monsters)
                     {
@@ -287,7 +288,6 @@ else
                 Rarity = RarityType.Common,
                 Range = 5,
                 Distance = RangeType.Melee,
-                Icon = "fa-sword",
                 Targets = 1,
                 ActionDamageType = DamageType.bludgeoning,
                 DealsDamage = true,
@@ -302,7 +302,6 @@ else
                 Range = 5,
                 MultiAttack = 2,
                 Distance = RangeType.Melee,
-                Icon = "fa-sword",
                 Targets = 1,
                 ActionDamageType = DamageType.bludgeoning,
                 DealsDamage = true,
@@ -323,7 +322,6 @@ else
                 Distance = RangeType.Ranged,
                 HasSave = true,
                 SaveVs = "DEX",
-                Icon = "fa-bow-arrow",
                 Targets = 0,
                 ActionDamageType = DamageType.psychic,
                 RelevantAttribute = AttributeType.Intelligence,
@@ -342,7 +340,6 @@ else
                 Rarity = RarityType.Common,
                 Range = 5,
                 Distance = RangeType.Melee,
-                Icon = "fa-sword",
                 Targets = 1,
                 ActionDamageType = DamageType.bludgeoning,
                 RelevantAttribute = AttributeType.Strength,
@@ -386,6 +383,11 @@ else
     {
         var featureList = (List<Feature>)val;
         active.Features = featureList;
+    }
+    public void EditFeatureChanged(object? val)
+    {
+        var feature = (Feature)val;
+        EditFeature = feature;
     }
     public async Task AddMonster(string name = "My New Monster")
     {

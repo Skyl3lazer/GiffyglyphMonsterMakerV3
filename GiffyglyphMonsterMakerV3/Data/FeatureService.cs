@@ -26,7 +26,9 @@ namespace GiffyglyphMonsterMakerV3.Data
         {
             await using var _context = await _dbContextFactory.CreateDbContextAsync();
             //new Guid() intentionally used here to get the all-0 GUID used for feature templates
-            var ret = await _context.Features.Where(a => a.ParentId == new Guid()).ToListAsync();
+            var ret = await _context.Features.Where(a => a.ParentId == new Guid())
+                .Include(f=>f.Frequency)
+                .ToListAsync();
             return ret;
         }
 

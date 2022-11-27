@@ -17,8 +17,31 @@ namespace GiffyglyphMonsterMakerV3.Data
         public virtual FeatureType Type { get; init; }
         public RarityType Rarity { get; set; }
         public AttributeType RelevantAttribute { get; set; }
-        public string Icon { get; set; } = "";
-        public virtual string RarityStyle { get; } = "";
+        public virtual string Icon { get; } = "";
+        public string CustomIcon { get; set; } = "";
+        public virtual string RarityStyle
+        {
+            get
+            {
+                string style = "";
+                switch (Rarity)
+                {
+                    case RarityType.Common:
+                        style += "ability-common rounded-circle";
+                        break;
+                    case RarityType.Uncommon:
+                        style += "ability-uncommon rounded-end rounded-start-bottom";
+                        break;
+                    case RarityType.Rare:
+                        style += "ability-rare rounded-end-top rounded-start-bottom";
+                        break;
+                    default:
+                        style += "";
+                        break;
+                }
+                return style;
+            }
+        }
         public bool HasSave { get; set; }
         public string SaveVs { get; set; } = "";
         public FeatureFrequency Frequency { get; set; } = new();
@@ -41,7 +64,7 @@ namespace GiffyglyphMonsterMakerV3.Data
             OverrideMarkup = f.OverrideMarkup;
             Rarity = f.Rarity;
             RelevantAttribute = f.RelevantAttribute;
-            Icon = f.Icon;
+            CustomIcon = f.CustomIcon;
             HasSave = f.HasSave;
             SaveVs = f.SaveVs;
             Frequency = f.Frequency.Clone();

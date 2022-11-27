@@ -1,6 +1,7 @@
 ﻿@using GiffyglyphMonsterMakerV3.Data
 @using GiffyglyphMonsterMakerV3.Utility
 @using Microsoft.EntityFrameworkCore.Diagnostics
+@using Action = GiffyglyphMonsterMakerV3.Data.Action
 @inject FeatureService _fs;
 
 <div class="modal fade" id="featureModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
@@ -78,6 +79,22 @@
                             <span class="line-icon"><span class="text-white fa-solid p-1 @SpecificFeature.Icon @SpecificFeature.RarityStyle"></span></span>
                             <span class="ms-1">@((MarkupString)SpecificFeature.MarkupDescription)</span>
                         </div>
+                        @switch(SpecificFeature.Type)
+                        {
+                            case FeatureType.Trait:
+                                break;
+                            case FeatureType.Free:
+                            case FeatureType.Action:
+                            case FeatureType.Bonus:
+                                var action = SpecificFeature as Action;
+                                break;
+                            case FeatureType.Reaction:
+                                break;
+                            case FeatureType.Countermeasure:
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
                     }
                 </div>
             </div>
@@ -105,7 +122,9 @@
     [Parameter]
     public Feature? SpecificFeature { get; set; }
     [Parameter]
-    public EventCallback FeatureCallback { get; set; }
+    public EventCallback FeatureChangedCallback { get; set; }
+    [Parameter]
+    public EventCallback SelectedFeatureCallback { get; set; }
 
     private List<Feature>? FeatureTemplates { get; set; }
     private Feature SelectedFeatureTemplate { get; set; }
@@ -135,7 +154,8 @@
                 bonus.ParentId = ActiveMonster.Id;
                 ActiveMonster.Features.Add(bonus);
                 //await _fs.InsertFeatureAsync(bonus);
-                await FeatureCallback.InvokeAsync(ActiveMonster.Features);
+                await FeatureChangedCallback.InvokeAsync(ActiveMonster.Features);
+                await SelectedFeatureCallback.InvokeAsync(bonus);
                 break;
             case FeatureType.Reaction:
                 break;
