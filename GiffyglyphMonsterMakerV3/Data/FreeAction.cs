@@ -9,23 +9,12 @@ namespace GiffyglyphMonsterMakerV3.Data
             Name = "New Free Action";
             Type = FeatureType.Free;
         }
-        public override string MarkupDescription
+        public override void UpdateThisToMatch(Object o)
         {
-            get
-            {
-                //If you want to just totally override a thing, go for it
-                if (!string.IsNullOrWhiteSpace(OverrideMarkup))
-                {
-                    var sanitizer = new HtmlSanitizer();
-                    (new List<string> { "fst-italic", "fw-bold" }).ForEach(item => sanitizer.AllowedClasses.Add(item));
-                    var html = OverrideMarkup;
-                    return sanitizer.Sanitize(html);
-                }
+            if (o is not FreeAction a)
+                throw new InvalidDataException("Target is not a Free Action");
 
-                string desc = "";
-
-                return desc;
-            }
+            base.UpdateThisToMatch(o);
         }
     }
 }

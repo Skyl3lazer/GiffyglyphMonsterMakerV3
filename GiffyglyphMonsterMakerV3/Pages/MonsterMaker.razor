@@ -3,6 +3,7 @@
 @using GiffyglyphMonsterMakerV3.Utility
 @using Action = GiffyglyphMonsterMakerV3.Data.Action
 @inject MonsterService _ms;
+@inject FeatureService _fs;
 
 
 @if (active == null)
@@ -15,7 +16,7 @@
 }
 else
 {
-   <_FeatureModal ActiveMonster="active" SpecificFeature="EditFeature" FeatureChangedCallback="(f) => FeaturesUpdated(f)" SelectedFeatureCallback="(f) => EditFeatureChanged(f)"/>
+    <_FeatureModal ActiveMonster="active" SpecificFeature="EditFeature" FeatureChangedCallback="(f) => FeaturesUpdated(f)" SelectedFeatureCallback="(f) => EditFeatureChanged(f)" SaveMonster="() => SaveActiveMonster()" />
 
     <PageTitle>Monster Statblock Maker V3</PageTitle>
     <div class="container-xxl">
@@ -188,11 +189,17 @@ else
                     <div><span class="fs-2" data-bs-toggle="collapse" data-bs-target="#monsterFeatures" aria-expanded="true" aria-controls="monsterFeatures">Features<span class="fas fa-chevrons-down mx-1 fs-3" /></span></div>
                     <div id="monsterFeatures" class="collapse">
                         <div class="fw-bold" data-bs-toggle="modal" data-bs-target="#featureModal" @onclick="() => EditFeature = null">Add Feature<span class="fas fa-plus ms-1"></span></div>
-                        @foreach (var fType in active.Features.GroupBy(a => a.Type).Select(a => a.OrderByDescending(b => b.Type).First().Type))
+                        @foreach (var fType in 
+                            active.Features
+                                .Select(a => a.Type)
+                                .Distinct()
+                                .OrderBy(b => (int)b)
+                            )
+                                
                         {
                             <div>
                                 <span class="fw-bold">@fType@(fType.ToString().EndsWith("s") ? "" : "s")</span>
-                                @foreach (var feature in active.Features.Where(b => b.Type == fType).OrderBy(d => d.Rarity).ThenByDescending(c => c.Name))
+                                @foreach (var feature in active.Features.Where(a=>a.Type == fType).OrderBy(d => d.Rarity).ThenByDescending(c => c.Name))
                                 {
                                     <div class="py-1">
                                         <span><span class="line-icon"><span class="text-white fa-solid p-1 @feature.Icon @feature.RarityStyle"></span></span><span class="ms-1">@feature.Name</span><span class="fa-solid fa-pencil ms-1" data-bs-toggle="modal" data-bs-target="#featureModal" @onclick="() => EditFeature = feature" /><span class="fa-solid fa-x ms-1" @onclick="() => RemoveFeature(feature)" /></span>
@@ -354,9 +361,10 @@ else
         UpdateValues();
     }
 
-    public void RemoveFeature(Feature feature)
+    public async Task RemoveFeature(Feature feature)
     {
         active.Features.Remove(feature);
+        await _fs.DeleteFeatureAsync(feature);
     }
     public void SenseUpdated(object? val)
     {
@@ -384,6 +392,7 @@ else
         var featureList = (List<Feature>)val;
         active.Features = featureList;
     }
+
     public void EditFeatureChanged(object? val)
     {
         var feature = (Feature)val;

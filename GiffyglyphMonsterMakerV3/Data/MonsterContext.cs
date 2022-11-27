@@ -20,10 +20,19 @@ namespace GiffyglyphMonsterMakerV3.Data
         {
             modelBuilder.Entity<Monster>()
                 .HasBaseType<Creature>();
+
             modelBuilder.Entity<Action>()
                 .HasBaseType<Feature>(); 
             modelBuilder.Entity<BonusAction>()
                 .HasBaseType<Action>();
+            modelBuilder.Entity<FreeAction>()
+                .HasBaseType<Action>();
+            modelBuilder.Entity<Countermeasure>()
+                .HasBaseType<Feature>();
+            modelBuilder.Entity<Reaction>()
+                .HasBaseType<Feature>();
+            modelBuilder.Entity<Trait>()
+                .HasBaseType<Feature>();
 
             modelBuilder.Entity<Creature>()
                 .Property(e => e.Senses)

@@ -23,10 +23,19 @@ namespace GiffyglyphMonsterMakerV3.Data
                     return sanitizer.Sanitize(html);
                 }
 
-                string desc = "";
-
+                string desc =
+                    "<span class=\"text-white fa-solid p-1 " + (String.IsNullOrWhiteSpace(CustomIcon) ? Icon : CustomIcon) + " " + RarityStyle + "\"></span></span><span class=\"ms-1\">";
+                desc += @"<span class=""fw-bold"">" + Name;
+                desc += "</span>";
                 return desc;
             }
+        }
+        public override void UpdateThisToMatch(Object o)
+        {
+            if (o is not Countermeasure a)
+                throw new InvalidDataException("Target is not a Countermeasure");
+
+            base.UpdateThisToMatch(o);
         }
     }
 }

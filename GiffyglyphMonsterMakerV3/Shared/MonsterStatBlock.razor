@@ -120,7 +120,12 @@
                 </div>
             }
         </div>
-        @foreach (var fType in model.Features.GroupBy(a => a.Type).Select(a => a.OrderByDescending(b=> b.Type).First().Type))
+        @foreach (var fType in 
+            model.Features
+                .Select(a => a.Type)
+                .Distinct()
+                .OrderBy(b => (int)b)
+            )
         {
             <div>
                 <div class="monsterTertiary" style="height: 24px"><span class="monsterPrimary text-white fw-bold h-100 d-inline-block ps-1 align-top" style="z-index: 10; position:relative">@fType@(fType.ToString().EndsWith("s") ? "" : "s")</span><span class="slant-45 monsterPrimary d-inline-block h-100 align-top" style="width: 48px; margin-left: -30px; position: relative; z-index: 1;" /></div>
@@ -128,7 +133,7 @@
                 @foreach (var feature in model.Features.Where(b => b.Type == fType).OrderBy(d => d.Rarity).ThenByDescending(c => c.Name))
                 {
                     <div class="py-1">
-                        <span class="line-icon"><span class="text-white fa-solid p-1 @feature.Icon @feature.RarityStyle"></span></span><span class="ms-1">@((MarkupString)feature.MarkupDescription)</span>
+                        <span>@((MarkupString)feature.MarkupDescription)</span>
                     </div>
                 }
             </div>

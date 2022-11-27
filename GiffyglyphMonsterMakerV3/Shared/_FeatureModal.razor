@@ -76,12 +76,12 @@
                     {
                         <div>
                             <span>Preview: </span>
-                            <span class="line-icon"><span class="text-white fa-solid p-1 @SpecificFeature.Icon @SpecificFeature.RarityStyle"></span></span>
-                            <span class="ms-1">@((MarkupString)SpecificFeature.MarkupDescription)</span>
+                            <span class="">@((MarkupString)SpecificFeature.MarkupDescription)</span>
                         </div>
                         @switch(SpecificFeature.Type)
                         {
                             case FeatureType.Trait:
+                                var trait = SpecificFeature as Trait;
                                 break;
                             case FeatureType.Free:
                             case FeatureType.Action:
@@ -89,8 +89,10 @@
                                 var action = SpecificFeature as Action;
                                 break;
                             case FeatureType.Reaction:
+                                var reaction = SpecificFeature as Reaction;
                                 break;
                             case FeatureType.Countermeasure:
+                                var countermeasure = SpecificFeature as Countermeasure;
                                 break;
                             default:
                                 throw new ArgumentOutOfRangeException();
@@ -102,8 +104,8 @@
                 <span>
                     @if (SpecificFeature != null)
                     {
-                        <button type="button" class="btn btn-primary"><span class="fas fa-floppy-disk me-1" />Save</button>
-                        <button type="button" class="btn btn-primary"><span class="fak fa-solid-floppy-disk-circle-plus me-1" />Save and @(SpecificFeature?.TemplateId == null ? "Add" : "Update") Template</button>
+                        <button type="button" class="btn btn-primary" @onclick="() => SaveFeature()"><span  class="fas fa-floppy-disk me-1"/>Save</button>
+                        <button type="button" class="btn btn-primary" @onclick="() => SaveAndUpdateTemplate()"><span class="fak fa-solid-floppy-disk-circle-plus me-1" />Save and @(SpecificFeature?.TemplateId == null ? "Add" : "Update") Template</button>
                         <span></span>
                     }
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><span class="fas fa-x me-1" />Close</button>
@@ -125,6 +127,8 @@
     public EventCallback FeatureChangedCallback { get; set; }
     [Parameter]
     public EventCallback SelectedFeatureCallback { get; set; }
+    [Parameter]
+    public EventCallback SaveMonster { get; set; }
 
     private List<Feature>? FeatureTemplates { get; set; }
     private Feature SelectedFeatureTemplate { get; set; }
@@ -143,23 +147,52 @@
         switch (type)
         {
             case FeatureType.Trait:
+                var trait = new Trait();
+                trait.Parent = ActiveMonster;
+                trait.ParentId = ActiveMonster.Id;
+                ActiveMonster.Features.Add(trait);
+                await FeatureChangedCallback.InvokeAsync(ActiveMonster.Features);
+                await SelectedFeatureCallback.InvokeAsync(trait);
                 break;
             case FeatureType.Free:
+                var free = new FreeAction();
+                free.Parent = ActiveMonster;
+                free.ParentId = ActiveMonster.Id;
+                ActiveMonster.Features.Add(free);
+                await FeatureChangedCallback.InvokeAsync(ActiveMonster.Features);
+                await SelectedFeatureCallback.InvokeAsync(free);
                 break;
             case FeatureType.Action:
+                var action = new Action();
+                action.Parent = ActiveMonster;
+                action.ParentId = ActiveMonster.Id;
+                ActiveMonster.Features.Add(action);
+                await FeatureChangedCallback.InvokeAsync(ActiveMonster.Features);
+                await SelectedFeatureCallback.InvokeAsync(action);
                 break;
             case FeatureType.Bonus:
                 var bonus = new BonusAction();
                 bonus.Parent = ActiveMonster;
                 bonus.ParentId = ActiveMonster.Id;
                 ActiveMonster.Features.Add(bonus);
-                //await _fs.InsertFeatureAsync(bonus);
                 await FeatureChangedCallback.InvokeAsync(ActiveMonster.Features);
                 await SelectedFeatureCallback.InvokeAsync(bonus);
                 break;
             case FeatureType.Reaction:
+                var reaction = new Reaction();
+                reaction.Parent = ActiveMonster;
+                reaction.ParentId = ActiveMonster.Id;
+                ActiveMonster.Features.Add(reaction);
+                await FeatureChangedCallback.InvokeAsync(ActiveMonster.Features);
+                await SelectedFeatureCallback.InvokeAsync(reaction);
                 break;
             case FeatureType.Countermeasure:
+                var countermeasure = new Countermeasure();
+                countermeasure.Parent = ActiveMonster;
+                countermeasure.ParentId = ActiveMonster.Id;
+                ActiveMonster.Features.Add(countermeasure);
+                await FeatureChangedCallback.InvokeAsync(ActiveMonster.Features);
+                await SelectedFeatureCallback.InvokeAsync(countermeasure);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(type), type, null);
@@ -178,7 +211,10 @@
         newFeat.Id = Guid.NewGuid();
         newFeat.Parent = ActiveMonster;
         newFeat.ParentId = ActiveMonster.Id;
+        ActiveMonster.Features.Add(newFeat);
+        await FeatureChangedCallback.InvokeAsync(ActiveMonster.Features);
         await _fs.InsertFeatureAsync(newFeat);
+        StateHasChanged();
     }
 
     private async Task SaveAndUpdateTemplate()
@@ -200,10 +236,16 @@
             await _fs.UpdateFeatureAsync(SpecificFeature);
             await _fs.InsertFeatureAsync(newTemplateFeat);
         }
+        await FeatureChangedCallback.InvokeAsync(ActiveMonster.Features);
+        await SaveMonster.InvokeAsync();
+        StateHasChanged();
     }
 
     private async Task SaveFeature()
     {
         await _fs.UpdateFeatureAsync(SpecificFeature);
+        await FeatureChangedCallback.InvokeAsync(ActiveMonster.Features);
+        await SaveMonster.InvokeAsync();
+        StateHasChanged();
     }
 }
