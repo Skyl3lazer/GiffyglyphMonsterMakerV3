@@ -11,6 +11,10 @@ namespace GiffyglyphMonsterMakerV3.Data
 {
     public class Action : Feature
     {
+        public Action()
+        {
+            Name = "New Action";
+        }
         public override string MarkupDescription
         {
             get
@@ -172,6 +176,27 @@ namespace GiffyglyphMonsterMakerV3.Data
                 }
                 return style;
             }
+        }
+        public override void UpdateThisToMatch(Object o)
+        {
+            if (o is not Action a)
+                throw new InvalidDataException("Target is not an action");
+
+            Distance = a.Distance;
+            Range = a.Range;
+            Radius = a.Radius;
+            IsSpell = a.IsSpell;
+            SpellDesc = a.SpellDesc;
+            DealsDamage = a.DealsDamage;
+            MultiAttack = a.MultiAttack;
+            DamageMultiplier = a.DamageMultiplier;
+            OtherEffect = a.OtherEffect;
+            MissEffect = a.MissEffect;
+            ActionDamageType = a.ActionDamageType;
+            Targets = a.Targets;
+            Shape = a.Shape;
+
+            base.UpdateThisToMatch(o);
         }
     }
 

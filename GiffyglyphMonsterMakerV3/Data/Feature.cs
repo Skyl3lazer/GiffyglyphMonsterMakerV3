@@ -1,13 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using GiffyglyphMonsterMakerV3.Utility;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
 namespace GiffyglyphMonsterMakerV3.Data
 {
     public class Feature
     {
         [Key]
-        public Guid Id { get; init; }
+        public Guid Id { get; set; }
+        public Guid? TemplateId { get; set; }
         public string Name { get; set; } = "";
         public virtual string MarkupDescription { get; } = "";
         public string OverrideMarkup { get; set; } = "";
@@ -27,7 +30,23 @@ namespace GiffyglyphMonsterMakerV3.Data
             get => _parent;
             set => _parent = value;
         }
-        public Guid ParentId { get; init; }
+        public Guid ParentId { get; set; }
+
+        public virtual void UpdateThisToMatch(object o)
+        {
+            if (o is not Feature f)
+                throw new InvalidDataException("Target is not a feature");
+
+            Name = f.Name;
+            OverrideMarkup = f.OverrideMarkup;
+            Rarity = f.Rarity;
+            RelevantAttribute = f.RelevantAttribute;
+            Icon = f.Icon;
+            HasSave = f.HasSave;
+            SaveVs = f.SaveVs;
+            Frequency = f.Frequency.Clone();
+            Frequency.Id = Guid.NewGuid();
+        }
     }
     public enum FeatureType
     {

@@ -1,14 +1,15 @@
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GiffyglyphMonsterMakerV3.Utility;
 using Microsoft.EntityFrameworkCore;
 
 namespace GiffyglyphMonsterMakerV3.Data
 {
-    public class MonsterService
+    public class FeatureService
     {
         #region Property
 
@@ -16,38 +17,32 @@ namespace GiffyglyphMonsterMakerV3.Data
         private readonly IDbContextFactory<MonsterContext> _dbContextFactory;
         #endregion
 
-        public MonsterService(IDbContextFactory<MonsterContext> dbContextFactory)
+        public FeatureService(IDbContextFactory<MonsterContext> dbContextFactory)
         {
             _dbContextFactory = dbContextFactory;
         }
 
-        public async Task<List<Monster>> GetAllMonstersAsync()
+        public async Task<List<Feature>> GetAllFeatureTemplatesAsync()
         {
             await using var _context = await _dbContextFactory.CreateDbContextAsync();
-            
-            await _context.Monsters.Include(a => a.Features).LoadAsync();
-            return await _context.Monsters.ToListAsync();
+            //new Guid() intentionally used here to get the all-0 GUID used for feature templates
+            var ret = await _context.Features.Where(a => a.ParentId == new Guid()).ToListAsync();
+            return ret;
         }
 
-        public Monster GetTemplateMonster()
-        {
-            //Intentional use of new Guid for 0's
-            return new Monster() { Id = new Guid() };
-        }
-        public async Task<Monster> GetMonsterByIdAsync(Guid id)
+        public async Task<Feature> GetFeatureByIdAsync(Guid id)
         {
             await using var _context = await _dbContextFactory.CreateDbContextAsync();
 
-            var monster = _context.Monsters.Single(a => a.Id == id);
-            await _context.Entry(monster).Collection(b => b.Features).LoadAsync();
-            return monster;
+            var feature = _context.Features.Single(a => a.Id == id);
+            return feature;
         }
-        public Monster GetMonsterById(Guid id)
+        public Feature GetFeatureById(Guid id)
         {
-            var task = Task.Run<Monster>(async () => await GetMonsterByIdAsync(id));
+            var task = Task.Run<Feature>(async () => await GetFeatureByIdAsync(id));
             return task.Result;
         }
-        public async Task<bool> InsertMonsterAsync(Monster monster)
+        public async Task<bool> InsertFeatureAndTemplateAsync(Feature feature)
         {
             await using var _context = await _dbContextFactory.CreateDbContextAsync();
 
@@ -59,7 +54,34 @@ namespace GiffyglyphMonsterMakerV3.Data
             try
             {
                 Loading = true;
-                await _context.AddAsync(monster);
+                var featureClone = feature.Clone();
+                //Intentional new Guid() use for 0's
+                featureClone.ParentId = new Guid();
+                featureClone.Id = Guid.NewGuid();
+                feature.TemplateId = featureClone.Id;
+                await _context.AddAsync(feature);
+                await _context.AddAsync(featureClone);
+                await _context.SaveChangesAsync();
+            }
+            finally
+            {
+                Loading = false;
+            }
+            return true;
+        }
+        public async Task<bool> InsertFeatureAsync(Feature feature)
+        {
+            await using var _context = await _dbContextFactory.CreateDbContextAsync();
+
+            if (Loading)
+            {
+                return false;
+            }
+
+            try
+            {
+                Loading = true;
+                await _context.AddAsync(feature);
                 await _context.SaveChangesAsync();
             }
             finally
@@ -69,7 +91,7 @@ namespace GiffyglyphMonsterMakerV3.Data
             return true;
         }
 
-        public async Task<bool> UpdateMonsterAsync(Monster monster)
+        public async Task<bool> UpdateFeatureAsync(Feature feature)
         {
             await using var _context = await _dbContextFactory.CreateDbContextAsync();
 
@@ -81,7 +103,7 @@ namespace GiffyglyphMonsterMakerV3.Data
             try
             {
                 Loading = true;
-                _context.Update(monster);
+                _context.Update(feature);
                 await _context.SaveChangesAsync();
             }
             finally
@@ -91,7 +113,7 @@ namespace GiffyglyphMonsterMakerV3.Data
             return true;
         }
 
-        public async Task<bool> DeleteMonsterAsync(Monster monster)
+        public async Task<bool> DeleteFeatureAsync(Feature feature)
         {
             await using var _context = await _dbContextFactory.CreateDbContextAsync();
 
@@ -103,7 +125,7 @@ namespace GiffyglyphMonsterMakerV3.Data
             try
             {
                 Loading = true;
-                _context.Remove(monster);
+                _context.Remove(feature);
                 await _context.SaveChangesAsync();
             }
             finally

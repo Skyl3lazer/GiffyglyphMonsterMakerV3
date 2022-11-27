@@ -11,9 +11,10 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped<IPrintingService, PrintingService>();
 builder.Services.AddScoped<MonsterService>();
+builder.Services.AddScoped<FeatureService>();
 
 var connectionString = builder.Configuration["ConnectionStrings:ggmonstermaker"];
-builder.Services.AddDbContext<MonsterContext>(item => item.UseSqlServer(connectionString));
+builder.Services.AddDbContextFactory<MonsterContext>(item => item.UseSqlServer(connectionString));
 
 var app = builder.Build();
 

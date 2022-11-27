@@ -4,214 +4,236 @@
 @using Action = GiffyglyphMonsterMakerV3.Data.Action
 @inject MonsterService _ms;
 
-<PageTitle>Monster Statblock Maker V3</PageTitle>
-<div class="container-xxl">
-    <div class="row">
-        <div class="col-3" id="monsterSettings">
-            <div class="row">
-                <div><span class="fs-2" data-bs-toggle="collapse" data-bs-target="#monsterDetails" aria-expanded="true" aria-controls="monsterDetails">Monster Details<span class="fas fa-chevrons-down mx-1 fs-3" /></span></div>
-                <div id="monsterDetails" class="collapse show">
-                    <div><span>Name: </span><input @bind="active.Name" @bind:event="oninput" /></div>
-                    <div>
-                        <span>Size: </span><InputSelect @bind-Value="active.Size">
-                            @foreach (var item in Enum.GetValues(typeof(SizeType)))
+
+@if (active == null)
+{
+    <div class="d-flex justify-content-center">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+}
+else
+{
+   <_FeatureModal ActiveMonster="active" SpecificFeature="@EditFeature" FeatureCallback="(f) => FeaturesUpdated(f)" />
+
+    <PageTitle>Monster Statblock Maker V3</PageTitle>
+    <div class="container-xxl">
+        <div class="row">
+            <div class="col-3" id="monsterSettings">
+                <div class="row">
+                    <div><span class="fs-2" data-bs-toggle="collapse" data-bs-target="#monsterDetails" aria-expanded="true" aria-controls="monsterDetails">Monster Details<span class="fas fa-chevrons-down mx-1 fs-3" /></span></div>
+                    <div id="monsterDetails" class="collapse show">
+                        <div><span>Name: </span><input @bind="active.Name" @bind:event="oninput" /></div>
+                        <div>
+                            <span>Size: </span>
+                            <InputSelect @bind-Value="active.Size">
+                                @foreach (var item in Enum.GetValues(typeof(SizeType)))
+                                {
+                                    <option value="@item">@item</option>
+                                }
+                            </InputSelect>
+                        </div>
+                        <div>
+                            <span>Creature Type: </span>
+                            <InputSelect @bind-Value="active.Type">
+                                @foreach (var item in Enum.GetValues(typeof(CreatureType)))
+                                {
+                                    <option value="@item">@item</option>
+                                }
+                            </InputSelect>
+                        </div>
+                        <div><span>Type Detail: </span><input @bind="active.TypeDetail" @bind:event="oninput" /></div>
+                        <div><span>Combat Level: </span><InputNumber Value="@active.CombatLevel" min="0" ValueChanged="(int i) => LevelChanged(i)" ValueExpression="() => active.CombatLevel" TValue="int" /></div>
+                        <div><span>Proficiency Bonus:</span> @active.Proficiency</div>
+                        <div>
+                            <span>Rank: </span>
+                            <InputSelect Value="@active.MonsterRank" ValueChanged="(Rank i) => RankChanged(i)" ValueExpression="() => active.MonsterRank" TValue="Rank">
+                                @foreach (var item in Enum.GetValues(typeof(Rank)))
+                                {
+                                    <option value="@item">@item</option>
+                                }
+                            </InputSelect>
+                            @if (active.MonsterRank == Rank.Paragon)
                             {
-                                <option value="@item">@item</option>
+                                <span> Threat: </span>
+                                <InputNumber Value="active.ParagonThreat" min="1" ValueChanged="(int i) => ParagonChanged(i)" TValue="int" ValueExpression="() => active.ParagonThreat" />
                             }
-                        </InputSelect>
+                        </div>
+                        <div>
+                            <span>Role: </span>
+                            <InputSelect Value="@active.MonsterRole" ValueChanged="(Role i) => RoleChanged(i)" ValueExpression="() => active.MonsterRole" TValue="Role">
+                                @foreach (var item in Enum.GetValues(typeof(Role)))
+                                {
+                                    <option value="@item">@item</option>
+                                }
+                            </InputSelect>
+                        </div>
+                        <div><span>Role Special Type: </span><input @bind="active.MonsterRoleDetail" @bind:event="oninput" /></div>
+                        <div class="fw-bold">Base Stats</div>
+                        <div><span class="fst-italic">Recommended</span>: +@(HighStat), +@(HighStat), +@(MedStat), +@(MedStat), @(LowStat >= 0 ? "+" : "")@(LowStat), @(LowStat >= 0 ? "+" : "")@(LowStat)</div>
+
+                        <div class="row">
+                            <span class="col-2">STR: </span>
+                            <InputSelect @bind-Value="active.Attributes.Strength" class="col-2">
+                                @for (int i = 7; i > -6; i--)
+                                {
+                                    <option>@i</option>
+                                }
+                            </InputSelect>
+                            <span class="col-2">DEX: </span>
+                            <InputSelect @bind-Value="active.Attributes.Dexterity" class="col-2">
+                                @for (int i = 7; i > -6; i--)
+                                {
+                                    <option>@i</option>
+                                }
+                            </InputSelect>
+                            <span class="col-2">CON: </span>
+                            <InputSelect @bind-Value="active.Attributes.Constitution" class="col-2">
+                                @for (int i = 7; i > -6; i--)
+                                {
+                                    <option>@i</option>
+                                }
+                            </InputSelect>
+                        </div>
+                        <div class="row">
+                            <span class="col-2">INT: </span>
+                            <InputSelect @bind-Value="active.Attributes.Intelligence" class="col-2">
+                                @for (int i = 7; i > -6; i--)
+                                {
+                                    <option>@i</option>
+                                }
+                            </InputSelect>
+                            <span class="col-2">WIS: </span>
+                            <InputSelect @bind-Value="active.Attributes.Wisdom" class="col-2">
+                                @for (int i = 7; i > -6; i--)
+                                {
+                                    <option>@i</option>
+                                }
+                            </InputSelect>
+                            <span class="col-2">CHA: </span>
+                            <InputSelect @bind-Value="active.Attributes.Charisma" class="col-2">
+                                @for (int i = 7; i > -6; i--)
+                                {
+                                    <option>@i</option>
+                                }
+                            </InputSelect>
+                        </div>
                     </div>
-                    <div>
-                        <span>Creature Type: </span><InputSelect @bind-Value="active.Type">
-                            @foreach (var item in Enum.GetValues(typeof(CreatureType)))
-                            {
-                                <option value="@item">@item</option>
-                            }
-                        </InputSelect>
+                </div>
+                <div class="row">
+                    <div><span class="fs-2" data-bs-toggle="collapse" data-bs-target="#monsterOffense" aria-expanded="true" aria-controls="monsterOffense">Offense<span class="fas fa-chevrons-down mx-1 fs-3" /></span></div>
+                    <div id="monsterOffense" class="collapse">
+                        <div><span>Attack Bonus: </span><span><InputNumber @bind-Value="active.Offense.Attack" min="0" /></span></div>
+                        <div><span>DC Mod: </span><InputNumber @bind-Value="active.Offense.DifficultyCheck" min="0" /></div>
+                        <div>
+                            <span>Damage Average: </span>
+                            <span>
+                                <InputNumber @bind-Value="active.Offense.Damage" min="0" /> Random: <InputCheckbox @bind-Value="active.Offense.RandomizeDamage" />
+                            </span>
+                        </div>
+                        <div>
+                            <span>
+                                @if (active.Offense.RandomizeDamage)
+                                {
+                                    <InputSelect @bind-Value="@active.Offense.RandomDamageRange" TValue="DamageRange">
+                                        @foreach (var item in Enum.GetValues(typeof(DamageRange)))
+                                        {
+                                            <option value="@item">@item</option>
+                                        }
+                                    </InputSelect>
+                                    <span>(@(DiceTools.ConvertToDiceString(active.Offense.RandomDamageRange, active.Offense.Damage)))</span>
+                                }
+                            </span>
+                        </div>
                     </div>
-                    <div><span>Type Detail: </span><input @bind="active.TypeDetail" @bind:event="oninput"/></div>
-                    <div><span>Combat Level: </span><InputNumber Value="@active.CombatLevel" min="0" ValueChanged="(int i) => LevelChanged(i)" ValueExpression="() => active.CombatLevel" TValue="int" /></div>
-                    <div><span>Proficiency Bonus:</span> @active.Proficiency</div>
-                    <div>
-                        <span>Rank: </span><InputSelect Value="@active.MonsterRank" ValueChanged="(Rank i) => RankChanged(i)" ValueExpression="() => active.MonsterRank" TValue="Rank">
-                            @foreach (var item in Enum.GetValues(typeof(Rank)))
-                            {
-                                <option value="@item">@item</option>
-                            }
-                        </InputSelect>
-                        @if (active.MonsterRank == Rank.Paragon)
+                </div>
+                <div class="row">
+                    <div><span class="fs-2" data-bs-toggle="collapse" data-bs-target="#monsterDefense" aria-expanded="true" aria-controls="monsterDefense">Defense<span class="fas fa-chevrons-down mx-1 fs-3" /></span></div>
+                    <div id="monsterDefense" class="collapse">
+                        <div><span>Armor Class: </span><InputNumber @bind-Value="active.Defenses.ArmorClass" min="0" /></div>
+                        <div><span>Hit Points: </span><InputNumber @bind-Value="active.Defenses.HitPoints" min="0" /></div>
+                        <div><span>Save Bonus: </span><InputNumber @bind-Value="active.Defenses.SaveBonus" min="0" /></div>
+                        <div><span>Proficient Saves</span></div>
+                        <div>
+                            <span>STR </span><InputCheckbox @bind-Value="active.Defenses.ProficientSavingThrows.Strength" />
+                            <span>DEX </span><InputCheckbox @bind-Value="active.Defenses.ProficientSavingThrows.Dexterity" />
+                            <span>CON </span><InputCheckbox @bind-Value="active.Defenses.ProficientSavingThrows.Constitution" />
+                        </div>
+                        <div>
+                            <span>INT </span><InputCheckbox @bind-Value="active.Defenses.ProficientSavingThrows.Intelligence" />
+                            <span>WIS </span><InputCheckbox @bind-Value="active.Defenses.ProficientSavingThrows.Wisdom" />
+                            <span>CHA </span><InputCheckbox @bind-Value="active.Defenses.ProficientSavingThrows.Charisma" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div><span class="fs-2" data-bs-toggle="collapse" data-bs-target="#monsterAbilities" aria-expanded="true" aria-controls="monsterAbilities">Abilities<span class="fas fa-chevrons-down mx-1 fs-3" /></span></div>
+                    <div id="monsterAbilities" class="collapse">
+                        <div>
+                            <_EnumAdder Dict="@active.OtherSpeeds" Header="Other Speeds" ValueChangedEvent="(a) => SpeedsUpdated(a)"></_EnumAdder>
+                        </div>
+                        <div>
+                            <_EnumAdder Dict="@active.Senses" Header="Senses" ValueChangedEvent="(a) => SenseUpdated(a)"></_EnumAdder>
+                        </div>
+                        <div>
+                            <_stringAdder Header="Languages" ValueList="@active.Languages" ValueChangedEvent="(a) => LanguagesUpdated(a)" DefaultList="Enum.GetNames(typeof(DefaultLanguages)).ToList()"></_stringAdder>
+                        </div>
+                        <div>
+                            <_stringAdder Header="Items" ValueList="@active.Items" ValueChangedEvent="(a) => ItemsUpdated(a)"></_stringAdder>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div><span class="fs-2" data-bs-toggle="collapse" data-bs-target="#monsterFeatures" aria-expanded="true" aria-controls="monsterFeatures">Features<span class="fas fa-chevrons-down mx-1 fs-3" /></span></div>
+                    <div id="monsterFeatures" class="collapse">
+                        <div class="fw-bold" data-bs-toggle="modal" data-bs-target="#featureModal" @onclick="() => EditFeature = null">Add Feature<span class="fas fa-plus ms-1"></span></div>
+                        @foreach (var fType in active.Features.GroupBy(a => a.Type).Select(a => a.OrderByDescending(b => b.Type).First().Type))
                         {
-                            <span> Threat: </span>
-                            <InputNumber Value="active.ParagonThreat" min="1" ValueChanged="(int i) => ParagonChanged(i)" TValue="int" ValueExpression="() => active.ParagonThreat" />
+                            <div>
+                                <span class="fw-bold">@fType@(fType.ToString().EndsWith("s") ? "" : "s")</span>
+                                @foreach (var feature in active.Features.Where(b => b.Type == fType).OrderBy(d => d.Rarity).ThenByDescending(c => c.Name))
+                                {
+                                    <div class="py-1">
+                                        <span><span class="line-icon"><span class="text-white fa-solid p-1 @feature.Icon @feature.RarityStyle"></span></span><span class="ms-1">@feature.Name</span><span class="fa-solid fa-pencil ms-1" data-bs-toggle="modal" data-bs-target="#featureModal" @onclick="() => EditFeature = feature" /><span class="fa-solid fa-x ms-1" @onclick="() => RemoveFeature(feature)" /></span>
+                                    </div>
+                                }
+                            </div>
                         }
                     </div>
-                    <div>
-                        <span>Role: </span><InputSelect Value="@active.MonsterRole" ValueChanged="(Role i) => RoleChanged(i)" ValueExpression="() => active.MonsterRole" TValue="Role">
-                            @foreach (var item in Enum.GetValues(typeof(Role)))
-                            {
-                                <option value="@item">@item</option>
-                            }
-                        </InputSelect>
-                    </div>
-                    <div><span>Role Special Type: </span><input @bind="active.MonsterRoleDetail" @bind:event="oninput" /></div>
-                    <div class="fw-bold">Base Stats</div>
-                    <div><span class="fst-italic">Recommended</span>: +@(HighStat), +@(HighStat), +@(MedStat), +@(MedStat), @(LowStat >= 0 ? "+" : "")@(LowStat), @(LowStat >= 0 ? "+" : "")@(LowStat)</div>
-
-                    <div class="row">
-                        <span class="col-2">STR: </span>
-                        <InputSelect @bind-Value="active.Attributes.Strength" class="col-2">
-                            @for (int i = 7; i > -6; i--)
-                            {
-                                <option>@i</option>
-                            }
-                        </InputSelect>
-                        <span class="col-2">DEX: </span>
-                        <InputSelect @bind-Value="active.Attributes.Dexterity" class="col-2">
-                            @for (int i = 7; i > -6; i--)
-                            {
-                                <option>@i</option>
-                            }
-                        </InputSelect>
-                        <span class="col-2">CON: </span>
-                        <InputSelect @bind-Value="active.Attributes.Constitution" class="col-2">
-                            @for (int i = 7; i > -6; i--)
-                            {
-                                <option>@i</option>
-                            }
-                        </InputSelect>
-                    </div>
-                    <div class="row">
-                        <span class="col-2">INT: </span><InputSelect @bind-Value="active.Attributes.Intelligence" class="col-2">
-                            @for (int i = 7; i > -6; i--)
-                            {
-                                <option>@i</option>
-                            }
-                        </InputSelect>
-                        <span class="col-2">WIS: </span><InputSelect @bind-Value="active.Attributes.Wisdom" class="col-2">
-                            @for (int i = 7; i > -6; i--)
-                            {
-                                <option>@i</option>
-                            }
-                        </InputSelect>
-                        <span class="col-2">CHA: </span><InputSelect @bind-Value="active.Attributes.Charisma" class="col-2">
-                            @for (int i = 7; i > -6; i--)
-                            {
-                                <option>@i</option>
-                            }
-                        </InputSelect>
-                    </div>
                 </div>
             </div>
-            <div class="row">
-                <div><span class="fs-2" data-bs-toggle="collapse" data-bs-target="#monsterOffense" aria-expanded="true" aria-controls="monsterOffense">Offense<span class="fas fa-chevrons-down mx-1 fs-3" /></span></div>
-                <div id="monsterOffense" class="collapse">
-                    <div><span>Attack Bonus: </span><span><InputNumber @bind-Value="active.Offense.Attack" min="0" /></span></div>
-                    <div><span>DC Mod: </span><InputNumber @bind-Value="active.Offense.DifficultyCheck" min="0" /></div>
-                    <div>
-                        <span>Damage Average: </span><span>
-                            <InputNumber @bind-Value="active.Offense.Damage" min="0" /> Random: <InputCheckbox @bind-Value="active.Offense.RandomizeDamage" />
-                        </span>
-                    </div>
-                    <div>
-                        <span>
-                            @if (active.Offense.RandomizeDamage)
-                            {
-                                <InputSelect @bind-Value="@active.Offense.RandomDamageRange" TValue="DamageRange">
-                                    @foreach (var item in Enum.GetValues(typeof(DamageRange)))
-                                    {
-                                        <option value="@item">@item</option>
-                                    }
-                                </InputSelect>
-                                <span>(@(DiceTools.ConvertToDiceString(active.Offense.RandomDamageRange, active.Offense.Damage)))</span>
-                            }
-                        </span>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div><span class="fs-2" data-bs-toggle="collapse" data-bs-target="#monsterDefense" aria-expanded="true" aria-controls="monsterDefense">Defense<span class="fas fa-chevrons-down mx-1 fs-3" /></span></div>
-                <div id="monsterDefense" class="collapse">
-                    <div><span>Armor Class: </span><InputNumber @bind-Value="active.Defenses.ArmorClass" min="0" /></div>
-                    <div><span>Hit Points: </span><InputNumber @bind-Value="active.Defenses.HitPoints" min="0" /></div>
-                    <div><span>Save Bonus: </span><InputNumber @bind-Value="active.Defenses.SaveBonus" min="0" /></div>
-                    <div><span>Proficient Saves</span></div>
-                    <div>
-                        <span>STR </span><InputCheckbox @bind-Value="active.Defenses.ProficientSavingThrows.Strength" />
-                        <span>DEX </span><InputCheckbox @bind-Value="active.Defenses.ProficientSavingThrows.Dexterity" />
-                        <span>CON </span><InputCheckbox @bind-Value="active.Defenses.ProficientSavingThrows.Constitution" />
-                    </div>
-                    <div>
-                        <span>INT </span><InputCheckbox @bind-Value="active.Defenses.ProficientSavingThrows.Intelligence" />
-                        <span>WIS </span><InputCheckbox @bind-Value="active.Defenses.ProficientSavingThrows.Wisdom" />
-                        <span>CHA </span><InputCheckbox @bind-Value="active.Defenses.ProficientSavingThrows.Charisma" />
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div><span class="fs-2" data-bs-toggle="collapse" data-bs-target="#monsterAbilities" aria-expanded="true" aria-controls="monsterAbilities">Abilities<span class="fas fa-chevrons-down mx-1 fs-3" /></span></div>
-                <div id="monsterAbilities" class="collapse">
-                    <div>
-                        <_EnumAdder Dict="@active.OtherSpeeds" Header="Other Speeds" ValueChangedEvent="(a) => SpeedsUpdated(a)"></_EnumAdder>
-                    </div>
-                    <div>
-                        <_EnumAdder Dict="@active.Senses" Header="Senses" ValueChangedEvent="(a) => SenseUpdated(a)"></_EnumAdder>
-                    </div>
-                    <div>
-                        <_stringAdder Header="Languages" ValueList="@active.Languages" ValueChangedEvent="(a) => LanguagesUpdated(a)" DefaultList="Enum.GetNames(typeof(DefaultLanguages)).ToList()"></_stringAdder>
-                    </div>
-                    <div>
-                        <_stringAdder Header="Items" ValueList="@active.Items" ValueChangedEvent="(a) => ItemsUpdated(a)"></_stringAdder>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div><span class="fs-2" data-bs-toggle="collapse" data-bs-target="#monsterFeatures" aria-expanded="true" aria-controls="monsterFeatures">Features<span class="fas fa-chevrons-down mx-1 fs-3" /></span></div>
-                <div id="monsterFeatures" class="collapse">
-                    <div class="fw-bold" @onclick="() => FeatureModalShow = true">Add Feature<span class="fas fa-plus ms-1"></span></div>
-                    @foreach (var fType in active.Features.GroupBy(a => a.Type).Select(a => a.OrderByDescending(b => b.Type).First().Type))
+            <div class="col-9 w-50">
+                <div><span>Stat Blocks</span> <span class="fa-solid fa-plus" @onclick="() => AddMonster()" /></div>
+                <div class="row overflow-auto px-1 d-block" style="height: 250px;">
+                    @foreach (var mon in Monsters)
                     {
-                        <div>
-                            <span class="fw-bold">@fType@(fType.ToString().EndsWith("s") ? "" : "s")</span>
-                            @foreach (var feature in active.Features.Where(b => b.Type == fType).OrderBy(d => d.Rarity).ThenByDescending(c => c.Name))
-                            {
-                                <div class="py-1">
-                                    <span><span class="line-icon"><span class="text-white fa-solid p-1 @feature.Icon @feature.RarityStyle"></span></span><span class="ms-1">@feature.Name</span><span class="fa-solid fa-x ms-1" @onclick="() => RemoveFeature(feature)"/></span>
-                                </div>
-                            }
+                        <MonsterTitleCard model="mon" DeleteCallback="() => RemoveMonster(mon)" ActiveClick="() => ActiveClick(mon)" Focused="@(mon.Id == active.Id)" SaveCallback="(m) => SaveMonsterAsync((Monster)m)" />
+                    }
+                </div>
+                <div class="row my-1">
+                    @foreach (var mon in Monsters)
+                    {
+                        <div class="col-8">
+                            <MonsterStatBlock model="mon" Hidden="@(mon.Id != active.Id)" />
                         </div>
                     }
                 </div>
-            </div>
-        </div>
-        <div class="col-9 w-50">
-            <div><span>Stat Blocks</span> <span class="fa-solid fa-plus" @onclick="() => AddMonster()" /></div>
-            <div class="row overflow-auto px-1 d-block" style="height:250px;">
-                @foreach (var mon in Monsters)
-                {
-                    <MonsterTitleCard model="mon" DeleteCallback="() => RemoveMonster(mon)" ActiveClick="() => ActiveClick(mon)" Focused="@(mon.Id == active.Id)" SaveCallback="(m) => SaveMonsterAsync((Monster)m)" />
-                }
-            </div>
-            <div class="row my-1">
-                @foreach (var mon in Monsters)
-                {
-                    <div class="col-8">
-                        <MonsterStatBlock model="mon" Hidden="@(mon.Id != active.Id)" />
-                    </div>
-                }
-            </div>
-            <div class="row my-1">
-                <button class="btn btn-primary" @onclick="() => SaveActiveMonster()"><span class="mx-1 fas fa-floppy-disk"/>Save Monster</button>
+                <div class="row my-1">
+                    <button class="btn btn-primary" @onclick="() => SaveActiveMonster()"><span class="mx-1 fas fa-floppy-disk" />Save Monster</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
+}
 
 @code {
     [CascadingParameter]
     protected List<Monster> Monsters { get; set; }
-    
-    private Monster active {get; set; }
 
-    bool FeatureModalShow { get; set; } = false;
+    private Monster? active { get; set; }
+
+    private Feature? EditFeature { get; set; }
 
     private int HighStat
     {
@@ -223,12 +245,12 @@
 
     private int MedStat
     {
-        get { return (int)Math.Floor(active.CombatLevel / 8.0) + 1 ; }
+        get { return (int)Math.Floor(active.CombatLevel / 8.0) + 1; }
     }
 
     private int LowStat
     {
-        get { return (int)Math.Floor(active.CombatLevel / 12.0) - 1 ; }
+        get { return (int)Math.Floor(active.CombatLevel / 12.0) - 1; }
     }
 
     private void SaveActiveMonster()
@@ -236,13 +258,16 @@
         SaveMonsterAsync(active);
     }
 
-    public async void SaveMonsterAsync(Monster mon)
+    public async Task SaveMonsterAsync(Monster mon)
     {
         await _ms.UpdateMonsterAsync(mon);
     }
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnParametersSet()
     {
+        if (Monsters == null)
+            return;
+
         if (Monsters.Count == 0)
         {
             CreateFirstMonster();
@@ -253,83 +278,83 @@
         }
     }
 
-    private async void CreateFirstMonster()
+    private async Task CreateFirstMonster()
     {
-            Monster monster = new("My First Monster");
-            monster.Features.Add(new Action()
+        Monster monster = new("My First Monster");
+        monster.Features.Add(new Action()
+            {
+                Name = "Hit Them",
+                Rarity = RarityType.Common,
+                Range = 5,
+                Distance = RangeType.Melee,
+                Icon = "fa-sword",
+                Targets = 1,
+                ActionDamageType = DamageType.bludgeoning,
+                DealsDamage = true,
+                Shape = TargetShape.target,
+                RelevantAttribute = AttributeType.Strength,
+                Parent = monster
+            });
+        monster.Features.Add(new Action()
+            {
+                Name = "Hit Them Twice",
+                Rarity = RarityType.Uncommon,
+                Range = 5,
+                MultiAttack = 2,
+                Distance = RangeType.Melee,
+                Icon = "fa-sword",
+                Targets = 1,
+                ActionDamageType = DamageType.bludgeoning,
+                DealsDamage = true,
+                Shape = TargetShape.target,
+                RelevantAttribute = AttributeType.Dexterity,
+                Frequency = new FeatureFrequency()
                 {
-                    Name = "Hit Them",
-                    Rarity = RarityType.Common,
-                    Range = 5,
-                    Distance = RangeType.Melee,
-                    Icon = "fa-sword",
-                    Targets = 1,
-                    ActionDamageType = DamageType.bludgeoning,
-                    DealsDamage = true,
-                    Shape = TargetShape.target,
-                    RelevantAttribute = AttributeType.Strength,
-                    Parent = monster
-                });
-            monster.Features.Add(new Action()
+                    Type = FrequencyType.shortrest,
+                    Value = 2
+                },
+                Parent = monster
+            });
+        monster.Features.Add(new Action()
+            {
+                Name = "Deadly Spell",
+                Rarity = RarityType.Rare,
+                Range = 30,
+                Distance = RangeType.Ranged,
+                HasSave = true,
+                SaveVs = "DEX",
+                Icon = "fa-bow-arrow",
+                Targets = 0,
+                ActionDamageType = DamageType.psychic,
+                RelevantAttribute = AttributeType.Intelligence,
+                DealsDamage = true,
+                Frequency = new FeatureFrequency()
                 {
-                    Name = "Hit Them Twice",
-                    Rarity = RarityType.Uncommon,
-                    Range = 5,
-                    MultiAttack = 2,
-                    Distance = RangeType.Melee,
-                    Icon = "fa-sword",
-                    Targets = 1,
-                    ActionDamageType = DamageType.bludgeoning,
-                    DealsDamage = true,
-                    Shape = TargetShape.target,
-                    RelevantAttribute = AttributeType.Dexterity,
-                    Frequency = new FeatureFrequency()
-                    {
-                        Type = FrequencyType.shortrest,
-                        Value = 2
-                    },
-                    Parent = monster
-                });
-            monster.Features.Add(new Action()
-                {
-                    Name = "Deadly Spell",
-                    Rarity = RarityType.Rare,
-                    Range = 30,
-                    Distance = RangeType.Ranged,
-                    HasSave = true,
-                    SaveVs = "DEX",
-                    Icon = "fa-bow-arrow",
-                    Targets = 0,
-                    ActionDamageType = DamageType.psychic,
-                    RelevantAttribute = AttributeType.Intelligence,
-                    DealsDamage = true,
-                    Frequency = new FeatureFrequency()
-                    {
-                        Type = FrequencyType.cooldown,
-                        Value = 3
-                    },
-                    Parent = monster
-                });
+                    Type = FrequencyType.cooldown,
+                    Value = 3
+                },
+                Parent = monster
+            });
 
-            monster.Features.Add(new BonusAction()
-                {
-                    Name = "Bonus Smack",
-                    Rarity = RarityType.Common,
-                    Range = 5,
-                    Distance = RangeType.Melee,
-                    Icon = "fa-sword",
-                    Targets = 1,
-                    ActionDamageType = DamageType.bludgeoning,
-                    RelevantAttribute = AttributeType.Strength,
-                    DealsDamage = true,
-                    Shape = TargetShape.target,
-                    DamageMultiplier = 0.5,
-                    Parent = monster
-                });
-            Monsters.Add(monster);
-            active = monster;
-            await _ms.InsertMonsterAsync(monster);
-            UpdateValues();
+        monster.Features.Add(new BonusAction()
+            {
+                Name = "Bonus Smack",
+                Rarity = RarityType.Common,
+                Range = 5,
+                Distance = RangeType.Melee,
+                Icon = "fa-sword",
+                Targets = 1,
+                ActionDamageType = DamageType.bludgeoning,
+                RelevantAttribute = AttributeType.Strength,
+                DealsDamage = true,
+                Shape = TargetShape.target,
+                DamageMultiplier = 0.5,
+                Parent = monster
+            });
+        Monsters.Add(monster);
+        active = monster;
+        await _ms.InsertMonsterAsync(monster);
+        UpdateValues();
     }
 
     public void RemoveFeature(Feature feature)
@@ -357,7 +382,12 @@
         active.Languages = itemList;
     }
 
-    public async void AddMonster(string name = "My New Monster")
+    public void FeaturesUpdated(object? val)
+    {
+        var featureList = (List<Feature>)val;
+        active.Features = featureList;
+    }
+    public async Task AddMonster(string name = "My New Monster")
     {
         var mon = new Monster(name);
         active = mon;
@@ -365,7 +395,7 @@
         await _ms.InsertMonsterAsync(mon);
         UpdateValues();
     }
-    public async void RemoveMonster(Monster mon)
+    public async Task RemoveMonster(Monster mon)
     {
         Monsters.Remove(mon);
         await _ms.DeleteMonsterAsync(mon);
@@ -407,7 +437,7 @@
         active.MonsterRole = value;
         UpdateValues();
     }
-    public async void UpdateValues()
+    public async Task UpdateValues()
     {
         //Base formula is for a GRUNT STRIKER, everyone else is based off of that
         double ac = 12 + (int)Math.Floor((double)active.CombatLevel / 4);
@@ -470,7 +500,6 @@
         active.Offense.Damage = Math.Max((int)Math.Floor(dmg), 1);
         active.Offense.DifficultyCheck = (int)Math.Floor(dc);
         active.WalkSpeed = 30;
-        await _ms.UpdateMonsterAsync(active);
         StateHasChanged();
     }
 }

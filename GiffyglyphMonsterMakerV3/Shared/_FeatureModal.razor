@@ -1,0 +1,189 @@
+﻿@using GiffyglyphMonsterMakerV3.Data
+@using GiffyglyphMonsterMakerV3.Utility
+@using Microsoft.EntityFrameworkCore.Diagnostics
+@inject FeatureService _fs;
+
+<div class="modal fade" id="featureModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">@(SpecificFeature != null ? "Editing " + SpecificFeature.Type + ": " + SpecificFeature.Name : "Feature Editor")</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    @*CONTENT*@
+                    @if (FeatureTemplates == null)
+                    {
+                        <div>Loading Templates...</div>
+                    }
+                    else if (FeatureTemplates != null && SpecificFeature == null)
+                    {
+                        <div class="mb-2">
+                            <span class="fw-bold">Template Abilities: </span>
+                            <InputSelect @bind-Value="@SelectedFeatureType" TValue="FeatureType">
+                                @foreach (var item in Enum.GetValues(typeof(FeatureType)))
+                                {
+                                    <option value="@item">@item</option>
+                                }
+                            </InputSelect>
+                            <InputSelect @bind-Value="@SelectedFeatureTemplate" TValue="Feature">
+                                @foreach (var item in FeatureTemplates.Where(feature => feature.Type == SelectedFeatureType))
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            </InputSelect>
+                            <span @onclick="() => AddSelectedTemplateToActive()">
+                                <span class="fas fa-plus mx-1" />
+                                <span>Add to Active</span>
+                            </span>
+                        </div>
+                        <div class="h4 mb-1"> <span class="fw-bold">Create New Feature</span></div>
+                        <div class="row">
+                            <div class="col-4 rounded-pill border border-2 border-black">
+                                <div class="align-content-center text-center" @onclick="() => NewFeature(FeatureType.Trait)"><span class="fas fa-image-portrait fw-bold me-1" /> Add new Trait</div>
+                            </div>
+                            <div class="col-4 rounded-pill border border-2 border-black">
+                                <div class="align-content-center text-center" @onclick="() => NewFeature(FeatureType.Free)">
+                                    <span class="fas fa-bolt fw-bold me-1" />Add new Free Action
+                                </div>
+                            </div>
+                            <div class="col-4 rounded-pill border border-2 border-black">
+                                <div class="align-content-center text-center" @onclick="() => NewFeature(FeatureType.Action)">
+                                    <span class="fas fa-swords fw-bold me-1" />Add new Action
+                                </div>
+                            </div>
+                            <div class="col-4 rounded-pill border border-2 border-black">
+                                <div class="align-content-center text-center" @onclick="() => NewFeature(FeatureType.Bonus)">
+                                    <span class="fas fa-circle-plus fw-bold me-1" />Add new Bonus Action
+                                </div>
+                            </div>
+                            <div class="col-4 rounded-pill border border-2 border-black">
+                                <div class="align-content-center text-center" @onclick="() => NewFeature(FeatureType.Reaction)">
+                                    <span class="fas fa-circle-exclamation fw-bold me-1" />Add new Reaction
+                                </div>
+                            </div>
+                            <div class="col-4 rounded-pill border border-2 border-black">
+                                <div class="align-content-center text-center" @onclick="() => NewFeature(FeatureType.Countermeasure)">
+                                    <span class="fas fa-skull fw-bold me-1" />Add new Countermeasure
+                                </div>
+                            </div>
+                        </div>
+
+                    }
+                    else
+                    {
+                        <div>
+                            <span>Preview: </span>
+                            <span class="line-icon"><span class="text-white fa-solid p-1 @SpecificFeature.Icon @SpecificFeature.RarityStyle"></span></span>
+                            <span class="ms-1">@((MarkupString)SpecificFeature.MarkupDescription)</span>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="modal-footer">
+                <span>
+                    @if (SpecificFeature != null)
+                    {
+                        <button type="button" class="btn btn-primary"><span class="fas fa-floppy-disk me-1" />Save</button>
+                        <button type="button" class="btn btn-primary"><span class="fak fa-solid-floppy-disk-circle-plus me-1" />Save and @(SpecificFeature?.TemplateId == null ? "Add" : "Update") Template</button>
+                        <span></span>
+                    }
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><span class="fas fa-x me-1" />Close</button>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    //
+    // Use of new Guid() is intentional (vs Guid.NewGuid()) in cases where we are checking against the 'feature' template
+    //
+    [Parameter]
+    public Monster ActiveMonster { get; set; }
+    [Parameter]
+    public Feature? SpecificFeature { get; set; }
+    [Parameter]
+    public EventCallback FeatureCallback { get; set; }
+
+    private List<Feature>? FeatureTemplates { get; set; }
+    private Feature SelectedFeatureTemplate { get; set; }
+    private FeatureType SelectedFeatureType { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (SpecificFeature != null && ActiveMonster?.Id != SpecificFeature?.ParentId && ActiveMonster?.Id != new Guid())
+            SpecificFeature = null;
+
+        FeatureTemplates = await _fs.GetAllFeatureTemplatesAsync();
+    }
+
+    private async Task NewFeature(FeatureType type)
+    {
+        switch (type)
+        {
+            case FeatureType.Trait:
+                break;
+            case FeatureType.Free:
+                break;
+            case FeatureType.Action:
+                break;
+            case FeatureType.Bonus:
+                var bonus = new BonusAction();
+                bonus.Parent = ActiveMonster;
+                bonus.ParentId = ActiveMonster.Id;
+                ActiveMonster.Features.Add(bonus);
+                //await _fs.InsertFeatureAsync(bonus);
+                await FeatureCallback.InvokeAsync(ActiveMonster.Features);
+                break;
+            case FeatureType.Reaction:
+                break;
+            case FeatureType.Countermeasure:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(type), type, null);
+        }
+        StateHasChanged();
+    }
+
+    private async Task AddSelectedTemplateToActive()
+    {
+        if (SelectedFeatureTemplate == null)
+        {
+            return;
+        }
+        var newFeat = SelectedFeatureTemplate.Clone();
+        newFeat.TemplateId = newFeat.Id;
+        newFeat.Id = Guid.NewGuid();
+        newFeat.Parent = ActiveMonster;
+        newFeat.ParentId = ActiveMonster.Id;
+        await _fs.InsertFeatureAsync(newFeat);
+    }
+
+    private async Task SaveAndUpdateTemplate()
+    {
+        if (SpecificFeature?.TemplateId != null)
+        {
+            var template = await _fs.GetFeatureByIdAsync(SpecificFeature.TemplateId.Value);
+            template.UpdateThisToMatch(SpecificFeature);
+            await _fs.UpdateFeatureAsync(SpecificFeature);
+            await _fs.UpdateFeatureAsync(template);
+        }
+        else
+        {
+            var newTemplateFeat = SelectedFeatureTemplate.Clone();
+            newTemplateFeat.Id = Guid.NewGuid();
+            SpecificFeature.TemplateId = newTemplateFeat.Id;
+            newTemplateFeat.Parent = new Monster(){Id = new Guid()};
+            newTemplateFeat.ParentId = new Guid();
+            await _fs.UpdateFeatureAsync(SpecificFeature);
+            await _fs.InsertFeatureAsync(newTemplateFeat);
+        }
+    }
+
+    private async Task SaveFeature()
+    {
+        await _fs.UpdateFeatureAsync(SpecificFeature);
+    }
+}
