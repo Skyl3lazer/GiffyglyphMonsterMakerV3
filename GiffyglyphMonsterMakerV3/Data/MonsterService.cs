@@ -14,10 +14,10 @@ namespace GiffyglyphMonsterMakerV3.Data
         #region Property
 
         private bool Loading = false;
-        private readonly IDbContextFactory<MonsterContext> _dbContextFactory;
+        private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
         #endregion
 
-        public MonsterService(IDbContextFactory<MonsterContext> dbContextFactory)
+        public MonsterService(IDbContextFactory<ApplicationDbContext> dbContextFactory)
         {
             _dbContextFactory = dbContextFactory;
         }

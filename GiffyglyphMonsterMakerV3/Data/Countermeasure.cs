@@ -4,7 +4,7 @@ namespace GiffyglyphMonsterMakerV3.Data
 {
     public class Countermeasure : Feature
     {
-        public Countermeasure()
+        public Countermeasure(string createUserId) : base(createUserId)
         {
             Name = "New Countermeasure";
             Type = FeatureType.Countermeasure;

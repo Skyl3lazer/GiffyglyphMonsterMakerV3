@@ -6,7 +6,7 @@ namespace GiffyglyphMonsterMakerV3.Data;
 
 public class Monster : Creature
 {
-    public Monster(string name)
+    public Monster(string name, string createUserId) : base(createUserId)
     {
         Name = name;
         Id = Guid.NewGuid();
@@ -18,7 +18,7 @@ public class Monster : Creature
         Items = new List<string>();
     }
 
-    public Monster() : this("My New Monster")
+    public Monster(string createUserId) : this("My New Monster", createUserId)
     {
     }
     

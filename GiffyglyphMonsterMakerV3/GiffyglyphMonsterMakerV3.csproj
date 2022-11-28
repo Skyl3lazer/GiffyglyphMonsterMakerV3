@@ -12,6 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="Areas\Identity\Pages\Account\LogOut.cshtml" />
+    <None Include="Areas\Identity\Pages\Shared\_LoginPartial.cshtml" />
     <None Include="compilerconfig.json" />
     <None Include="wwwroot\lib\webfonts\fa-brands-400.woff2" />
     <None Include="wwwroot\lib\webfonts\fa-duotone-900.woff2" />
@@ -50,6 +52,9 @@
   <ItemGroup>
     <PackageReference Include="Append.Blazor.Printing" Version="1.1.0" />
     <PackageReference Include="HtmlSanitizer" Version="8.0.601" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="7.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="7.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Analyzers" Version="7.0.0" />
@@ -63,10 +68,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>

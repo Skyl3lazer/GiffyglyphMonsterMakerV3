@@ -1,17 +1,19 @@
 ﻿using GiffyglyphMonsterMakerV3.Pages;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Security.Claims;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace GiffyglyphMonsterMakerV3.Data
 {
-    public class MonsterContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext
     {
         public DbSet<Monster> Monsters { get; set; }
         public DbSet<Feature> Features { get; set; }
 
-        public MonsterContext(DbContextOptions<MonsterContext> options) : base(options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
             this.ChangeTracker.LazyLoadingEnabled = false;
         }
@@ -70,6 +72,19 @@ namespace GiffyglyphMonsterMakerV3.Data
                     v => string.Join('+', v),
                     v => v.Split('+', StringSplitOptions.RemoveEmptyEntries).ToList()
                 );
+            modelBuilder.Entity<Creature>()
+                .HasOne<ApplicationUser>()
+                .WithMany()
+                .HasForeignKey(b => b.CreateUserId)
+                .IsRequired();
+            modelBuilder.Entity<Feature>()
+                .HasOne<ApplicationUser>()
+                .WithMany()
+                .HasForeignKey(b => b.CreateUserId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.NoAction);
+
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

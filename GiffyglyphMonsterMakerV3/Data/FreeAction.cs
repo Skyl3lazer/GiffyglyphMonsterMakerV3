@@ -4,7 +4,7 @@ namespace GiffyglyphMonsterMakerV3.Data
 {
     public class FreeAction : Action
     {
-        public FreeAction()
+        public FreeAction(string createUserId) : base(createUserId)
         {
             Name = "New Free Action";
             Type = FeatureType.Free;

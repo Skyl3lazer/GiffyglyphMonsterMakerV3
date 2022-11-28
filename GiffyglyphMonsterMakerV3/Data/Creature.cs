@@ -10,8 +10,14 @@ namespace GiffyglyphMonsterMakerV3.Data
 {
     public class Creature : INotifyPropertyChanged
     {
+        public Creature(string createUserId)
+        {
+            CreateUserId = createUserId;
+        }
         [Required]
         public Guid Id { get; init; } = Guid.NewGuid();
+        [ForeignKey("Id")]
+        public string CreateUserId { get; set; }
 
         [Required] public string Name { get; set; } = "";
         [Required]

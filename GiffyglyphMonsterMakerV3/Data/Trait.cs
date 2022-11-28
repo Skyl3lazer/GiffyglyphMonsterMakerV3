@@ -4,7 +4,7 @@ namespace GiffyglyphMonsterMakerV3.Data
 {
     public class Trait : Feature
     {
-        public Trait()
+        public Trait(string createUserId) : base(createUserId)
         {
             Name = "New Trait";
             Type = FeatureType.Trait;

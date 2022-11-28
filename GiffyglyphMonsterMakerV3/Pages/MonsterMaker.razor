@@ -1,7 +1,9 @@
 ﻿@page "/monstermaker"
+@attribute [Authorize]
 @using GiffyglyphMonsterMakerV3.Data
 @using GiffyglyphMonsterMakerV3.Utility
 @using Action = GiffyglyphMonsterMakerV3.Data.Action
+@using System.Security.Claims;
 @inject MonsterService _ms;
 @inject FeatureService _fs;
 
@@ -264,12 +266,24 @@ else
 @code {
     [CascadingParameter]
     protected List<Monster> Monsters { get; set; }
+    
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    private string? CurrentUserId = null;
 
     private Monster? active { get; set; }
 
     private Feature? EditFeature { get; set; }
 
     private Feature? DeleteFeatureModalTarget { get; set; }
+
+    protected async override Task OnParametersSetAsync()
+    {
+        var authState = await authenticationStateTask;
+        var User = authState.User;
+        CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    }
 
     private async Task ConfirmDeleteFeatureModalResult(Feature target)
     {
@@ -322,7 +336,7 @@ else
     private async Task CreateFirstMonster()
     {
         Monster monster = new("My First Monster");
-        monster.Features.Add(new Action()
+        monster.Features.Add(new Action(CurrentUserId)
             {
                 Name = "Hit Them",
                 Rarity = RarityType.Common,
@@ -335,7 +349,7 @@ else
                 RelevantAttribute = AttributeType.Strength,
                 ParentId = monster.Id
             });
-        monster.Features.Add(new Action()
+        monster.Features.Add(new Action(CurrentUserId)
             {
                 Name = "Hit Them Twice",
                 Rarity = RarityType.Uncommon,
@@ -354,7 +368,7 @@ else
                 },
                 ParentId = monster.Id
             });
-        monster.Features.Add(new Action()
+        monster.Features.Add(new Action(CurrentUserId)
             {
                 Name = "Deadly Spell",
                 Rarity = RarityType.Rare,
@@ -374,7 +388,7 @@ else
                 ParentId = monster.Id
             });
 
-        monster.Features.Add(new BonusAction()
+        monster.Features.Add(new BonusAction(CurrentUserId)
             {
                 Name = "Bonus Smack",
                 Rarity = RarityType.Common,

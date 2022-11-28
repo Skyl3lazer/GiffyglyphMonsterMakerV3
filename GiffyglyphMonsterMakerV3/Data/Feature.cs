@@ -5,14 +5,18 @@ using System.Diagnostics.CodeAnalysis;
 using GiffyglyphMonsterMakerV3.Utility;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Ganss.Xss;
+using System.Security.Claims;
 
 namespace GiffyglyphMonsterMakerV3.Data
 {
     public class Feature
     {
+
         [Key]
         public Guid Id { get; set; }
         public Guid? TemplateId { get; set; }
+        [ForeignKey("Id")]
+        public string CreateUserId { get; set; }
         public string Name { get; set; } = "";
 
         public virtual string MarkupDescription(Creature parentCreature)
@@ -22,10 +26,11 @@ namespace GiffyglyphMonsterMakerV3.Data
 
         [NotMapped] private HtmlSanitizer _sanitizer;
 
-        public Feature()
+        public Feature(string createUserId)
         {
             _sanitizer = new HtmlSanitizer();
             (new List<string> { "fst-italic", "fw-bold" }).ForEach(item => _sanitizer.AllowedClasses.Add(item));
+            CreateUserId = createUserId;
         }
 
         private string _overrideMarkup = "";
@@ -163,8 +168,6 @@ namespace GiffyglyphMonsterMakerV3.Data
                     case DelayType.doom:
                         desc += "Dooming " + Value;
                         break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
                 }
 
                 return desc;

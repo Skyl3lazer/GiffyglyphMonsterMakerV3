@@ -2,6 +2,7 @@
 @using GiffyglyphMonsterMakerV3.Utility
 @using Microsoft.EntityFrameworkCore.Diagnostics
 @using Action = GiffyglyphMonsterMakerV3.Data.Action
+@using System.Security.Claims;
 @inject FeatureService _fs;
 
 <div class="modal fade" id="featureModal" tabindex="-1" aria-labelledby="featureModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
@@ -282,6 +283,11 @@
     public EventCallback SelectedFeatureCallback { get; set; }
     [Parameter]
     public EventCallback SaveMonster { get; set; }
+    
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+    
+    private string? CurrentUserId = null;
 
     private List<Feature>? FeatureTemplates { get; set; }
     private Feature SelectedFeatureTemplate { get; set; }
@@ -304,6 +310,10 @@
 
     protected override async Task OnParametersSetAsync()
     {
+        var authState = await authenticationStateTask;
+        var User = authState.User;
+        CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
         if (SpecificFeature != null && ActiveMonster?.Id != SpecificFeature?.ParentId)
             SpecificFeature = null;
 
@@ -381,42 +391,42 @@
         switch (type)
         {
             case FeatureType.Trait:
-                var trait = new Trait();
+                var trait = new Trait(CurrentUserId);
                 trait.ParentId = ActiveMonster.Id;
                 ActiveMonster.Features.Add(trait);
                 await FeatureChangedCallback.InvokeAsync(ActiveMonster.Features);
                 await SelectedFeatureCallback.InvokeAsync(trait);
                 break;
             case FeatureType.Free:
-                var free = new FreeAction();
+                var free = new FreeAction(CurrentUserId);
                 free.ParentId = ActiveMonster.Id;
                 ActiveMonster.Features.Add(free);
                 await FeatureChangedCallback.InvokeAsync(ActiveMonster.Features);
                 await SelectedFeatureCallback.InvokeAsync(free);
                 break;
             case FeatureType.Action:
-                var action = new Action();
+                var action = new Action(CurrentUserId);
                 action.ParentId = ActiveMonster.Id;
                 ActiveMonster.Features.Add(action);
                 await FeatureChangedCallback.InvokeAsync(ActiveMonster.Features);
                 await SelectedFeatureCallback.InvokeAsync(action);
                 break;
             case FeatureType.Bonus:
-                var bonus = new BonusAction();
+                var bonus = new BonusAction(CurrentUserId);
                 bonus.ParentId = ActiveMonster.Id;
                 ActiveMonster.Features.Add(bonus);
                 await FeatureChangedCallback.InvokeAsync(ActiveMonster.Features);
                 await SelectedFeatureCallback.InvokeAsync(bonus);
                 break;
             case FeatureType.Reaction:
-                var reaction = new Reaction();
+                var reaction = new Reaction(CurrentUserId);
                 reaction.ParentId = ActiveMonster.Id;
                 ActiveMonster.Features.Add(reaction);
                 await FeatureChangedCallback.InvokeAsync(ActiveMonster.Features);
                 await SelectedFeatureCallback.InvokeAsync(reaction);
                 break;
             case FeatureType.Countermeasure:
-                var countermeasure = new Countermeasure();
+                var countermeasure = new Countermeasure(CurrentUserId);
                 countermeasure.ParentId = ActiveMonster.Id;
                 ActiveMonster.Features.Add(countermeasure);
                 await FeatureChangedCallback.InvokeAsync(ActiveMonster.Features);

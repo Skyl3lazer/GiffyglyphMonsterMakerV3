@@ -1,6 +1,7 @@
 ﻿@inherits LayoutComponentBase
 @using GiffyglyphMonsterMakerV3.Data;
 @using Action = GiffyglyphMonsterMakerV3.Data.Action
+@using System.Security.Claims;
 @inject MonsterService _MonsterService;
 
 <PageTitle>GiffyglyphMonsterMakerV3</PageTitle>
@@ -11,6 +12,9 @@
     </div>
 
     <main>
+        <div class="top-row px-4 auth">
+            <LoginDisplay />
+        </div>
         <CascadingValue Value="@Monsters">
             <article class="content px-4">
                 @Body
@@ -21,10 +25,15 @@
 
 @code
 {
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
     private List<Monster> Monsters { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
+        var authState = await authenticationStateTask;
+        var user = authState.User;
+        var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
         Monsters = await Task.Run(() => _MonsterService.GetAllMonstersAsync());
     }
 }

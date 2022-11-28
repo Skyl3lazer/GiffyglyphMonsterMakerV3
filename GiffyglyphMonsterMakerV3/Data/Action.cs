@@ -11,7 +11,7 @@ namespace GiffyglyphMonsterMakerV3.Data
 {
     public class Action : Feature
     {
-        public Action()
+        public Action(string createUserId) : base(createUserId)
         {
             Name = "New Action";
         }

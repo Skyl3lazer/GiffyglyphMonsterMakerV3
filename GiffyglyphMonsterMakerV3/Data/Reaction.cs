@@ -4,7 +4,7 @@ namespace GiffyglyphMonsterMakerV3.Data
 {
     public class Reaction : Feature
     {
-        public Reaction()
+        public Reaction(string createUserId) : base(createUserId)
         {
             Name = "New Reaction";
             Type = FeatureType.Reaction;
