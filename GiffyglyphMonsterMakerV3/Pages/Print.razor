@@ -15,6 +15,7 @@
 }else
 {
     <div class="container-xxl" id="print">
+        <div class="d-print-none alert alert-info">Use your browser's Print feature to print stat blocks. 2 per page, with overflow that looks bad (for now)</div>
         @for (int i = 0; i < Math.Ceiling(Monsters.Count / 2.0); i++)
         {
             <div class="row">
