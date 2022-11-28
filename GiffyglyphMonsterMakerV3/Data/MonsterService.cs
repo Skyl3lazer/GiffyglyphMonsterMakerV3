@@ -36,18 +36,12 @@ namespace GiffyglyphMonsterMakerV3.Data
                 .LoadAsync();
             return await _context.Monsters.ToListAsync();
         }
-
-        public Monster GetTemplateMonster()
-        {
-            //Intentional use of new Guid for 0's
-            return new Monster() { Id = new Guid() };
-        }
         public async Task<Monster> GetMonsterByIdAsync(Guid id)
         {
-            await using var _context = await _dbContextFactory.CreateDbContextAsync();
+            using var _context = _dbContextFactory.CreateDbContext();
 
-            var monster = _context.Monsters.Single(a => a.Id == id);
-            return monster;
+            var mon = _context.Monsters.Find(id);
+            return mon;
         }
         public Monster GetMonsterById(Guid id)
         {

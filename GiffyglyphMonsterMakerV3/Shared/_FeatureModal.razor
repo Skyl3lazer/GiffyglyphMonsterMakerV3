@@ -76,7 +76,7 @@
                     {
                         if (SpecificFeature.TemplateId != null)
                         {
-                            <div><span class="fw-bold">From Template: </span><span></span></div>
+                            <div><span class="fw-bold">From Template: </span><span>@SelectedFeatureTemplate.Name</span><span>disconnect from template button</span></div>
                         }
                         <div>
                             <span>Preview: </span>
@@ -120,9 +120,6 @@
 </div>
 
 @code {
-    //
-    // Use of new Guid() is intentional (vs Guid.NewGuid()) in cases where we are checking against the 'feature' template
-    //
     [Parameter]
     public Monster ActiveMonster { get; set; }
     [Parameter]
@@ -140,7 +137,7 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        if (SpecificFeature != null && ActiveMonster?.Id != SpecificFeature?.ParentId && ActiveMonster?.Id != new Guid())
+        if (SpecificFeature != null && ActiveMonster?.Id != SpecificFeature?.ParentId && ActiveMonster?.Id != null)
             SpecificFeature = null;
 
         FeatureTemplates = await _fs.GetAllFeatureTemplatesAsync();
@@ -229,8 +226,9 @@
         {
             var newTemplateFeat = SpecificFeature.Clone();
             newTemplateFeat.Id = Guid.NewGuid();
+            newTemplateFeat.Frequency.Id = Guid.NewGuid();
             SpecificFeature.TemplateId = newTemplateFeat.Id;
-            newTemplateFeat.ParentId = new Guid();
+            newTemplateFeat.ParentId = null;
             SelectedFeatureTemplate = newTemplateFeat;
             await _fs.UpdateFeatureAsync(SpecificFeature);
             await _fs.InsertFeatureAsync(newTemplateFeat);

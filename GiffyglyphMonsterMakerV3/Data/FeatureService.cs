@@ -25,8 +25,7 @@ namespace GiffyglyphMonsterMakerV3.Data
         public async Task<List<Feature>> GetAllFeatureTemplatesAsync()
         {
             await using var _context = await _dbContextFactory.CreateDbContextAsync();
-            //new Guid() intentionally used here to get the all-0 GUID used for feature templates
-            var ret = await _context.Features.Where(a => a.ParentId == new Guid())
+            var ret = await _context.Features.Where(a => a.ParentId == null)
                 .Include(f=>f.Frequency)
                 .ToListAsync();
             return ret;
@@ -57,8 +56,7 @@ namespace GiffyglyphMonsterMakerV3.Data
             {
                 Loading = true;
                 var featureClone = feature.Clone();
-                //Intentional new Guid() use for 0's
-                featureClone.ParentId = new Guid();
+                featureClone.ParentId = null;
                 featureClone.Id = Guid.NewGuid();
                 feature.TemplateId = featureClone.Id;
                 await _context.AddAsync(feature);

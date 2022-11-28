@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 using GiffyglyphMonsterMakerV3.Utility;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
@@ -49,9 +50,8 @@ namespace GiffyglyphMonsterMakerV3.Data
         public bool HasSave { get; set; }
         public string SaveVs { get; set; } = "";
         public FeatureFrequency Frequency { get; set; } = new();
-        [Required]
         [ForeignKey("Id")]
-        public Guid ParentId { get; set; }
+        public Guid? ParentId { get; set; }
 
         public virtual void UpdateThisToMatch(object o)
         {

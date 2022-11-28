@@ -56,7 +56,6 @@ namespace GiffyglyphMonsterMakerV3.Data
                .HasMany<Feature>(a=> a.Features)
                .WithOne()
                .HasForeignKey(a => a.ParentId)
-               .IsRequired()
                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Creature>()
