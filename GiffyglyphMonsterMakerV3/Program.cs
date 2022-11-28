@@ -1,10 +1,12 @@
 using Append.Blazor.Printing;
 using GiffyglyphMonsterMakerV3.Areas.Identity;
 using GiffyglyphMonsterMakerV3.Data;
+using GiffyglyphMonsterMakerV3.Utility;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -40,6 +42,7 @@ builder.Services.AddScoped<IPrintingService, PrintingService>();
 builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<ApplicationUser>>();
 builder.Services.AddScoped<MonsterService>();
 builder.Services.AddScoped<FeatureService>();
+builder.Services.AddScoped<IEmailSender, MailService >();
 
 
 var app = builder.Build();
