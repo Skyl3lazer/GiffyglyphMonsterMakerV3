@@ -52,6 +52,8 @@
   <ItemGroup>
     <PackageReference Include="Append.Blazor.Printing" Version="1.1.0" />
     <PackageReference Include="HtmlSanitizer" Version="8.0.601" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="7.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="7.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="7.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.0" />
@@ -68,6 +70,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.0" />
     <PackageReference Include="Z.EntityFramework.Plus.EFCore" Version="7.17.1" />
   </ItemGroup>
 
