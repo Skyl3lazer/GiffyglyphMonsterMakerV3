@@ -22,13 +22,13 @@
                     {
                         <div class="mb-2">
                             <span class="fw-bold">Template Abilities: </span>
-                            <InputSelect @bind-Value="@SelectedFeatureType" TValue="FeatureType">
+                            <InputSelect Value="@SelectedFeatureType" TValue="FeatureType" ValueExpression="() => SelectedFeatureType" ValueChanged="(FeatureType t) => SelectedFeatureChanged(t)">
                                 @foreach (var item in Enum.GetValues(typeof(FeatureType)))
                                 {
                                     <option value="@item">@item</option>
                                 }
                             </InputSelect>
-                            <InputSelect @bind-Value="@SelectedFeatureTemplate" TValue="Feature">
+                            <InputSelect @bind-Value="@SelectedFeatureTemplateId" TValue="Guid?">
                                 @foreach (var item in FeatureTemplates.Where(feature => feature.Type == SelectedFeatureType))
                                 {
                                     <option value="@item.Id">@item.Name</option>
@@ -74,33 +74,172 @@
                     }
                     else
                     {
-                        if (SpecificFeature.TemplateId != null)
+                        if (SelectedFeatureTemplate != null)
                         {
-                            <div><span class="fw-bold">From Template: </span><span>@SelectedFeatureTemplate.Name</span><span>disconnect from template button</span></div>
+                            <div>
+                                <span class="fw-bold">From Template: </span><span class="fw-bold">@SelectedFeatureTemplate.Name</span>
+                                <button type="button" class="btn btn-outline-warning" @onclick="() => ResetFeatureToTemplate(SpecificFeature)"><span class="me-1 fas fa-arrow-rotate-right" />Reset to Template</button>
+                                <button class="btn btn-outline-danger" type="button" @onclick="() => DisconnectFeatureFromTemplate(SpecificFeature)"><span class="me-1 fas fa-plug-circle-xmark" />Disconnect from Template</button>
+                            </div>
+                            <div>
+                                <span class="">Template Preview: @((MarkupString)SelectedFeatureTemplate.MarkupDescription(ActiveMonster))</span>
+                            </div>
+                            <hr />
                         }
                         <div>
-                            <span>Preview: </span>
+                            <span class="fw-bold">Preview: </span>
                             <span class="">@((MarkupString)SpecificFeature.MarkupDescription(ActiveMonster))</span>
+                            @*Default feature stuff*@
+                            <div>
+                                <span class="fw-bold">General Properties</span>
+                                <div class="my-1">
+                                    <span>Name: </span><input @bind="SpecificFeature.Name" @bind:event="oninput" />
+                                </div>
+                                <div class="my-1">
+                                    <span>Rarity: </span>
+                                    <InputSelect @bind-Value="SpecificFeature.Rarity" class="" TValue="RarityType">
+                                        @foreach (var item in Enum.GetValues(typeof(RarityType)))
+                                        {
+                                            <option value="@item">@item</option>
+                                        }
+                                    </InputSelect>
+                                </div>
+                                <div class="my-1">
+                                    <span>Associated Monster Attribute: </span>
+                                    <InputSelect @bind-Value="SpecificFeature.RelevantAttribute" class="" TValue="AttributeType">
+                                        @foreach (var item in Enum.GetValues(typeof(AttributeType)))
+                                        {
+                                            <option value="@item">@item</option>
+                                        }
+                                    </InputSelect>
+                                </div>
+                                <div class="my-1">
+                                    <span>Has a Save? </span><InputCheckbox @bind-Value="SpecificFeature.HasSave" />
+
+                                    @if (SpecificFeature.HasSave)
+                                    {
+                                        <span class="ms-1">Vs? </span>
+                                        <input @bind="SpecificFeature.SaveVs" @bind:event="oninput" style="width: 65px;" />
+                                    }
+                                </div>
+                                <div class="my-1">
+                                    <span>Frequency: </span>
+                                    <InputSelect @bind-Value="SpecificFeature.Frequency.Type" class="" TValue="FrequencyType">
+                                        @foreach (var item in Enum.GetValues(typeof(FrequencyType)))
+                                        {
+                                            <option value="@item">@item</option>
+                                        }
+                                    </InputSelect>
+                                    @if (SpecificFeature.Frequency.Type != FrequencyType.passive)
+                                    {
+                                        <span class="ms-1">Value: </span>
+
+                                        <input @bind="SpecificFeature.Frequency.Value" @bind:event="oninput" style="width: 50px;" />
+                                    }
+                                </div>
+                            </div>
+                            <hr />
+                            <div>
+                                <span class="fw-bold">Override Properties</span>
+                                <div class="my-1">
+                                    <span>Custom Icon (See FontAwesome): </span><input @bind="SpecificFeature.CustomIcon" @bind:event="oninput" />
+                                </div>
+                                <div class="my-1">
+                                    <span>Custom Markup: </span><textarea @bind="SpecificFeature.OverrideMarkup" maxlength="5000" @bind:event="oninput"></textarea>
+                                </div>
+                            </div>
+                            <hr />
+                            <div>
+                                <span class="fw-bold">@SpecificFeature.Type Specific</span>
+                                @switch (SpecificFeature.Type)
+                                {
+                                    case FeatureType.Trait:
+                                        var trait = SpecificFeature as Trait;
+                                        break;
+                                    case FeatureType.Free:
+                                    case FeatureType.Action:
+                                    case FeatureType.Bonus:
+                                        var action = SpecificFeature as Action;
+                                        <div class="my-1">
+                                            <span>Distance: </span>
+                                            <InputSelect @bind-Value="action.Distance" class="" TValue="RangeType">
+                                                @foreach (var item in Enum.GetValues(typeof(RangeType)))
+                                                {
+                                                    <option value="@item">@item</option>
+                                                }
+                                            </InputSelect>
+                                        </div>
+                                        <div class="my-1">
+                                            <span>Range/Reach: </span><InputNumber @bind-Value="@action.Range" min="0" TValue="int" style="width: 65px;" />
+                                        </div>
+                                        <div class="my-1">
+                                            <span>Spell? </span><InputCheckbox @bind-Value="action.IsSpell" />
+                                            @if (action.IsSpell)
+                                            {
+                                                <span>Description: </span>
+                                                <input @bind="action.SpellDesc" @bind:event="oninput" />
+                                            }
+                                        </div>
+                                        <div class="my-1">
+                                            <span>Deals Damage? </span><InputCheckbox @bind-Value="action.DealsDamage" />
+                                            @if (action.DealsDamage)
+                                            {
+                                                <span class="ms-1">Damage Type: </span>
+                                                <InputSelect @bind-Value="action.ActionDamageType" class="" TValue="DamageType">
+                                                    @foreach (var item in Enum.GetValues(typeof(DamageType)))
+                                                    {
+                                                        <option value="@item">@item</option>
+                                                    }
+                                                </InputSelect>
+                                                <span>Damage Multiplier: </span>
+
+                                                <InputNumber @bind-Value="@action.DamageMultiplier" min="0" TValue="double" style="width: 50px;" />
+                                            }
+                                        </div>
+                                        <div class="my-1">
+                                            <span>Multiattack? </span><InputCheckbox @bind-Value="action.IsMultiAttack" />
+                                            @if (action.IsMultiAttack)
+                                            {
+                                                <span class="ms-1">How Many?</span>
+                                                <InputNumber @bind-Value="@action.MultiAttack" min="0" TValue="int" />
+                                            }
+                                        </div>
+                                        <div class="my-1">
+                                            <span>Non-Damage Effect: </span><input @bind="action.OtherEffect" @bind:event="oninput" />
+                                        </div>
+                                        <div class="my-1">
+                                            <span>Miss Effect: </span><input @bind="action.MissEffect" @bind:event="oninput" />
+                                        </div>
+                                        <div class="my-1">
+                                            <span>Effect Area: </span>
+                                            <InputSelect @bind-Value="action.Shape" class="" TValue="TargetShape">
+                                                @foreach (var item in Enum.GetValues(typeof(TargetShape)))
+                                                {
+                                                    <option value="@item">@item</option>
+                                                }
+                                            </InputSelect>
+                                            @if (action.Shape == TargetShape.target)
+                                            {
+                                                <span class="ms-1">Number of Targets: </span>
+                                                <InputNumber @bind-Value="@action.Targets" min="0" TValue="int" style="width: 50px;" />
+                                            }
+                                            else
+                                            {
+                                                <span class="ms-1">Radius</span>
+                                                <InputNumber @bind-Value="@action.Radius" min="0" TValue="int" style="width: 65px;" />
+                                            }
+                                        </div>
+
+                                        break;
+                                    case FeatureType.Reaction:
+                                        var reaction = SpecificFeature as Reaction;
+                                        break;
+                                    case FeatureType.Countermeasure:
+                                        var countermeasure = SpecificFeature as Countermeasure;
+                                        break;
+                                }
+                            </div>
                         </div>
-                        @switch(SpecificFeature.Type)
-                        {
-                            case FeatureType.Trait:
-                                var trait = SpecificFeature as Trait;
-                                break;
-                            case FeatureType.Free:
-                            case FeatureType.Action:
-                            case FeatureType.Bonus:
-                                var action = SpecificFeature as Action;
-                                break;
-                            case FeatureType.Reaction:
-                                var reaction = SpecificFeature as Reaction;
-                                break;
-                            case FeatureType.Countermeasure:
-                                var countermeasure = SpecificFeature as Countermeasure;
-                                break;
-                            default:
-                                throw new ArgumentOutOfRangeException();
-                        }
                     }
                 </div>
             </div>
@@ -108,7 +247,7 @@
                 <span>
                     @if (SpecificFeature != null)
                     {
-                        <button type="button" class="btn btn-primary" @onclick="() => SaveFeature()"><span  class="fas fa-floppy-disk me-1"/>Save</button>
+                        <button type="button" class="btn btn-primary" @onclick="() => SaveFeature()"><span class="fas fa-floppy-disk me-1" />Save</button>
                         <button type="button" class="btn btn-primary" @onclick="() => SaveAndUpdateTemplate()"><span class="fak fa-solid-floppy-disk-circle-plus me-1" />Save and @(SpecificFeature?.TemplateId == null ? "Add" : "Update") Template</button>
                         <span></span>
                     }
@@ -133,20 +272,99 @@
 
     private List<Feature>? FeatureTemplates { get; set; }
     private Feature SelectedFeatureTemplate { get; set; }
+    private Guid? _selectedFeatureTemplateId;
+    private Guid? SelectedFeatureTemplateId
+    {
+        get => _selectedFeatureTemplateId;
+        set
+        {
+            if (_selectedFeatureTemplateId != value)
+                _selectedFeatureTemplateId = value;
+
+            if (_selectedFeatureTemplateId != null)
+                SelectedFeatureTemplate = FeatureTemplates.First(a => a.Id == value);
+            else
+                SelectedFeatureTemplate = null;
+        }
+    }
     private FeatureType SelectedFeatureType { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
-        if (SpecificFeature != null && ActiveMonster?.Id != SpecificFeature?.ParentId && ActiveMonster?.Id != null)
+        if (SpecificFeature != null && ActiveMonster?.Id != SpecificFeature?.ParentId)
             SpecificFeature = null;
 
         FeatureTemplates = await _fs.GetAllFeatureTemplatesAsync();
         if (SpecificFeature != null && SpecificFeature.TemplateId != null)
-            SelectedFeatureTemplate = FeatureTemplates.First(a => a.Id == SpecificFeature.Id);
+        {
+            SelectedFeatureTemplate = FeatureTemplates.First(a => a.Id == SpecificFeature.TemplateId);
+        }
+    }
+
+    private async Task DisconnectFeatureFromTemplate(Feature f)
+    {
+        SpecificFeature.TemplateId = null;
+        SelectedFeatureTemplate = null;
+        await _fs.UpdateFeatureAsync(SpecificFeature);
+        StateHasChanged();
+    }
+    private async Task ResetFeatureToTemplate(Feature f)
+    {
+        switch (f.Type)
+        {
+            case FeatureType.Trait:
+                var trait = f as Trait;
+                var templateTrait = SelectedFeatureTemplate as Trait;
+                trait.UpdateThisToMatch(templateTrait);
+                await _fs.UpdateFeatureAsync(trait);
+                break;
+            case FeatureType.Free:
+                var free = f as FreeAction;
+                var templateFree = SelectedFeatureTemplate as FreeAction;
+                free.UpdateThisToMatch(templateFree);
+                await _fs.UpdateFeatureAsync(free);
+                break;
+            case FeatureType.Action:
+                var act = f as Action;
+                var templateAct = SelectedFeatureTemplate as Action;
+                act.UpdateThisToMatch(templateAct);
+                await _fs.UpdateFeatureAsync(act);
+                break;
+            case FeatureType.Bonus:
+                var bonus = f as BonusAction;
+                var templateBonus = SelectedFeatureTemplate as BonusAction;
+                bonus.UpdateThisToMatch(templateBonus);
+                await _fs.UpdateFeatureAsync(bonus);
+                break;
+            case FeatureType.Reaction:
+                var reaction = f as Reaction;
+                var templateReaction = SelectedFeatureTemplate as Reaction;
+                reaction.UpdateThisToMatch(templateReaction);
+                await _fs.UpdateFeatureAsync(reaction);
+                break;
+            case FeatureType.Countermeasure:
+                var cm = f as Countermeasure;
+                var templateCm = SelectedFeatureTemplate as Countermeasure;
+                cm.UpdateThisToMatch(templateCm);
+                await _fs.UpdateFeatureAsync(cm);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+        await _fs.UpdateFeatureAsync(SpecificFeature);
+        StateHasChanged();
+    }
+
+    private Task SelectedFeatureChanged(FeatureType type)
+    {
+        SelectedFeatureType = type;
+        SelectedFeatureTemplateId = FeatureTemplates.Where(feature => feature.Type == SelectedFeatureType).Count() != 0 ? FeatureTemplates.Where(feature => feature.Type == SelectedFeatureType).First().Id : null;
+        return Task.CompletedTask;
     }
 
     private async Task NewFeature(FeatureType type)
     {
+        SelectedFeatureTemplate = null;
         switch (type)
         {
             case FeatureType.Trait:
@@ -203,13 +421,77 @@
         {
             return;
         }
-        var newFeat = SelectedFeatureTemplate.Clone();
-        newFeat.TemplateId = newFeat.Id;
-        newFeat.Id = Guid.NewGuid();
-        newFeat.ParentId = ActiveMonster.Id;
-        ActiveMonster.Features.Add(newFeat);
-        await FeatureChangedCallback.InvokeAsync(ActiveMonster.Features);
-        await _fs.InsertFeatureAsync(newFeat);
+        switch (SelectedFeatureTemplate.Type)
+        {
+            case FeatureType.Trait:
+                var newTrait = (SelectedFeatureTemplate as Trait).Clone();
+                newTrait.TemplateId = SelectedFeatureTemplate.Id;
+                newTrait.Id = Guid.NewGuid();
+                newTrait.Frequency.Id = Guid.NewGuid();
+                newTrait.ParentId = ActiveMonster.Id;
+                ActiveMonster.Features.Add(newTrait);
+                SpecificFeature = newTrait;
+                await FeatureChangedCallback.InvokeAsync(ActiveMonster.Features);
+                await _fs.InsertFeatureAsync(newTrait);
+                break;
+            case FeatureType.Free:
+                var newFree = (SelectedFeatureTemplate as FreeAction).Clone();
+                newFree.TemplateId = SelectedFeatureTemplate.Id;
+                newFree.Id = Guid.NewGuid();
+                newFree.Frequency.Id = Guid.NewGuid();
+                newFree.ParentId = ActiveMonster.Id;
+                ActiveMonster.Features.Add(newFree);
+                SpecificFeature = newFree;
+                await FeatureChangedCallback.InvokeAsync(ActiveMonster.Features);
+                await _fs.InsertFeatureAsync(newFree);
+                break;
+            case FeatureType.Action:
+                var newAction = (SelectedFeatureTemplate as Action).Clone();
+                newAction.TemplateId = SelectedFeatureTemplate.Id;
+                newAction.Id = Guid.NewGuid();
+                newAction.Frequency.Id = Guid.NewGuid();
+                newAction.ParentId = ActiveMonster.Id;
+                ActiveMonster.Features.Add(newAction);
+                SpecificFeature = newAction;
+                await FeatureChangedCallback.InvokeAsync(ActiveMonster.Features);
+                await _fs.InsertFeatureAsync(newAction);
+                break;
+            case FeatureType.Bonus:
+                var newBonus = (SelectedFeatureTemplate as BonusAction).Clone();
+                newBonus.TemplateId = SelectedFeatureTemplate.Id;
+                newBonus.Id = Guid.NewGuid();
+                newBonus.Frequency.Id = Guid.NewGuid();
+                newBonus.ParentId = ActiveMonster.Id;
+                ActiveMonster.Features.Add(newBonus);
+                SpecificFeature = newBonus;
+                await FeatureChangedCallback.InvokeAsync(ActiveMonster.Features);
+                await _fs.InsertFeatureAsync(newBonus);
+                break;
+            case FeatureType.Reaction:
+                var newReaction = (SelectedFeatureTemplate as Reaction).Clone();
+                newReaction.TemplateId = SelectedFeatureTemplate.Id;
+                newReaction.Id = Guid.NewGuid();
+                newReaction.Frequency.Id = Guid.NewGuid();
+                newReaction.ParentId = ActiveMonster.Id;
+                ActiveMonster.Features.Add(newReaction);
+                SpecificFeature = newReaction;
+                await FeatureChangedCallback.InvokeAsync(ActiveMonster.Features);
+                await _fs.InsertFeatureAsync(newReaction);
+                break;
+            case FeatureType.Countermeasure:
+                var newCm = (SelectedFeatureTemplate as Countermeasure).Clone();
+                newCm.TemplateId = SelectedFeatureTemplate.Id;
+                newCm.Id = Guid.NewGuid();
+                newCm.Frequency.Id = Guid.NewGuid();
+                newCm.ParentId = ActiveMonster.Id;
+                ActiveMonster.Features.Add(newCm);
+                SpecificFeature = newCm;
+                await FeatureChangedCallback.InvokeAsync(ActiveMonster.Features);
+                await _fs.InsertFeatureAsync(newCm);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
         StateHasChanged();
     }
 
@@ -217,21 +499,116 @@
     {
         if (SpecificFeature?.TemplateId != null)
         {
-            var template = await _fs.GetFeatureByIdAsync(SpecificFeature.TemplateId.Value);
-            template.UpdateThisToMatch(SpecificFeature);
-            await _fs.UpdateFeatureAsync(SpecificFeature);
-            await _fs.UpdateFeatureAsync(template);
+            switch (SpecificFeature.Type)
+            {
+                case FeatureType.Trait:
+                    var templateTrait = (await _fs.GetFeatureByIdAsync(SpecificFeature.TemplateId.Value) as Trait);
+                    templateTrait.UpdateThisToMatch(SpecificFeature as Trait);
+                    await _fs.UpdateFeatureAsync(SpecificFeature as Trait);
+                    await _fs.UpdateFeatureAsync(templateTrait);
+                    break;
+                case FeatureType.Free:
+                    var templateFree = (await _fs.GetFeatureByIdAsync(SpecificFeature.TemplateId.Value) as FreeAction);
+                    templateFree.UpdateThisToMatch(SpecificFeature as FreeAction);
+                    await _fs.UpdateFeatureAsync(SpecificFeature as FreeAction);
+                    await _fs.UpdateFeatureAsync(templateFree);
+                    break;
+                case FeatureType.Action:
+                    var templateAction = (await _fs.GetFeatureByIdAsync(SpecificFeature.TemplateId.Value) as Action);
+                    templateAction.UpdateThisToMatch(SpecificFeature as Action);
+                    await _fs.UpdateFeatureAsync(SpecificFeature as Action);
+                    await _fs.UpdateFeatureAsync(templateAction);
+                    break;
+                case FeatureType.Bonus:
+                    var templateBonus = (await _fs.GetFeatureByIdAsync(SpecificFeature.TemplateId.Value) as BonusAction);
+                    templateBonus.UpdateThisToMatch(SpecificFeature as BonusAction);
+                    await _fs.UpdateFeatureAsync(SpecificFeature as BonusAction);
+                    await _fs.UpdateFeatureAsync(templateBonus);
+                    break;
+                case FeatureType.Reaction:
+                    var templateReaction = (await _fs.GetFeatureByIdAsync(SpecificFeature.TemplateId.Value) as Reaction);
+                    templateReaction.UpdateThisToMatch(SpecificFeature as Reaction);
+                    await _fs.UpdateFeatureAsync(SpecificFeature as Reaction);
+                    await _fs.UpdateFeatureAsync(templateReaction);
+                    break;
+                case FeatureType.Countermeasure:
+                    var templateCm = (await _fs.GetFeatureByIdAsync(SpecificFeature.TemplateId.Value) as Countermeasure);
+                    templateCm.UpdateThisToMatch(SpecificFeature as Countermeasure);
+                    await _fs.UpdateFeatureAsync(SpecificFeature as Countermeasure);
+                    await _fs.UpdateFeatureAsync(templateCm);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
         else
         {
-            var newTemplateFeat = SpecificFeature.Clone();
-            newTemplateFeat.Id = Guid.NewGuid();
-            newTemplateFeat.Frequency.Id = Guid.NewGuid();
-            SpecificFeature.TemplateId = newTemplateFeat.Id;
-            newTemplateFeat.ParentId = null;
-            SelectedFeatureTemplate = newTemplateFeat;
-            await _fs.UpdateFeatureAsync(SpecificFeature);
-            await _fs.InsertFeatureAsync(newTemplateFeat);
+            switch (SpecificFeature.Type)
+            {
+                case FeatureType.Trait:
+                    var newTemplateTrait = (SpecificFeature as Trait).Clone();
+                    newTemplateTrait.Id = Guid.NewGuid();
+                    newTemplateTrait.Frequency.Id = Guid.NewGuid();
+                    SpecificFeature.TemplateId = newTemplateTrait.Id;
+                    newTemplateTrait.ParentId = null;
+                    SelectedFeatureTemplate = newTemplateTrait;
+                    await _fs.UpdateFeatureAsync(SpecificFeature);
+                    await _fs.InsertFeatureAsync(newTemplateTrait);
+                    break;
+                case FeatureType.Free:
+                    var newTemplateFree = (SpecificFeature as FreeAction).Clone();
+                    newTemplateFree.Id = Guid.NewGuid();
+                    newTemplateFree.Frequency.Id = Guid.NewGuid();
+                    SpecificFeature.TemplateId = newTemplateFree.Id;
+                    newTemplateFree.ParentId = null;
+                    SelectedFeatureTemplate = newTemplateFree;
+                    await _fs.UpdateFeatureAsync(SpecificFeature);
+                    await _fs.InsertFeatureAsync(newTemplateFree);
+                    break;
+                case FeatureType.Action:
+                    var newTemplateAction = (SpecificFeature as Action).Clone();
+                    newTemplateAction.Id = Guid.NewGuid();
+                    newTemplateAction.Frequency.Id = Guid.NewGuid();
+                    SpecificFeature.TemplateId = newTemplateAction.Id;
+                    newTemplateAction.ParentId = null;
+                    SelectedFeatureTemplate = newTemplateAction;
+                    await _fs.UpdateFeatureAsync(SpecificFeature);
+                    await _fs.InsertFeatureAsync(newTemplateAction);
+                    break;
+                case FeatureType.Bonus:
+                    var newTemplateBonus = (SpecificFeature as BonusAction).Clone();
+                    newTemplateBonus.Id = Guid.NewGuid();
+                    newTemplateBonus.Frequency.Id = Guid.NewGuid();
+                    SpecificFeature.TemplateId = newTemplateBonus.Id;
+                    newTemplateBonus.ParentId = null;
+                    SelectedFeatureTemplate = newTemplateBonus;
+                    await _fs.UpdateFeatureAsync(SpecificFeature);
+                    await _fs.InsertFeatureAsync(newTemplateBonus);
+                    break;
+                case FeatureType.Reaction:
+                    var newTemplateReaction = (SpecificFeature as Reaction).Clone();
+                    newTemplateReaction.Id = Guid.NewGuid();
+                    newTemplateReaction.Frequency.Id = Guid.NewGuid();
+                    SpecificFeature.TemplateId = newTemplateReaction.Id;
+                    newTemplateReaction.ParentId = null;
+                    SelectedFeatureTemplate = newTemplateReaction;
+                    await _fs.UpdateFeatureAsync(SpecificFeature);
+                    await _fs.InsertFeatureAsync(newTemplateReaction);
+                    break;
+                case FeatureType.Countermeasure:
+                    var newTemplateCounter = (SpecificFeature as Countermeasure).Clone();
+                    newTemplateCounter.Id = Guid.NewGuid();
+                    newTemplateCounter.Frequency.Id = Guid.NewGuid();
+                    SpecificFeature.TemplateId = newTemplateCounter.Id;
+                    newTemplateCounter.ParentId = null;
+                    SelectedFeatureTemplate = newTemplateCounter;
+                    await _fs.UpdateFeatureAsync(SpecificFeature);
+                    await _fs.InsertFeatureAsync(newTemplateCounter);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
         }
         await FeatureChangedCallback.InvokeAsync(ActiveMonster.Features);
         await SaveMonster.InvokeAsync();

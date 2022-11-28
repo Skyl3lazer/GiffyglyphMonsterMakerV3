@@ -17,102 +17,100 @@ namespace GiffyglyphMonsterMakerV3.Data
         }
         public override string MarkupDescription(Creature parentCreature)
         {
-               
-                //If you want to just totally override a thing, go for it
-                if (!string.IsNullOrWhiteSpace(OverrideMarkup))
-                {
-                    var sanitizer = new HtmlSanitizer();
-                    (new List<string>{"fst-italic", "fw-bold"}).ForEach(item => sanitizer.AllowedClasses.Add(item));
-                    var html = OverrideMarkup;
-                    return sanitizer.Sanitize(html);
-                }
-                string desc =
-                    "<span class=\"text-white fa-solid p-1 " + (String.IsNullOrWhiteSpace(CustomIcon) ? Icon : CustomIcon) + " " + RarityStyle + "\"></span></span><span class=\"ms-1\">";
 
-                desc += @"<span class=""fw-bold"">" + Name;
-                if (Frequency.Type != FrequencyType.passive)
-                {
-                    desc += " (" + Frequency.StringValue + ")";
-                }
-                desc += @": </span>";
+            //If you want to just totally override a thing, go for it
+            if (!string.IsNullOrWhiteSpace(OverrideMarkup))
+            {
+                var sanitizer = new HtmlSanitizer();
+                (new List<string> { "fst-italic", "fw-bold" }).ForEach(item => sanitizer.AllowedClasses.Add(item));
+                var html = OverrideMarkup;
+                return sanitizer.Sanitize(html);
+            }
+            string desc =
+                "<span class=\"text-white fa-solid p-1 " + (String.IsNullOrWhiteSpace(CustomIcon) ? Icon : CustomIcon) + " " + RarityStyle + "\"></span></span><span class=\"ms-1\">";
 
-                desc += (IsSpell ? "<span class=\"fst-italic\">Spell</span>: " + SpellDesc : "");
-                desc += "<span class=\"fst-italic\">" + Distance.ToString() + "</span>: ";
+            desc += @"<span class=""fw-bold"">" + Name;
+            if (Frequency.Type != FrequencyType.passive)
+            {
+                desc += " (" + Frequency.StringValue + ")";
+            }
+            desc += @": </span>";
 
-                string shapeText = "";
-                switch (Shape)
-                {
-                    case TargetShape.line:
-                        shapeText += "a " + Range + " ft. line extending from yourself.";
-                        break;
-                    case TargetShape.cone:
-                        shapeText += "a " + Range + " ft. cone extending from yourself.";
-                        break;
-                    case TargetShape.emanation:
-                        shapeText += "within " + Range + " of yourself.";
-                        break;
-                    case TargetShape.circle:
-                        shapeText += "a " + Radius + " ft. circle centered within " + Range + " ft.";
-                        break;
-                    case TargetShape.target:
-                    default:
-                        if (Targets > 0)
-                        {
-                            shapeText += Targets + " target";
-                            if (Targets > 1)
-                                shapeText += "s";
-                        }
-                        shapeText += ".";
-                        break;
-                }
+            desc += (IsSpell ? "<span class=\"fst-italic\">Spell</span>: " + SpellDesc : "");
+            desc += "<span class=\"fst-italic\">" + Distance.ToString() + "</span>: ";
 
-                if (HasSave)
-                {
-                    desc += "DC" + (parentCreature.Offense.DifficultyCheck + parentCreature.Attributes.Dict[RelevantAttribute] + parentCreature.Attributes.AttributeMod) + " vs " + SaveVs + ", ";
-                }
-                else
-                {
-                    desc += ((parentCreature.Offense.Attack + parentCreature.Attributes.Dict[RelevantAttribute] + parentCreature.Attributes.AttributeMod) >= 0 ? "+":"") + (parentCreature.Offense.Attack + parentCreature.Attributes.Dict[RelevantAttribute] + parentCreature.Attributes.AttributeMod) + " to hit, ";
-                }
+            string shapeText = "";
+            switch (Shape)
+            {
+                case TargetShape.line:
+                    shapeText += "a " + Range + " ft. line extending from yourself.";
+                    break;
+                case TargetShape.cone:
+                    shapeText += "a " + Range + " ft. cone extending from yourself.";
+                    break;
+                case TargetShape.emanation:
+                    shapeText += "within " + Range + " of yourself.";
+                    break;
+                case TargetShape.circle:
+                    shapeText += "a " + Radius + " ft. circle centered within " + Range + " ft.";
+                    break;
+                case TargetShape.target:
+                default:
+                    shapeText += Targets + " target";
+                    if (Targets != 1)
+                        shapeText += "s";
 
-                switch (Distance)
-                {
-                    case RangeType.Melee:
-                        desc += "reach ";
-                        desc += Range+" ft.,";
-                        break;
-                    case RangeType.Ranged:
-                    default:
-                        desc += "range " + Range + " ft.,";
-                        break;
-                }
+                    shapeText += ".";
+                    break;
+            }
 
-                
+            if (HasSave)
+            {
+                desc += "DC" + (parentCreature.Offense.DifficultyCheck + parentCreature.Attributes.Dict[RelevantAttribute] + parentCreature.Attributes.AttributeMod) + " vs " + SaveVs + ", ";
+            }
+            else
+            {
+                desc += ((parentCreature.Offense.Attack + parentCreature.Attributes.Dict[RelevantAttribute] + parentCreature.Attributes.AttributeMod) >= 0 ? "+" : "") + (parentCreature.Offense.Attack + parentCreature.Attributes.Dict[RelevantAttribute] + parentCreature.Attributes.AttributeMod) + " to hit, ";
+            }
 
-                if (MultiAttack > 1)
-                {
-                    desc += " "+MultiAttack + " attacks, ";
-                }
-                desc += " " + shapeText;
+            switch (Distance)
+            {
+                case RangeType.Melee:
+                    desc += "reach ";
+                    desc += Range + " ft.,";
+                    break;
+                case RangeType.Ranged:
+                default:
+                    desc += "range " + Range + " ft.,";
+                    break;
+            }
 
-                desc += " <span class=\"fst-italic\">Hit</span>: ";
 
-                if (DealsDamage)
-                {
-                    var dam = (int)Math.Max(Math.Floor((double)(parentCreature.Offense.Damage * DamageMultiplier) / MultiAttack), 1);
-                    desc += dam + (parentCreature.Offense.RandomizeDamage ? " (" + DiceTools.ConvertToDiceString(parentCreature.Offense.RandomDamageRange, dam)+")" : "") + " " + ActionDamageType +
-                            " damage.";
-                }
 
-                if (!String.IsNullOrWhiteSpace(OtherEffect))
-                    desc += " " + OtherEffect;
-                if (!String.IsNullOrWhiteSpace(MissEffect))
-                    desc += " " + MissEffect;
-                desc += "</span>";
-                return desc;
-            
+            if (MultiAttack > 1)
+            {
+                desc += " " + MultiAttack + " attacks, ";
+            }
+            desc += " " + shapeText;
+
+            desc += " <span class=\"fst-italic\">Hit</span>: ";
+
+            if (DealsDamage)
+            {
+                var dam = (int)Math.Max(Math.Floor((double)(parentCreature.Offense.Damage * DamageMultiplier) / MultiAttack), 1);
+                desc += dam + (parentCreature.Offense.RandomizeDamage ? " (" + DiceTools.ConvertToDiceString(parentCreature.Offense.RandomDamageRange, dam) + ")" : "") + " " + ActionDamageType +
+                        " damage.";
+            }
+
+            if (!String.IsNullOrWhiteSpace(OtherEffect))
+                desc += " " + OtherEffect;
+            if (!String.IsNullOrWhiteSpace(MissEffect))
+                desc += " " + MissEffect;
+            desc += "</span>";
+            return desc;
+
         }
-        
+
         public override string Icon
         {
             get
@@ -130,18 +128,25 @@ namespace GiffyglyphMonsterMakerV3.Data
         }
         public override FeatureType Type { get; init; } = FeatureType.Action;
         public RangeType Distance { get; set; }
-        public int Range { get; set; }
+        public int Range { get; set; } = 5;
         public int Radius { get; set; }
         public bool IsSpell { get; set; }
         public string SpellDesc { get; set; } = "";
-        public bool DealsDamage { get; set; }
+        public bool DealsDamage { get; set; } = true;
         public int MultiAttack { get; set; } = 1;
+
+        [NotMapped]
+        public bool IsMultiAttack
+        {
+            get => MultiAttack != 1;
+            set => MultiAttack = value ? 2 : 1;
+        }
         public double DamageMultiplier { get; set; } = 1;
         public string OtherEffect { get; set; } = "";
         public string MissEffect { get; set; } = "";
-        public DamageType ActionDamageType { get; set; }
-        public int Targets { get; set; } = 0;
-        public TargetShape Shape { get; set; }
+        public DamageType ActionDamageType { get; set; } = DamageType.bludgeoning;
+        public int Targets { get; set; } = 1;
+        public TargetShape Shape { get; set; } = TargetShape.target;
         public override void UpdateThisToMatch(Object o)
         {
             if (o is not Action a)

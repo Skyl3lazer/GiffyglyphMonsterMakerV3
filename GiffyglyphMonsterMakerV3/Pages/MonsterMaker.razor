@@ -126,8 +126,8 @@ else
                 <div class="row">
                     <div><span class="fs-2" data-bs-toggle="collapse" data-bs-target="#monsterOffense" aria-expanded="true" aria-controls="monsterOffense">Offense<span class="fas fa-chevrons-down mx-1 fs-3" /></span></div>
                     <div id="monsterOffense" class="collapse">
-                        <div><span>Attack Bonus: </span><span><InputNumber @bind-Value="active.Offense.Attack" min="0" /></span></div>
-                        <div><span>DC Mod: </span><InputNumber @bind-Value="active.Offense.DifficultyCheck" min="0" /></div>
+                        <div><span>Attack Bonus: </span><span><InputNumber @bind-Value="active.Offense.Attack" min="0"/></span></div>
+                        <div><span>DC Mod: </span><InputNumber @bind-Value="active.Offense.DifficultyCheck" min="0"/></div>
                         <div>
                             <span>Damage Average: </span>
                             <span>
@@ -153,8 +153,8 @@ else
                 <div class="row">
                     <div><span class="fs-2" data-bs-toggle="collapse" data-bs-target="#monsterDefense" aria-expanded="true" aria-controls="monsterDefense">Defense<span class="fas fa-chevrons-down mx-1 fs-3" /></span></div>
                     <div id="monsterDefense" class="collapse">
-                        <div><span>Armor Class: </span><InputNumber @bind-Value="active.Defenses.ArmorClass" min="0" /></div>
-                        <div><span>Hit Points: </span><InputNumber @bind-Value="active.Defenses.HitPoints" min="0" /></div>
+                        <div><span>Armor Class: </span><InputNumber @bind-Value="active.Defenses.ArmorClass" min="0"/></div>
+                        <div><span>Hit Points: </span><InputNumber @bind-Value="active.Defenses.HitPoints" min="0"/></div>
                         <div><span>Save Bonus: </span><InputNumber @bind-Value="active.Defenses.SaveBonus" min="0" /></div>
                         <div><span>Proficient Saves</span></div>
                         <div>

@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 using GiffyglyphMonsterMakerV3.Utility;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
+using Ganss.Xss;
 
 namespace GiffyglyphMonsterMakerV3.Data
 {
@@ -18,7 +19,26 @@ namespace GiffyglyphMonsterMakerV3.Data
         {
             return "";
         }
-        public string OverrideMarkup { get; set; } = "";
+
+        [NotMapped] private HtmlSanitizer _sanitizer;
+
+        public Feature()
+        {
+            _sanitizer = new HtmlSanitizer();
+            (new List<string> { "fst-italic", "fw-bold" }).ForEach(item => _sanitizer.AllowedClasses.Add(item));
+        }
+
+        private string _overrideMarkup = "";
+        [BackingField("_overrideMarkup")]
+        public string OverrideMarkup
+        {
+            get => _overrideMarkup;
+            set
+            {
+                var html = OverrideMarkup;
+                _overrideMarkup = _sanitizer.Sanitize(value);
+            }
+        }
         public virtual FeatureType Type { get; init; }
         public RarityType Rarity { get; set; }
         public AttributeType RelevantAttribute { get; set; }
@@ -65,8 +85,9 @@ namespace GiffyglyphMonsterMakerV3.Data
             CustomIcon = f.CustomIcon;
             HasSave = f.HasSave;
             SaveVs = f.SaveVs;
+            Guid tempFreqId = Frequency.Id;
             Frequency = f.Frequency.Clone();
-            Frequency.Id = Guid.NewGuid();
+            Frequency.Id = tempFreqId;
         }
     }
     public enum FeatureType
