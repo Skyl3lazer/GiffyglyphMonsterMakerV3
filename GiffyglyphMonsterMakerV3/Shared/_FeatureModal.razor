@@ -137,6 +137,19 @@
                                         <input @bind="SpecificFeature.Frequency.Value" @bind:event="oninput" style="width: 50px;" />
                                     }
                                 </div>
+                                <div class="my-1">
+                                    <span>Delay: </span>
+                                    <InputSelect @bind-Value="SpecificFeature.Frequency.Delay" class="" TValue="DelayType">
+                                        @foreach (var item in Enum.GetValues(typeof(DelayType)))
+                                        {
+                                            <option value="@item">@item</option>
+                                        }
+                                    </InputSelect>
+                                    @if (SpecificFeature.Frequency.Delay != DelayType.none)
+                                    {
+                                        <input @bind="SpecificFeature.Frequency.DelayValue" @bind:event="oninput" style="width: 50px;" />
+                                    }
+                                </div>
                             </div>
                             <hr />
                             <div>
@@ -223,7 +236,7 @@
                                                 <span class="ms-1">Number of Targets: </span>
                                                 <InputNumber @bind-Value="@action.Targets" min="0" TValue="int" style="width: 50px;" />
                                             }
-                                            else
+                                            else if(action.Shape != TargetShape.self)
                                             {
                                                 <span class="ms-1">Radius</span>
                                                 <InputNumber @bind-Value="@action.Radius" min="0" TValue="int" style="width: 65px;" />

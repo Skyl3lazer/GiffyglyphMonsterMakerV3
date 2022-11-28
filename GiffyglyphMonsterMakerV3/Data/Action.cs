@@ -54,6 +54,18 @@ namespace GiffyglyphMonsterMakerV3.Data
                 case TargetShape.circle:
                     shapeText += "a " + Radius + " ft. circle centered within " + Range + " ft.";
                     break;
+                case TargetShape.cube:
+                    shapeText += "a " + Radius + " ft. cube centered within " + Range + " ft.";
+                    break;
+                case TargetShape.square:
+                    shapeText += "a " + Radius + " ft. square centered within " + Range + " ft.";
+                    break;
+                case TargetShape.sphere:
+                    shapeText += "a " + Radius + " ft. sphere centered within " + Range + " ft.";
+                    break;
+                case TargetShape.self:
+                    shapeText += "on yourself.";
+                    break;
                 case TargetShape.target:
                 default:
                     shapeText += Targets + " target";
@@ -193,7 +205,11 @@ namespace GiffyglyphMonsterMakerV3.Data
         emanation,
         circle,
         target,
-        wall
+        wall,
+        square,
+        cube,
+        sphere,
+        self
     }
     public enum RangeType
     {

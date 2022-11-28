@@ -126,8 +126,8 @@ else
                 <div class="row">
                     <div><span class="fs-2" data-bs-toggle="collapse" data-bs-target="#monsterOffense" aria-expanded="true" aria-controls="monsterOffense">Offense<span class="fas fa-chevrons-down mx-1 fs-3" /></span></div>
                     <div id="monsterOffense" class="collapse">
-                        <div><span>Attack Bonus: </span><span><InputNumber @bind-Value="active.Offense.Attack" min="0"/></span></div>
-                        <div><span>DC Mod: </span><InputNumber @bind-Value="active.Offense.DifficultyCheck" min="0"/></div>
+                        <div><span>Attack Bonus: </span><span><InputNumber @bind-Value="active.Offense.Attack" min="0" /></span></div>
+                        <div><span>DC Mod: </span><InputNumber @bind-Value="active.Offense.DifficultyCheck" min="0" /></div>
                         <div>
                             <span>Damage Average: </span>
                             <span>
@@ -153,8 +153,8 @@ else
                 <div class="row">
                     <div><span class="fs-2" data-bs-toggle="collapse" data-bs-target="#monsterDefense" aria-expanded="true" aria-controls="monsterDefense">Defense<span class="fas fa-chevrons-down mx-1 fs-3" /></span></div>
                     <div id="monsterDefense" class="collapse">
-                        <div><span>Armor Class: </span><InputNumber @bind-Value="active.Defenses.ArmorClass" min="0"/></div>
-                        <div><span>Hit Points: </span><InputNumber @bind-Value="active.Defenses.HitPoints" min="0"/></div>
+                        <div><span>Armor Class: </span><InputNumber @bind-Value="active.Defenses.ArmorClass" min="0" /></div>
+                        <div><span>Hit Points: </span><InputNumber @bind-Value="active.Defenses.HitPoints" min="0" /></div>
                         <div><span>Save Bonus: </span><InputNumber @bind-Value="active.Defenses.SaveBonus" min="0" /></div>
                         <div><span>Proficient Saves</span></div>
                         <div>
@@ -189,23 +189,44 @@ else
                 <div class="row">
                     <div><span class="fs-2" data-bs-toggle="collapse" data-bs-target="#monsterFeatures" aria-expanded="true" aria-controls="monsterFeatures">Features<span class="fas fa-chevrons-down mx-1 fs-3" /></span></div>
                     <div id="monsterFeatures" class="collapse">
+                        <div>
+                            <span class="fst-italic">Recommended Features: </span><span>
+                                @switch (active.MonsterRank)
+                                {
+                                    case Rank.Minion:
+                                        @("1-5 (1 Ancestral, 1 Role, 2 Misc)")
+                                        break;
+                                    case Rank.Grunt:
+                                        @("3-8 (2 Ancestral, 2 Role, 3 Misc)")
+                                        break;
+                                    case Rank.Elite:
+                                        @("5-11 (3 Ancestral, 2 Role, 4 Misc)")
+                                        break;
+                                    case Rank.Paragon:
+                                        @("7-14 (3 Ancestral, 3 Role, 7 Misc)")
+                                        break;
+                                    default:
+                                        throw new ArgumentOutOfRangeException();
+                                }
+                            </span>
+                        </div>
                         <div class="fw-bold" data-bs-toggle="modal" data-bs-target="#featureModal" @onclick="() => EditFeature = null">Add Feature<span class="fas fa-plus ms-1"></span></div>
-                        @foreach (var fType in 
-                            active.Features
-                                .Select(a => a.Type)
-                                .Distinct()
-                                .OrderBy(b => (int)b)
-                            )
-                                
+                        @foreach (var fType in
+                       active.Features
+                       .Select(a => a.Type)
+                       .Distinct()
+                       .OrderBy(b => (int)b)
+                       )
+
                         {
                             <div>
                                 <span class="fw-bold">@fType@(fType.ToString().EndsWith("s") ? "" : "s")</span>
-                                @foreach (var feature in active.Features.Where(a=>a.Type == fType).OrderBy(d => d.Rarity).ThenByDescending(c => c.Name))
+                                @foreach (var feature in active.Features.Where(a => a.Type == fType).OrderBy(d => d.Rarity).ThenByDescending(c => c.Name))
                                 {
                                     <div class="py-1">
                                         <span>
                                             <span class="line-icon"><span class="text-white fa-solid p-1 @feature.Icon @feature.RarityStyle"></span></span><span class="ms-1">@feature.Name</span>
-                                            <span class="fa-solid fa-pencil ms-1" data-bs-toggle="modal" data-bs-target="#featureModal" @onclick="() => EditFeature = feature"/>
+                                            <span class="fa-solid fa-pencil ms-1" data-bs-toggle="modal" data-bs-target="#featureModal" @onclick="() => EditFeature = feature" />
                                             <span class="fa-solid fa-circle-xmark ms-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteFeatureModal" @onclick="() => DeleteFeatureModalTarget = feature" />
                                         </span>
                                     </div>
@@ -247,7 +268,7 @@ else
     private Monster? active { get; set; }
 
     private Feature? EditFeature { get; set; }
-    
+
     private Feature? DeleteFeatureModalTarget { get; set; }
 
     private async Task ConfirmDeleteFeatureModalResult(Feature target)

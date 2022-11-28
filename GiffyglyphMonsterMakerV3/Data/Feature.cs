@@ -111,14 +111,24 @@ namespace GiffyglyphMonsterMakerV3.Data
         passive = 0,
         cooldown,
         shortrest,
-        longrest
+        longrest,
+        charge
+    }
+
+    public enum DelayType
+    {
+        none = 0,
+        delay,
+        doom
     }
     public class FeatureFrequency
     {
         [Key]
         public Guid Id { get; set; }
         public FrequencyType Type { get; set; }
-        public int Value { get; set; }
+        public DelayType Delay { get; set; }
+        public int Value { get; set; } = 0;
+        public int DelayValue { get; set; } = 0;
 
         public string StringValue
         {
@@ -138,6 +148,23 @@ namespace GiffyglyphMonsterMakerV3.Data
                     case FrequencyType.longrest:
                         desc += Value + "/lr";
                         break;
+                    case FrequencyType.charge:
+                        desc += Value + "charge";
+                        break;
+                }
+
+                if (!string.IsNullOrWhiteSpace(desc) && Delay != DelayType.none) desc += ", ";
+
+                switch (Delay)
+                {
+                    case DelayType.delay:
+                        desc += "Delayed " + Value;
+                        break;
+                    case DelayType.doom:
+                        desc += "Dooming " + Value;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
 
                 return desc;
