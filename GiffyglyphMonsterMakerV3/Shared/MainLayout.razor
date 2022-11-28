@@ -1,8 +1,9 @@
 ﻿@inherits LayoutComponentBase
 @using GiffyglyphMonsterMakerV3.Data;
-@using Action = GiffyglyphMonsterMakerV3.Data.Action
 @using System.Security.Claims;
+@using Microsoft.AspNetCore.Identity
 @inject MonsterService _MonsterService;
+@inject UserManager<ApplicationUser> _UserManager
 
 <PageTitle>GiffyglyphMonsterMakerV3</PageTitle>
 
@@ -12,7 +13,7 @@
     </div>
 
     <main>
-        <div class="top-row px-4 auth">
+        <div class="top-row px-4 auth d-print-none">
             <LoginDisplay />
         </div>
         <CascadingValue Value="@Monsters">
@@ -34,6 +35,7 @@
         var authState = await authenticationStateTask;
         var user = authState.User;
         var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+        
         Monsters = await Task.Run(() => _MonsterService.GetAllMonstersAsync());
     }
 }

@@ -17,10 +17,6 @@ public class Monster : Creature
         Languages = new List<string>();
         Items = new List<string>();
     }
-
-    public Monster(string createUserId) : this("My New Monster", createUserId)
-    {
-    }
     
     
     public override int SpeedMod

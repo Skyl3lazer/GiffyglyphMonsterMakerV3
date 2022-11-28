@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using GiffyglyphMonsterMakerV3.Utility;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace GiffyglyphMonsterMakerV3.Data
 {
@@ -15,9 +16,10 @@ namespace GiffyglyphMonsterMakerV3.Data
 
         private bool Loading = false;
         private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
+        private readonly AuthenticationStateProvider _authenticationStateProvider;
         #endregion
 
-        public FeatureService(IDbContextFactory<ApplicationDbContext> dbContextFactory)
+        public FeatureService(IDbContextFactory<ApplicationDbContext> dbContextFactory, AuthenticationStateProvider authenticationStateProvider)
         {
             _dbContextFactory = dbContextFactory;
         }

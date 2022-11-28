@@ -4,15 +4,19 @@ using System;
 using System.Security.Claims;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components;
+using Z.EntityFramework.Plus;
 
 namespace GiffyglyphMonsterMakerV3.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public DbSet<Monster> Monsters { get; set; }
         public DbSet<Feature> Features { get; set; }
-
+        
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
             this.ChangeTracker.LazyLoadingEnabled = false;
@@ -35,6 +39,7 @@ namespace GiffyglyphMonsterMakerV3.Data
                 .HasBaseType<Feature>();
             modelBuilder.Entity<Trait>()
                 .HasBaseType<Feature>();
+            
 
             modelBuilder.Entity<Creature>()
                 .Property(e => e.Senses)

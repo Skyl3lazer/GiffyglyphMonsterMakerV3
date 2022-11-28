@@ -4,8 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using System.Threading;
+using Microsoft.AspNetCore.Components.Authorization;
+using System.Security.Claims;
+using Z.EntityFramework.Plus;
 
 namespace GiffyglyphMonsterMakerV3.Data
 {
@@ -15,25 +17,45 @@ namespace GiffyglyphMonsterMakerV3.Data
 
         private bool Loading = false;
         private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
+        private readonly AuthenticationStateProvider _authenticationStateProvider;
         #endregion
 
-        public MonsterService(IDbContextFactory<ApplicationDbContext> dbContextFactory)
+        public MonsterService(IDbContextFactory<ApplicationDbContext> dbContextFactory, AuthenticationStateProvider authenticationStateProvider)
         {
             _dbContextFactory = dbContextFactory;
+            _authenticationStateProvider = authenticationStateProvider;
+            
         }
 
         public async Task<List<Monster>> GetAllMonstersAsync()
         {
+            var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+            var User = authState.User;
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
             await using var _context = await _dbContextFactory.CreateDbContextAsync();
-            
+
+            _context.Filter<Monster>(q => q.Where(m => m.CreateUserId == currentUserId));
+
             await _context.Monsters
-                .Include(a => a.Features)
-                    .ThenInclude(f => f.Frequency)
-                .Include(m => m.Offense)
-                .Include(m => m.Defenses)
-                    .ThenInclude(d=>d.ProficientSavingThrows)
-                .Include(m => m.Attributes)
-                .LoadAsync();
+                 .Include(a => a.Features)
+                     .ThenInclude(f => f.Frequency)
+                 .Include(m => m.Offense)
+                 .Include(m => m.Defenses)
+                     .ThenInclude(d=>d.ProficientSavingThrows)
+                 .Include(m => m.Attributes)
+                 .LoadAsync();
+
+            /*
+             await _context.Monsters
+                 .Include(a => a.Features)
+                 .ThenInclude(f => f.Frequency)
+                 .Include(m => m.Offense)
+                 .Include(m => m.Defenses)
+                 .ThenInclude(d => d.ProficientSavingThrows)
+                 .Include(m => m.Attributes)
+                 .LoadAsync();
+            */
             return await _context.Monsters.ToListAsync();
         }
         public async Task<Monster> GetMonsterByIdAsync(Guid id)

@@ -191,8 +191,9 @@ else
                 <div class="row">
                     <div><span class="fs-2" data-bs-toggle="collapse" data-bs-target="#monsterFeatures" aria-expanded="true" aria-controls="monsterFeatures">Features<span class="fas fa-chevrons-down mx-1 fs-3" /></span></div>
                     <div id="monsterFeatures" class="collapse">
+                        <span class="fst-italic">Recommended Features: </span>
                         <div>
-                            <span class="fst-italic">Recommended Features: </span><span>
+                            <span class="fst-italic">
                                 @switch (active.MonsterRank)
                                 {
                                     case Rank.Minion:
@@ -214,11 +215,11 @@ else
                         </div>
                         <div class="fw-bold" data-bs-toggle="modal" data-bs-target="#featureModal" @onclick="() => EditFeature = null">Add Feature<span class="fas fa-plus ms-1"></span></div>
                         @foreach (var fType in
-                       active.Features
-                       .Select(a => a.Type)
-                       .Distinct()
-                       .OrderBy(b => (int)b)
-                       )
+                            active.Features
+                                .Select(a => a.Type)
+                                .Distinct()
+                                .OrderBy(b => (int)b)
+                            )
 
                         {
                             <div>
@@ -228,8 +229,8 @@ else
                                     <div class="py-1">
                                         <span>
                                             <span class="line-icon"><span class="text-white fa-solid p-1 @feature.Icon @feature.RarityStyle"></span></span><span class="ms-1">@feature.Name</span>
-                                            <span class="fa-solid fa-pencil ms-1" data-bs-toggle="modal" data-bs-target="#featureModal" @onclick="() => EditFeature = feature" />
-                                            <span class="fa-solid fa-circle-xmark ms-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteFeatureModal" @onclick="() => DeleteFeatureModalTarget = feature" />
+                                            <span class="fa-solid fa-pencil ms-1" data-bs-toggle="modal" data-bs-target="#featureModal" @onclick="() => EditFeature = feature"/>
+                                            <span class="fa-solid fa-circle-xmark ms-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteFeatureModal" @onclick="() => DeleteFeatureModalTarget = feature"/>
                                         </span>
                                     </div>
                                 }
@@ -283,6 +284,18 @@ else
         var authState = await authenticationStateTask;
         var User = authState.User;
         CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (Monsters == null)
+            return;
+
+        if (Monsters.Count == 0)
+        {
+            CreateFirstMonster();
+        }
+        else
+        {
+            active = Monsters.First();
+        }
     }
 
     private async Task ConfirmDeleteFeatureModalResult(Feature target)
@@ -317,25 +330,11 @@ else
     {
         await _ms.UpdateMonsterAsync(mon);
     }
-
-    protected override void OnParametersSet()
-    {
-        if (Monsters == null)
-            return;
-
-        if (Monsters.Count == 0)
-        {
-            CreateFirstMonster();
-        }
-        else
-        {
-            active = Monsters.First();
-        }
-    }
+    
 
     private async Task CreateFirstMonster()
     {
-        Monster monster = new("My First Monster");
+        Monster monster = new("My First Monster", CurrentUserId);
         monster.Features.Add(new Action(CurrentUserId)
             {
                 Name = "Hit Them",
@@ -447,7 +446,7 @@ else
     }
     public async Task AddMonster(string name = "My New Monster")
     {
-        var mon = new Monster(name);
+        var mon = new Monster(name, CurrentUserId);
         active = mon;
         Monsters.Add(mon);
         await _ms.InsertMonsterAsync(mon);
