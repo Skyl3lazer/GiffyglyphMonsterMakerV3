@@ -100,6 +100,13 @@ hr.monsterAccent {
     border-color: #5f0709 !important;
 }
 
+.card-header.collapsed .fa-chevrons-up{
+    display: none !important;
+}
+
+.card-header:not(.collapsed) .fa-chevrons-down {
+    display: none !important;
+}
 
 
 .border-black {

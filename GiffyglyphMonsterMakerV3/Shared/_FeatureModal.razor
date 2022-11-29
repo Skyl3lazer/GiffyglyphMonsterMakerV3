@@ -154,12 +154,14 @@
                             </div>
                             <hr />
                             <div>
-                                <span class="fw-bold">Override Properties</span>
-                                <div class="my-1">
-                                    <span>Custom Icon (See FontAwesome): </span><input @bind="SpecificFeature.CustomIcon" @bind:event="oninput" />
-                                </div>
-                                <div class="my-1">
-                                    <span>Custom Markup: </span><textarea @bind="SpecificFeature.OverrideMarkup" maxlength="5000" @bind:event="oninput"></textarea>
+                                <span class="fw-bold card-header collapsed" data-bs-toggle="collapse" data-bs-target="#overrideProperties" aria-expanded="false" aria-controls="overrideProperties">Override Properties<span class="fas fa-chevrons-down mx-1" /><span class="fas fa-chevrons-up mx-1" /></span>
+                                <div class="collapse" id="overrideProperties">
+                                    <div class="my-1">
+                                        <span>Custom Icon (See FontAwesome): </span><input @bind="SpecificFeature.CustomIcon" @bind:event="oninput" />
+                                    </div>
+                                    <div class="my-1">
+                                        <span>Custom Markup: </span><textarea @bind="SpecificFeature.OverrideMarkup" maxlength="5000" @bind:event="oninput"></textarea>
+                                    </div>
                                 </div>
                             </div>
                             <hr />
@@ -237,7 +239,7 @@
                                                 <span class="ms-1">Number of Targets: </span>
                                                 <InputNumber @bind-Value="@action.Targets" min="0" TValue="int" style="width: 50px;" />
                                             }
-                                            else if(action.Shape != TargetShape.self)
+                                            else if (action.Shape != TargetShape.self)
                                             {
                                                 <span class="ms-1">Radius</span>
                                                 <InputNumber @bind-Value="@action.Radius" min="0" TValue="int" style="width: 65px;" />
@@ -283,10 +285,10 @@
     public EventCallback SelectedFeatureCallback { get; set; }
     [Parameter]
     public EventCallback SaveMonster { get; set; }
-    
+
     [CascadingParameter]
     private Task<AuthenticationState> authenticationStateTask { get; set; }
-    
+
     private string? CurrentUserId = null;
 
     private List<Feature>? FeatureTemplates { get; set; }
