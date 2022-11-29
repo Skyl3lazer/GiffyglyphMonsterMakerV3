@@ -115,6 +115,8 @@
     private Task<AuthenticationState> authenticationStateTask { get; set; }
 
     string ADMINISTRATION_ROLE = "Administrator";
+    string WHITELIST_ROLE = "AllowedUser";
+    string BASIC_ROLE = "User";
 
     System.Security.Claims.ClaimsPrincipal CurrentUser;
 
@@ -124,7 +126,7 @@
 
     // Tracks the selected role for the currently selected user
 
-    string CurrentUserRole { get; set; } = "Users";
+    string CurrentUserRole { get; set; } = "User";
 
     // Collection to display the existing users
 
@@ -132,7 +134,7 @@
 
     // Options to display in the roles dropdown when editing a user
 
-    List<string> Options = new List<string>() { "Users", "Administrators" };
+    List<string> Options = new List<string>() { "User", "AllowedUser", "Administrator" };
 
     // To hold any possible errors
 
@@ -145,25 +147,32 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var RoleResult = await _RoleManager.FindByNameAsync(ADMINISTRATION_ROLE);
-        if (RoleResult == null)
+        var RoleResult = _RoleManager.Roles.Select(a=>a.Name);
+        
+        if (!RoleResult.Contains(ADMINISTRATION_ROLE))
         {
-            // Create ADMINISTRATION_ROLE Role
             await _RoleManager.CreateAsync(new IdentityRole(ADMINISTRATION_ROLE));
         }
-        // Ensure a user named Admin@BlazorHelpWebsite.com is an Administrator
+        if (!RoleResult.Contains(WHITELIST_ROLE))
+        {
+            await _RoleManager.CreateAsync(new IdentityRole(WHITELIST_ROLE));
+        }
+        if (!RoleResult.Contains(BASIC_ROLE))
+        {
+            await _RoleManager.CreateAsync(new IdentityRole(BASIC_ROLE));
+        }
 
+
+        // Ensure a user is an Administrator
         var defaultAdminEmail = Environment.GetEnvironmentVariable("DefaultAdminEmail") ?? _config["DefaultAdminEmail"];
         var user = await _UserManager.FindByNameAsync(defaultAdminEmail);
 
         if (user != null)
         {
-            // Am I in administrator role?
             var UserResult = await _UserManager.IsInRoleAsync(user, ADMINISTRATION_ROLE);
 
             if (!UserResult)
             {
-                // Put admin in Administrator role
                 await _UserManager.AddToRoleAsync(user, ADMINISTRATION_ROLE);
             }
         }
@@ -187,37 +196,18 @@
                 await _UserManager.UpdateAsync(user);
 
                 // Handle Roles
-                // Is user in administrator role?
+                // Is user in selected role?
                 var UserResult =
                     await _UserManager
-                        .IsInRoleAsync(user, ADMINISTRATION_ROLE);
+                        .IsInRoleAsync(user, CurrentUserRole);
 
-                // Is Administrator role selected
-                // but user is not an Administrator?
-
-                if (
-                    (CurrentUserRole == ADMINISTRATION_ROLE)
-                    &
-                    (!UserResult))
+                if (!UserResult)
                 {
-                    // Put admin in Administrator role
-                    await _UserManager
-                    .AddToRoleAsync(user, ADMINISTRATION_ROLE);
+                    var currentRoles = await _UserManager.GetRolesAsync(user);
+                    await _UserManager.RemoveFromRolesAsync(user, currentRoles);
+                    await _UserManager.AddToRoleAsync(user, CurrentUserRole);
                 }
-                else
-                {
-                    // Is Administrator role not selected
-                    // but user is an Administrator?
 
-                    if ((CurrentUserRole != ADMINISTRATION_ROLE)
-                    &
-                    (UserResult))
-                    {
-                        // Remove user from Administrator role
-                        await _UserManager
-                            .RemoveFromRoleAsync(user, ADMINISTRATION_ROLE);
-                    }
-                }
             }
             // Close the Popup
             ShowPopup = false;

@@ -1,5 +1,5 @@
 ﻿@page "/print"
-@attribute [Authorize]
+@attribute [Authorize(Roles = "Administrator, AllowedUser")]
 @using GiffyglyphMonsterMakerV3.Data
 @using GiffyglyphMonsterMakerV3.Utility
 
