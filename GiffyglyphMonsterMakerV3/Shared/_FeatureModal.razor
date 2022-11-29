@@ -389,6 +389,9 @@
 
     private async Task NewFeature(FeatureType type)
     {
+        if (ActiveMonster.Features.Count > 50)
+            return;
+
         SelectedFeatureTemplate = null;
         switch (type)
         {

@@ -446,11 +446,14 @@ else
     }
     public async Task AddMonster(string name = "My New Monster")
     {
-        var mon = new Monster(name, CurrentUserId);
-        active = mon;
-        Monsters.Add(mon);
-        await _ms.InsertMonsterAsync(mon);
-        UpdateValues();
+        if (Monsters.Count < 50)
+        {
+            var mon = new Monster(name, CurrentUserId);
+            active = mon;
+            Monsters.Add(mon);
+            await _ms.InsertMonsterAsync(mon);
+            UpdateValues();
+        }
     }
     public async Task RemoveMonster(Monster mon)
     {
