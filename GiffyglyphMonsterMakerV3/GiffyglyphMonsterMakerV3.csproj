@@ -51,6 +51,8 @@
 
   <ItemGroup>
     <PackageReference Include="Append.Blazor.Printing" Version="1.1.0" />
+    <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.0.0" />
+    <PackageReference Include="Azure.Identity" Version="1.8.0" />
     <PackageReference Include="HtmlSanitizer" Version="8.0.601" />
     <PackageReference Include="MailKit" Version="3.4.3" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="7.0.0" />

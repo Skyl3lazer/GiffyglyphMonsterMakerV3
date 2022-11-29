@@ -8,11 +8,21 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using Azure.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
+
 var config = builder.Configuration;
+    /*
+var clientID = Environment.GetEnvironmentVariable("AZURE_ClientID");
+var credentialOptions = new DefaultAzureCredentialOptions()
+{
+    ManagedIdentityClientId = clientID
+};
+var credential = new DefaultAzureCredential(credentialOptions);*/
+//var connectionString = config["ConnectionStrings__Azure"];
+var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__Azure");
 // Add services to the container.
-var connectionString = config["ConnectionStrings:ggmonstermaker"];
 builder.Services.AddDbContextFactory<ApplicationDbContext>(item => item.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 

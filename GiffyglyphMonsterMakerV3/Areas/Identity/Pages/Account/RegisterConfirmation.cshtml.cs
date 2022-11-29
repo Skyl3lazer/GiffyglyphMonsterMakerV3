@@ -74,8 +74,8 @@ namespace GiffyglyphMonsterMakerV3.Areas.Identity.Pages.Account
                 protocol: Request.Scheme);
             await _sender.SendEmailAsync(
                 Email,
-                "Confirm your email",
-                $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(EmailConfirmationUrl)}'>clicking here</a>.");
+                "Confirm Giffyglyph's MonsterMaker Account",
+                $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(EmailConfirmationUrl)}'>clicking here</a>. Thanks for helping to test!");
 
 
             return Page();

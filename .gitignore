@@ -367,3 +367,4 @@ FodyWeavers.xsd
 GiffyglyphMonsterMakerV3/GiffyglyphMonsterMakerV3/wwwroot/lib/
 node_modules/
 /GiffyglyphMonsterMakerV3/Migrations
+/GiffyglyphMonsterMakerV3/Grant.sql

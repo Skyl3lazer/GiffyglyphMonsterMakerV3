@@ -5,8 +5,11 @@
     },
     "mssql1": {
       "type": "mssql",
-      "connectionId": "ConnectionStrings:ggmonstermaker",
-      "dynamicId": null
+      "connectionId": "ConnectionStrings:ggmonstermaker"
+    },
+    "secrets2": {
+      "ignored": "true",
+      "type": "secrets.keyVault"
     }
   }
 }
