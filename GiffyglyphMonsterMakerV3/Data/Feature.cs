@@ -40,8 +40,10 @@ namespace GiffyglyphMonsterMakerV3.Data
             get => _overrideMarkup;
             set
             {
-                var html = OverrideMarkup;
-                _overrideMarkup = _sanitizer.Sanitize(value);
+                string desc =
+                    "<span class=\"text-white fa-solid p-1 " + (String.IsNullOrWhiteSpace(CustomIcon) ? Icon : CustomIcon) + " " + RarityStyle + "\"></span></span><span class=\"ms-1\">: ";
+                var html = desc + value;
+                _overrideMarkup = _sanitizer.Sanitize(html);
             }
         }
         public virtual FeatureType Type { get; init; }
