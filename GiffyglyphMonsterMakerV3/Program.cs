@@ -42,7 +42,7 @@ builder.Services.AddScoped<IPrintingService, PrintingService>();
 builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<ApplicationUser>>();
 builder.Services.AddScoped<MonsterService>();
 builder.Services.AddScoped<FeatureService>();
-builder.Services.AddScoped<IEmailSender, MailService >();
+builder.Services.AddTransient<IEmailSender, MailService >();
 
 
 var app = builder.Build();
