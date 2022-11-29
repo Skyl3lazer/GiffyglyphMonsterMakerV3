@@ -4,6 +4,7 @@
 @using Microsoft.AspNetCore.Identity
 @inject MonsterService _MonsterService;
 @inject UserManager<ApplicationUser> _UserManager
+@using Blazored.Toast.Configuration
 
 <PageTitle>GiffyglyphMonsterMakerV3</PageTitle>
 
@@ -23,6 +24,21 @@
         </CascadingValue>
     </main>
 </div>
+
+<BlazoredToasts Position="ToastPosition.BottomRight"
+                Timeout="10"
+                IconType="IconType.FontAwesome"
+                InfoClass="bg-info"
+                InfoIcon="fas fa-lightbulb"
+                SuccessClass="bg-success"
+                SuccessIcon="fa fa-thumbs-up"
+                ErrorIcon="fa fa-bug" 
+                ErrorClass="bg-danger"
+                WarningClass="bg-warning"
+                WarningIcon="fas fa-circle-exclamation"
+                ShowProgressBar="true"
+                RemoveToastsOnNavigation="true"
+                />
 
 @code
 {

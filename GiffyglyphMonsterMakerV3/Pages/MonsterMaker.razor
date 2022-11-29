@@ -6,6 +6,7 @@
 @using System.Security.Claims;
 @inject MonsterService _ms;
 @inject FeatureService _fs;
+@inject IToastService _ts;
 
 
 @if (active == null)
@@ -18,7 +19,7 @@
 }
 else
 {
-    <_FeatureModal ActiveMonster="active" SpecificFeature="EditFeature" FeatureChangedCallback="(f) => FeaturesUpdated(f)" SelectedFeatureCallback="(f) => EditFeatureChanged(f)" SaveMonster="() => SaveActiveMonster()" />
+    <_FeatureModal ActiveMonster="active" SpecificFeature="EditFeature" FeatureChangedCallback="(f) => FeaturesUpdated(f)" SelectedFeatureCallback="(f) => EditFeatureChanged(f)" SaveMonster="() => SaveActiveMonster(false)" />
     <_ConfirmDeleteFeatureModal TargetFeature="DeleteFeatureModalTarget" Result="(a) => ConfirmDeleteFeatureModalResult((Feature)a)" />
 
     <PageTitle>Monster Statblock Maker V3</PageTitle>
@@ -244,7 +245,7 @@ else
                 <div class="row overflow-auto px-1 d-block" style="height: 250px;">
                     @foreach (var mon in Monsters)
                     {
-                        <MonsterTitleCard model="mon" DeleteCallback="() => RemoveMonster(mon)" ActiveClick="() => ActiveClick(mon)" Focused="@(mon.Id == active.Id)" SaveCallback="(m) => SaveMonsterAsync((Monster)m)" />
+                        <MonsterTitleCard model="mon" DeleteCallback="() => RemoveMonster(mon)" ActiveClick="() => ActiveClick(mon)" Focused="@(mon.Id == active.Id)" SaveCallback="(m) => SaveMonsterAsync((Monster)m, true)" />
                     }
                 </div>
                 @*<div class="alert alert-warning">You Have Unsaved Changes!</div>*@
@@ -257,7 +258,7 @@ else
                     }
                 </div>
                 <div class="row my-1">
-                    <button class="btn btn-primary" @onclick="() => SaveActiveMonster()"><span class="mx-1 fas fa-floppy-disk" />Save Monster</button>
+                    <button class="btn btn-primary" @onclick="() => SaveActiveMonster(true)"><span class="mx-1 fas fa-floppy-disk" />Save Monster</button>
                 </div>
             </div>
         </div>
@@ -321,14 +322,26 @@ else
         get { return (int)Math.Floor(active.CombatLevel / 12.0) - 1; }
     }
 
-    private void SaveActiveMonster()
+    private void SaveActiveMonster(bool showToast)
     {
-        SaveMonsterAsync(active);
+        SaveMonsterAsync(active, showToast);
     }
 
-    public async Task SaveMonsterAsync(Monster mon)
+    public async Task SaveMonsterAsync(Monster mon, bool showToast)
     {
-        await _ms.UpdateMonsterAsync(mon);
+        bool result = await _ms.UpdateMonsterAsync(mon);
+
+        if (!showToast)
+            return;
+
+        if (result)
+        {
+            _ts.ShowSuccess(mon.Name, "Saved");
+        }
+        else
+        {
+            _ts.ShowError("Could not save monster!");
+        }
     }
 
 
@@ -410,7 +423,15 @@ else
     public async Task RemoveFeature(Feature feature)
     {
         active.Features.Remove(feature);
-        await _fs.DeleteFeatureAsync(feature);
+        var result = await _fs.DeleteFeatureAsync(feature);
+        if (result)
+        {
+            _ts.ShowWarning(feature.Name, "Removed Feature");
+        }
+        else
+        {
+            _ts.ShowError("Could not remove feature!");
+        }
     }
     public void SenseUpdated(object? val)
     {
@@ -459,7 +480,15 @@ else
     public async Task RemoveMonster(Monster mon)
     {
         Monsters.Remove(mon);
-        await _ms.DeleteMonsterAsync(mon);
+        var result = await _ms.DeleteMonsterAsync(mon);
+        if (result)
+        {
+            _ts.ShowWarning(mon.Name, "Removed");
+        }
+        else
+        {
+            _ts.ShowError("Could not remove monster!");
+        }
 
         if (Monsters.Count == 0)
         {

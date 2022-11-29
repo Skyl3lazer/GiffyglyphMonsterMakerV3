@@ -4,6 +4,7 @@
 @using Action = GiffyglyphMonsterMakerV3.Data.Action
 @using System.Security.Claims;
 @inject FeatureService _fs;
+@inject IToastService _ts;
 
 <div class="modal fade" id="featureModal" tabindex="-1" aria-labelledby="featureModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl">
@@ -525,6 +526,8 @@
 
     private async Task SaveAndUpdateTemplate()
     {
+        bool result1;
+        bool result2;
         if (SpecificFeature?.TemplateId != null)
         {
             switch (SpecificFeature.Type)
@@ -532,38 +535,38 @@
                 case FeatureType.Trait:
                     var templateTrait = (await _fs.GetFeatureByIdAsync(SpecificFeature.TemplateId.Value) as Trait);
                     templateTrait.UpdateThisToMatch(SpecificFeature as Trait);
-                    await _fs.UpdateFeatureAsync(SpecificFeature as Trait);
-                    await _fs.UpdateFeatureAsync(templateTrait);
+                    result1 = await _fs.UpdateFeatureAsync(SpecificFeature as Trait);
+                    result2 =await _fs.UpdateFeatureAsync(templateTrait);
                     break;
                 case FeatureType.Free:
                     var templateFree = (await _fs.GetFeatureByIdAsync(SpecificFeature.TemplateId.Value) as FreeAction);
                     templateFree.UpdateThisToMatch(SpecificFeature as FreeAction);
-                    await _fs.UpdateFeatureAsync(SpecificFeature as FreeAction);
-                    await _fs.UpdateFeatureAsync(templateFree);
+                    result1 = await _fs.UpdateFeatureAsync(SpecificFeature as FreeAction);
+                    result2 = await _fs.UpdateFeatureAsync(templateFree);
                     break;
                 case FeatureType.Action:
                     var templateAction = (await _fs.GetFeatureByIdAsync(SpecificFeature.TemplateId.Value) as Action);
                     templateAction.UpdateThisToMatch(SpecificFeature as Action);
-                    await _fs.UpdateFeatureAsync(SpecificFeature as Action);
-                    await _fs.UpdateFeatureAsync(templateAction);
+                    result1 = await _fs.UpdateFeatureAsync(SpecificFeature as Action);
+                    result2 = await _fs.UpdateFeatureAsync(templateAction);
                     break;
                 case FeatureType.Bonus:
                     var templateBonus = (await _fs.GetFeatureByIdAsync(SpecificFeature.TemplateId.Value) as BonusAction);
                     templateBonus.UpdateThisToMatch(SpecificFeature as BonusAction);
-                    await _fs.UpdateFeatureAsync(SpecificFeature as BonusAction);
-                    await _fs.UpdateFeatureAsync(templateBonus);
+                    result1 = await _fs.UpdateFeatureAsync(SpecificFeature as BonusAction);
+                    result2 = await _fs.UpdateFeatureAsync(templateBonus);
                     break;
                 case FeatureType.Reaction:
                     var templateReaction = (await _fs.GetFeatureByIdAsync(SpecificFeature.TemplateId.Value) as Reaction);
                     templateReaction.UpdateThisToMatch(SpecificFeature as Reaction);
-                    await _fs.UpdateFeatureAsync(SpecificFeature as Reaction);
-                    await _fs.UpdateFeatureAsync(templateReaction);
+                    result1 = await _fs.UpdateFeatureAsync(SpecificFeature as Reaction);
+                    result2 = await _fs.UpdateFeatureAsync(templateReaction);
                     break;
                 case FeatureType.Countermeasure:
                     var templateCm = (await _fs.GetFeatureByIdAsync(SpecificFeature.TemplateId.Value) as Countermeasure);
                     templateCm.UpdateThisToMatch(SpecificFeature as Countermeasure);
-                    await _fs.UpdateFeatureAsync(SpecificFeature as Countermeasure);
-                    await _fs.UpdateFeatureAsync(templateCm);
+                    result1 = await _fs.UpdateFeatureAsync(SpecificFeature as Countermeasure);
+                    result2 = await _fs.UpdateFeatureAsync(templateCm);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -580,8 +583,8 @@
                     SpecificFeature.TemplateId = newTemplateTrait.Id;
                     newTemplateTrait.ParentId = null;
                     SelectedFeatureTemplate = newTemplateTrait;
-                    await _fs.UpdateFeatureAsync(SpecificFeature);
-                    await _fs.InsertFeatureAsync(newTemplateTrait);
+                    result1 = await _fs.UpdateFeatureAsync(SpecificFeature);
+                    result2 = await _fs.InsertFeatureAsync(newTemplateTrait);
                     break;
                 case FeatureType.Free:
                     var newTemplateFree = (SpecificFeature as FreeAction).Clone();
@@ -590,8 +593,8 @@
                     SpecificFeature.TemplateId = newTemplateFree.Id;
                     newTemplateFree.ParentId = null;
                     SelectedFeatureTemplate = newTemplateFree;
-                    await _fs.UpdateFeatureAsync(SpecificFeature);
-                    await _fs.InsertFeatureAsync(newTemplateFree);
+                    result1 = await _fs.UpdateFeatureAsync(SpecificFeature);
+                    result2 = await _fs.InsertFeatureAsync(newTemplateFree);
                     break;
                 case FeatureType.Action:
                     var newTemplateAction = (SpecificFeature as Action).Clone();
@@ -600,8 +603,8 @@
                     SpecificFeature.TemplateId = newTemplateAction.Id;
                     newTemplateAction.ParentId = null;
                     SelectedFeatureTemplate = newTemplateAction;
-                    await _fs.UpdateFeatureAsync(SpecificFeature);
-                    await _fs.InsertFeatureAsync(newTemplateAction);
+                    result1 = await _fs.UpdateFeatureAsync(SpecificFeature);
+                    result2 = await _fs.InsertFeatureAsync(newTemplateAction);
                     break;
                 case FeatureType.Bonus:
                     var newTemplateBonus = (SpecificFeature as BonusAction).Clone();
@@ -610,8 +613,8 @@
                     SpecificFeature.TemplateId = newTemplateBonus.Id;
                     newTemplateBonus.ParentId = null;
                     SelectedFeatureTemplate = newTemplateBonus;
-                    await _fs.UpdateFeatureAsync(SpecificFeature);
-                    await _fs.InsertFeatureAsync(newTemplateBonus);
+                    result1 = await _fs.UpdateFeatureAsync(SpecificFeature);
+                    result2 = await _fs.InsertFeatureAsync(newTemplateBonus);
                     break;
                 case FeatureType.Reaction:
                     var newTemplateReaction = (SpecificFeature as Reaction).Clone();
@@ -620,8 +623,8 @@
                     SpecificFeature.TemplateId = newTemplateReaction.Id;
                     newTemplateReaction.ParentId = null;
                     SelectedFeatureTemplate = newTemplateReaction;
-                    await _fs.UpdateFeatureAsync(SpecificFeature);
-                    await _fs.InsertFeatureAsync(newTemplateReaction);
+                    result1 = await _fs.UpdateFeatureAsync(SpecificFeature);
+                    result2 = await _fs.InsertFeatureAsync(newTemplateReaction);
                     break;
                 case FeatureType.Countermeasure:
                     var newTemplateCounter = (SpecificFeature as Countermeasure).Clone();
@@ -630,8 +633,8 @@
                     SpecificFeature.TemplateId = newTemplateCounter.Id;
                     newTemplateCounter.ParentId = null;
                     SelectedFeatureTemplate = newTemplateCounter;
-                    await _fs.UpdateFeatureAsync(SpecificFeature);
-                    await _fs.InsertFeatureAsync(newTemplateCounter);
+                    result1 = await _fs.UpdateFeatureAsync(SpecificFeature);
+                    result2 = await _fs.InsertFeatureAsync(newTemplateCounter);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -640,14 +643,30 @@
         }
         await FeatureChangedCallback.InvokeAsync(ActiveMonster.Features);
         await SaveMonster.InvokeAsync();
+        if (result1 && result2)
+        {
+            _ts.ShowSuccess(SpecificFeature.Name + " and template", "Saved");
+        }
+        else
+        {
+            _ts.ShowError("Could not save feature and template!");
+        }
         StateHasChanged();
     }
 
     private async Task SaveFeature()
     {
-        await _fs.UpdateFeatureAsync(SpecificFeature);
+        var result = await _fs.UpdateFeatureAsync(SpecificFeature);
         await FeatureChangedCallback.InvokeAsync(ActiveMonster.Features);
         await SaveMonster.InvokeAsync();
         StateHasChanged();
+        if (result)
+        {
+            _ts.ShowSuccess(SpecificFeature.Name, "Saved");
+        }
+        else
+        {
+            _ts.ShowError("Could not save feature.");
+        }
     }
 }
