@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using GiffyglyphMonsterMakerV3.Utility;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components.Authorization;
+using System.Security.Claims;
 
 namespace GiffyglyphMonsterMakerV3.Data
 {
@@ -26,8 +27,12 @@ namespace GiffyglyphMonsterMakerV3.Data
 
         public async Task<List<Feature>> GetAllFeatureTemplatesAsync()
         {
+            var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+            var User = authState.User;
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
             await using var _context = await _dbContextFactory.CreateDbContextAsync();
-            var ret = await _context.Features.Where(a => a.ParentId == null)
+            var ret = await _context.Features.Where(a => a.ParentId == null && a.CreateUserId == currentUserId)
                 .Include(f=>f.Frequency)
                 .ToListAsync();
             return ret;
