@@ -14,6 +14,7 @@
 <AuthorizeView>
     <NotAuthorized>
         <div class="my-2"><span class="fw-bold">You are not currently logged in.</span> Please register an account and log in to access the monster creator and stat block printer.</div>
+        <div>Note that while the app is in alpha, it's currently in whitelist mode. Message me on discord to request access!</div>
     </NotAuthorized>
     <Authorized>
         @if (context.User.IsInRole("User"))
