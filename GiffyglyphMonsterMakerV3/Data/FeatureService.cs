@@ -23,6 +23,8 @@ namespace GiffyglyphMonsterMakerV3.Data
         public FeatureService(IDbContextFactory<ApplicationDbContext> dbContextFactory, AuthenticationStateProvider authenticationStateProvider)
         {
             _dbContextFactory = dbContextFactory;
+            _authenticationStateProvider = authenticationStateProvider;
+            ;
         }
 
         public async Task<List<Feature>> GetAllFeatureTemplatesAsync()
