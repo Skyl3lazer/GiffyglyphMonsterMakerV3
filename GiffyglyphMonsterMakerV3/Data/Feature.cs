@@ -21,7 +21,17 @@ namespace GiffyglyphMonsterMakerV3.Data
 
         public virtual string MarkupDescription(Creature parentCreature)
         {
-            return "";
+            string desc =
+                "<span class=\"text-white fa-solid p-1 " + (String.IsNullOrWhiteSpace(CustomIcon) ? Icon : CustomIcon) + " " + RarityStyle + "\"></span></span><span class=\"ms-1\">";
+
+            desc += @"<span class=""fw-bold"">" + Name;
+            if (Frequency.Type != FrequencyType.passive)
+            {
+                desc += " (" + Frequency.StringValue + ")";
+            }
+            desc += @": </span>";
+
+            return desc + _sanitizer.Sanitize(OverrideMarkup);
         }
 
         [NotMapped] private HtmlSanitizer _sanitizer;
@@ -37,15 +47,14 @@ namespace GiffyglyphMonsterMakerV3.Data
         [BackingField("_overrideMarkup")]
         public string OverrideMarkup
         {
-            get => _overrideMarkup;
+            get =>_overrideMarkup;
             set
             {
-                string desc =
-                    "<span class=\"text-white fa-solid p-1 " + (String.IsNullOrWhiteSpace(CustomIcon) ? Icon : CustomIcon) + " " + RarityStyle + "\"></span></span><span class=\"ms-1\">: ";
-                var html = desc + value;
+                var html = value;
                 _overrideMarkup = _sanitizer.Sanitize(html);
             }
         }
+
         public virtual FeatureType Type { get; init; }
         public RarityType Rarity { get; set; }
         public AttributeType RelevantAttribute { get; set; }

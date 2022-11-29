@@ -19,14 +19,6 @@ namespace GiffyglyphMonsterMakerV3.Data
         {
             string desc =
                 "<span class=\"text-white fa-solid p-1 " + (String.IsNullOrWhiteSpace(CustomIcon) ? Icon : CustomIcon) + " " + RarityStyle + "\"></span></span><span class=\"ms-1\">";
-            //If you want to just totally override a thing, go for it
-            if (!string.IsNullOrWhiteSpace(OverrideMarkup))
-            {
-                var sanitizer = new HtmlSanitizer();
-                (new List<string> { "fst-italic", "fw-bold" }).ForEach(item => sanitizer.AllowedClasses.Add(item));
-                var html = OverrideMarkup;
-                return desc+": "+sanitizer.Sanitize(html);
-            }
 
             desc += @"<span class=""fw-bold"">" + Name;
             if (Frequency.Type != FrequencyType.passive)
@@ -34,6 +26,15 @@ namespace GiffyglyphMonsterMakerV3.Data
                 desc += " (" + Frequency.StringValue + ")";
             }
             desc += @": </span>";
+            
+            //If you want to just totally override a thing, go for it
+            if (!string.IsNullOrWhiteSpace(OverrideMarkup))
+            {
+                var sanitizer = new HtmlSanitizer();
+                (new List<string> { "fst-italic", "fw-bold" }).ForEach(item => sanitizer.AllowedClasses.Add(item));
+                var html = OverrideMarkup;
+                return desc + sanitizer.Sanitize(html);
+            }
 
             desc += (IsSpell ? "<span class=\"fst-italic\">Spell</span>: " + SpellDesc : "");
             desc += "<span class=\"fst-italic\">" + Distance.ToString() + "</span>: ";
