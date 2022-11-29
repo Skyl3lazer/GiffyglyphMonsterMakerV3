@@ -18,12 +18,14 @@ namespace GiffyglyphMonsterMakerV3.Data
         private bool Loading = false;
         private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
         private readonly AuthenticationStateProvider _authenticationStateProvider;
+        private readonly IConfiguration _config;
         #endregion
 
-        public FeatureService(IDbContextFactory<ApplicationDbContext> dbContextFactory, AuthenticationStateProvider authenticationStateProvider)
+        public FeatureService(IDbContextFactory<ApplicationDbContext> dbContextFactory, AuthenticationStateProvider authenticationStateProvider, IConfiguration config)
         {
             _dbContextFactory = dbContextFactory;
             _authenticationStateProvider = authenticationStateProvider;
+            _config = config;
         }
 
         public async Task<List<Feature>> GetAllFeatureTemplatesAsync()
@@ -33,7 +35,8 @@ namespace GiffyglyphMonsterMakerV3.Data
             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             await using var _context = await _dbContextFactory.CreateDbContextAsync();
-            var ret = await _context.Features.Where(a => a.ParentId == null && a.CreateUserId == currentUserId)
+            var ret = await _context.Features.Where(a => a.ParentId == null 
+                                                         && (a.CreateUserId == currentUserId || a.CreateUserId == (Environment.GetEnvironmentVariable("IdentityTemplateCreateId") ?? _config["IdentityTemplateCreateId"])))
                 .Include(f=>f.Frequency)
                 .ToListAsync();
             return ret;

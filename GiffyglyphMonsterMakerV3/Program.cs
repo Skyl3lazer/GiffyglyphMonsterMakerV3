@@ -12,7 +12,6 @@ using Azure.Identity;
 using Blazored.Toast;
 
 var builder = WebApplication.CreateBuilder(args);
-
 var config = builder.Configuration;
 /*
 var clientID = Environment.GetEnvironmentVariable("AZURE_ClientID");

@@ -264,11 +264,13 @@
                 <span>
                     @if (SpecificFeature != null)
                     {
-                        <button type="button" class="btn btn-primary" @onclick="() => SaveFeature()"><span class="fas fa-floppy-disk me-1" />Save</button>
-                        <button type="button" class="btn btn-primary" @onclick="() => SaveAndUpdateTemplate()"><span class="fak fa-solid-floppy-disk-circle-plus me-1" />Save and @(SpecificFeature?.TemplateId == null ? "Add" : "Update") Template</button>
-                        <span></span>
+                        <button type="button" class="btn btn-primary" @onclick="() => SaveFeature()"><span class="fas fa-floppy-disk" />Save</button>
+                        if (SelectedFeatureTemplate == null || SelectedFeatureTemplate.CreateUserId == CurrentUserId)
+                        {
+                            <button type="button" class="btn btn-primary ms-1" @onclick="() => SaveAndUpdateTemplate()"><span class="fak fa-solid-floppy-disk-circle-plus"/>Save and @(SpecificFeature?.TemplateId == null ? "Add" : "Update") Template</button>
+                        }
                     }
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><span class="fas fa-x me-1" />Close</button>
+                    <button type="button" class="btn btn-secondary ms-1" data-bs-dismiss="modal"><span class="fas fa-x" />Close</button>
                 </span>
             </div>
         </div>
@@ -293,7 +295,7 @@
     private string? CurrentUserId = null;
 
     private List<Feature>? FeatureTemplates { get; set; }
-    private Feature SelectedFeatureTemplate { get; set; }
+    private Feature? SelectedFeatureTemplate { get; set; }
     private Guid? _selectedFeatureTemplateId;
     private Guid? SelectedFeatureTemplateId
     {
@@ -304,9 +306,13 @@
                 _selectedFeatureTemplateId = value;
 
             if (_selectedFeatureTemplateId != null)
-                SelectedFeatureTemplate = FeatureTemplates.First(a => a.Id == value);
+            {
+                SelectedFeatureTemplate = FeatureTemplates?.First(a => a.Id == value);
+            }
             else
+            {
                 SelectedFeatureTemplate = null;
+            }
         }
     }
     private FeatureType SelectedFeatureType { get; set; }
@@ -324,6 +330,11 @@
         if (SpecificFeature != null && SpecificFeature.TemplateId != null)
         {
             SelectedFeatureTemplate = FeatureTemplates.First(a => a.Id == SpecificFeature.TemplateId);
+        }
+        if (SelectedFeatureTemplate == null && FeatureTemplates.Count > 0)
+        {
+            SelectedFeatureTemplateId = FeatureTemplates.First().Id;
+            SelectedFeatureType = SelectedFeatureTemplate.Type;
         }
     }
 
@@ -459,7 +470,7 @@
                 newTrait.Frequency.Id = Guid.NewGuid();
                 newTrait.ParentId = ActiveMonster.Id;
                 ActiveMonster.Features.Add(newTrait);
-                SpecificFeature = newTrait;
+                await SelectedFeatureCallback.InvokeAsync(newTrait);
                 await FeatureChangedCallback.InvokeAsync(ActiveMonster.Features);
                 await _fs.InsertFeatureAsync(newTrait);
                 break;
@@ -470,7 +481,7 @@
                 newFree.Frequency.Id = Guid.NewGuid();
                 newFree.ParentId = ActiveMonster.Id;
                 ActiveMonster.Features.Add(newFree);
-                SpecificFeature = newFree;
+                await SelectedFeatureCallback.InvokeAsync(newFree);
                 await FeatureChangedCallback.InvokeAsync(ActiveMonster.Features);
                 await _fs.InsertFeatureAsync(newFree);
                 break;
@@ -481,7 +492,7 @@
                 newAction.Frequency.Id = Guid.NewGuid();
                 newAction.ParentId = ActiveMonster.Id;
                 ActiveMonster.Features.Add(newAction);
-                SpecificFeature = newAction;
+                await SelectedFeatureCallback.InvokeAsync(newAction);
                 await FeatureChangedCallback.InvokeAsync(ActiveMonster.Features);
                 await _fs.InsertFeatureAsync(newAction);
                 break;
@@ -492,7 +503,7 @@
                 newBonus.Frequency.Id = Guid.NewGuid();
                 newBonus.ParentId = ActiveMonster.Id;
                 ActiveMonster.Features.Add(newBonus);
-                SpecificFeature = newBonus;
+                await SelectedFeatureCallback.InvokeAsync(newBonus);
                 await FeatureChangedCallback.InvokeAsync(ActiveMonster.Features);
                 await _fs.InsertFeatureAsync(newBonus);
                 break;
@@ -503,7 +514,7 @@
                 newReaction.Frequency.Id = Guid.NewGuid();
                 newReaction.ParentId = ActiveMonster.Id;
                 ActiveMonster.Features.Add(newReaction);
-                SpecificFeature = newReaction;
+                await SelectedFeatureCallback.InvokeAsync(newReaction);
                 await FeatureChangedCallback.InvokeAsync(ActiveMonster.Features);
                 await _fs.InsertFeatureAsync(newReaction);
                 break;
@@ -514,7 +525,7 @@
                 newCm.Frequency.Id = Guid.NewGuid();
                 newCm.ParentId = ActiveMonster.Id;
                 ActiveMonster.Features.Add(newCm);
-                SpecificFeature = newCm;
+                await SelectedFeatureCallback.InvokeAsync(newCm);
                 await FeatureChangedCallback.InvokeAsync(ActiveMonster.Features);
                 await _fs.InsertFeatureAsync(newCm);
                 break;
