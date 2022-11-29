@@ -267,7 +267,7 @@ else
 @code {
     [CascadingParameter]
     protected List<Monster> Monsters { get; set; }
-    
+
     [CascadingParameter]
     private Task<AuthenticationState> authenticationStateTask { get; set; }
 
@@ -330,7 +330,7 @@ else
     {
         await _ms.UpdateMonsterAsync(mon);
     }
-    
+
 
     private async Task CreateFirstMonster()
     {
@@ -446,14 +446,15 @@ else
     }
     public async Task AddMonster(string name = "My New Monster")
     {
-        if (Monsters.Count < 50)
-        {
-            var mon = new Monster(name, CurrentUserId);
+        if (Monsters.Count > 50)
+            return;
+        
+        var mon = new Monster(name, CurrentUserId);
             active = mon;
             Monsters.Add(mon);
             await _ms.InsertMonsterAsync(mon);
             UpdateValues();
-        }
+        
     }
     public async Task RemoveMonster(Monster mon)
     {
