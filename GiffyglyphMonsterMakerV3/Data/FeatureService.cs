@@ -24,7 +24,6 @@ namespace GiffyglyphMonsterMakerV3.Data
         {
             _dbContextFactory = dbContextFactory;
             _authenticationStateProvider = authenticationStateProvider;
-            ;
         }
 
         public async Task<List<Feature>> GetAllFeatureTemplatesAsync()

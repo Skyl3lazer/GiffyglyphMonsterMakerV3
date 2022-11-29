@@ -233,15 +233,11 @@
         {
             // Is user in administrator role?
             var UserResult =
-                await _UserManager
-                    .IsInRoleAsync(user, ADMINISTRATION_ROLE);
-            if (UserResult)
+                await _UserManager.GetRolesAsync(user);
+            var firstRole = UserResult.Count > 0 ? UserResult.First() : null;
+            if (!string.IsNullOrEmpty(firstRole))
             {
-                CurrentUserRole = ADMINISTRATION_ROLE;
-            }
-            else
-            {
-                CurrentUserRole = "Users";
+                CurrentUserRole = firstRole;
             }
         }
         // Open the Popup
