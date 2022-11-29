@@ -33,8 +33,12 @@ namespace GiffyglyphMonsterMakerV3.Utility
             {
                 smtpClient.ServerCertificateValidationCallback = (s, c, h, e) => true;
                 //smtpClient.ServerCertificateValidationCallback = (s, c, h, e) => e == SslPolicyErrors.None;
-                await smtpClient.ConnectAsync(_configuration["Smtp:Host"], port: int.Parse(_configuration["Smtp:Port"]), SecureSocketOptions.StartTls);
-                await smtpClient.AuthenticateAsync(_configuration["Smtp:Account"], _configuration["Smtp:Password"]);
+                var SmtpHost = Environment.GetEnvironmentVariable("Smtp:Host") ?? _configuration["Smtp:Host"];
+                var SmtpPort = Environment.GetEnvironmentVariable("Smtp:Port") ?? _configuration["Smtp:Port"];
+                var SmtpAccount = Environment.GetEnvironmentVariable("Smtp:Account") ?? _configuration["Smtp:Account"];
+                var SmtpPassword = Environment.GetEnvironmentVariable("Smtp:Password") ?? _configuration["Smtp:Password"];
+                await smtpClient.ConnectAsync(SmtpHost, port: int.Parse(SmtpPort), SecureSocketOptions.StartTls);
+                await smtpClient.AuthenticateAsync(SmtpAccount, SmtpPassword);
                 await smtpClient.SendAsync(mailMessage);
                 await smtpClient.DisconnectAsync(true);
             }

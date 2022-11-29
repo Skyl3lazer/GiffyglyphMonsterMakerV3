@@ -20,6 +20,7 @@ var credentialOptions = new DefaultAzureCredentialOptions()
 ManagedIdentityClientId = clientID
 };
 var credential = new DefaultAzureCredential(credentialOptions);*/
+
 //var connectionString = config["ConnectionStrings__Azure"];
 //var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__Azure");
 var connectionString = config.GetConnectionString("Azure");
