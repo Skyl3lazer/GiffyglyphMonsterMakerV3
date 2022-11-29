@@ -40,7 +40,21 @@
                                 <span class="fas fa-plus mx-1" />
                                 <span>Add to Active</span>
                             </span>
+                            
+                            @if (SelectedFeatureTemplate != null && SelectedFeatureTemplate.CreateUserId == CurrentUserId)
+                            {
+                                <button class="btn btn-outline-danger float-end" style="margin-top: -6px;" type="button" @onclick="() => DeleteTemplate(SelectedFeatureTemplate)"><span class="me-1 fas fa-trash" />Delete Template</button>
+                            }
+                            
                         </div>
+                        if (SelectedFeatureTemplate != null)
+                        {
+                                <div>
+                                    <span class="fw-bold">Preview: </span>
+                                    <span class="">@((MarkupString)SelectedFeatureTemplate.MarkupDescription(ActiveMonster))</span>
+                                </div>
+                        }
+                        <hr />
                         <div class="h4 mb-1"> <span class="fw-bold">Create New Feature</span></div>
                         <div class="row">
                             <div class="col-4 rounded-pill border border-2 border-black">
@@ -269,6 +283,10 @@
                         {
                             <button type="button" class="btn btn-primary ms-1" @onclick="() => SaveAndUpdateTemplate()"><span class="fak fa-solid-floppy-disk-circle-plus"/>Save and @(SpecificFeature?.TemplateId == null ? "Add" : "Update") Template</button>
                         }
+                        else if (SelectedFeatureTemplate != null && SelectedFeatureTemplate.CreateUserId != CurrentUserId)
+                        {
+                            <button type="button" class="btn btn-secondary disabled ms-1"><span class="fas fa-floppy-disk-circle-xmark"/>Generic Template</button>
+                        }
                     }
                     <button type="button" class="btn btn-secondary ms-1" data-bs-dismiss="modal"><span class="fas fa-x" />Close</button>
                 </span>
@@ -335,6 +353,30 @@
         {
             SelectedFeatureTemplateId = FeatureTemplates.First().Id;
             SelectedFeatureType = SelectedFeatureTemplate.Type;
+        }
+    }
+
+
+    private async Task DeleteTemplate(Feature f)
+    {
+        FeatureTemplates.Remove(f);
+        if (FeatureTemplates.Count > 0)
+        {
+            SelectedFeatureTemplateId = FeatureTemplates.First().Id;
+            SelectedFeatureType = SelectedFeatureTemplate.Type;
+        }
+        else
+        {
+            SelectedFeatureTemplateId = null;
+        }
+        var result = await _fs.DeleteFeatureAsync(f);
+        if (result)
+        {
+            _ts.ShowWarning(f.Name, "Removed Template");
+        }
+        else
+        {
+            _ts.ShowError("Could not remove template!");
         }
     }
 
@@ -468,6 +510,7 @@
                 newTrait.TemplateId = SelectedFeatureTemplate.Id;
                 newTrait.Id = Guid.NewGuid();
                 newTrait.Frequency.Id = Guid.NewGuid();
+                newTrait.CreateUserId = CurrentUserId;
                 newTrait.ParentId = ActiveMonster.Id;
                 ActiveMonster.Features.Add(newTrait);
                 await SelectedFeatureCallback.InvokeAsync(newTrait);
@@ -479,6 +522,7 @@
                 newFree.TemplateId = SelectedFeatureTemplate.Id;
                 newFree.Id = Guid.NewGuid();
                 newFree.Frequency.Id = Guid.NewGuid();
+                newFree.CreateUserId = CurrentUserId;
                 newFree.ParentId = ActiveMonster.Id;
                 ActiveMonster.Features.Add(newFree);
                 await SelectedFeatureCallback.InvokeAsync(newFree);
@@ -490,6 +534,7 @@
                 newAction.TemplateId = SelectedFeatureTemplate.Id;
                 newAction.Id = Guid.NewGuid();
                 newAction.Frequency.Id = Guid.NewGuid();
+                newAction.CreateUserId = CurrentUserId;
                 newAction.ParentId = ActiveMonster.Id;
                 ActiveMonster.Features.Add(newAction);
                 await SelectedFeatureCallback.InvokeAsync(newAction);
@@ -501,6 +546,7 @@
                 newBonus.TemplateId = SelectedFeatureTemplate.Id;
                 newBonus.Id = Guid.NewGuid();
                 newBonus.Frequency.Id = Guid.NewGuid();
+                newBonus.CreateUserId = CurrentUserId;
                 newBonus.ParentId = ActiveMonster.Id;
                 ActiveMonster.Features.Add(newBonus);
                 await SelectedFeatureCallback.InvokeAsync(newBonus);
@@ -512,6 +558,7 @@
                 newReaction.TemplateId = SelectedFeatureTemplate.Id;
                 newReaction.Id = Guid.NewGuid();
                 newReaction.Frequency.Id = Guid.NewGuid();
+                newReaction.CreateUserId = CurrentUserId;
                 newReaction.ParentId = ActiveMonster.Id;
                 ActiveMonster.Features.Add(newReaction);
                 await SelectedFeatureCallback.InvokeAsync(newReaction);
@@ -523,6 +570,7 @@
                 newCm.TemplateId = SelectedFeatureTemplate.Id;
                 newCm.Id = Guid.NewGuid();
                 newCm.Frequency.Id = Guid.NewGuid();
+                newCm.CreateUserId = CurrentUserId;
                 newCm.ParentId = ActiveMonster.Id;
                 ActiveMonster.Features.Add(newCm);
                 await SelectedFeatureCallback.InvokeAsync(newCm);
@@ -591,6 +639,7 @@
                     var newTemplateTrait = (SpecificFeature as Trait).Clone();
                     newTemplateTrait.Id = Guid.NewGuid();
                     newTemplateTrait.Frequency.Id = Guid.NewGuid();
+                    newTemplateTrait.CreateUserId = CurrentUserId;
                     SpecificFeature.TemplateId = newTemplateTrait.Id;
                     newTemplateTrait.ParentId = null;
                     SelectedFeatureTemplate = newTemplateTrait;
@@ -601,6 +650,7 @@
                     var newTemplateFree = (SpecificFeature as FreeAction).Clone();
                     newTemplateFree.Id = Guid.NewGuid();
                     newTemplateFree.Frequency.Id = Guid.NewGuid();
+                    newTemplateFree.CreateUserId = CurrentUserId;
                     SpecificFeature.TemplateId = newTemplateFree.Id;
                     newTemplateFree.ParentId = null;
                     SelectedFeatureTemplate = newTemplateFree;
@@ -611,6 +661,7 @@
                     var newTemplateAction = (SpecificFeature as Action).Clone();
                     newTemplateAction.Id = Guid.NewGuid();
                     newTemplateAction.Frequency.Id = Guid.NewGuid();
+                    newTemplateAction.CreateUserId = CurrentUserId;
                     SpecificFeature.TemplateId = newTemplateAction.Id;
                     newTemplateAction.ParentId = null;
                     SelectedFeatureTemplate = newTemplateAction;
@@ -621,6 +672,7 @@
                     var newTemplateBonus = (SpecificFeature as BonusAction).Clone();
                     newTemplateBonus.Id = Guid.NewGuid();
                     newTemplateBonus.Frequency.Id = Guid.NewGuid();
+                    newTemplateBonus.CreateUserId = CurrentUserId;
                     SpecificFeature.TemplateId = newTemplateBonus.Id;
                     newTemplateBonus.ParentId = null;
                     SelectedFeatureTemplate = newTemplateBonus;
@@ -631,6 +683,7 @@
                     var newTemplateReaction = (SpecificFeature as Reaction).Clone();
                     newTemplateReaction.Id = Guid.NewGuid();
                     newTemplateReaction.Frequency.Id = Guid.NewGuid();
+                    newTemplateReaction.CreateUserId = CurrentUserId;
                     SpecificFeature.TemplateId = newTemplateReaction.Id;
                     newTemplateReaction.ParentId = null;
                     SelectedFeatureTemplate = newTemplateReaction;
@@ -641,6 +694,7 @@
                     var newTemplateCounter = (SpecificFeature as Countermeasure).Clone();
                     newTemplateCounter.Id = Guid.NewGuid();
                     newTemplateCounter.Frequency.Id = Guid.NewGuid();
+                    newTemplateCounter.CreateUserId = CurrentUserId;
                     SpecificFeature.TemplateId = newTemplateCounter.Id;
                     newTemplateCounter.ParentId = null;
                     SelectedFeatureTemplate = newTemplateCounter;
