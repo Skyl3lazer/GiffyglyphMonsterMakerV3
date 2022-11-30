@@ -1,8 +1,23 @@
-﻿<AuthorizeView>
+﻿@inject IJSRuntime _jscript;
+
+<AuthorizeView>
     <Authorized>
-        <a href="Identity/Account/Manage" class="me-1">Logged in as @context.User.Identity?.Name!</a>
+        @*<a
+            href="javascript:void(0)"
+            class="btn btn-outline-info btn-lg ml-auto fw-bold text-light bg-dark bg-opacity-50"
+            id="theme-toggler"
+            onclick="toggleTheme()"
+        ></a>*@
+        <div>
+            <label class="theme-switch rounded-circle" for="themeCheckbox">
+                <input type="checkbox" id="themeCheckbox" onchange="toggleTheme()"/>
+                <div class="slider " />
+            </label>
+            <em id="darkLabel"></em>
+        </div>
+        <a href="Identity/Account/Manage" class="me-1 text-light">Logged in as @context.User.Identity?.Name!</a>
         <form method="post" action="Identity/Account/Logout">
-            <button type="submit" class="nav-link btn btn-link">Log out</button>
+            <button type="submit" class="nav-link btn btn-link text-light">Log out</button>
         </form>
     </Authorized>
     <NotAuthorized>
@@ -10,3 +25,11 @@
         <a href="Identity/Account/Login">Log in</a>
     </NotAuthorized>
 </AuthorizeView>
+
+@code
+{
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await _jscript.InvokeVoidAsync("getThemeToggler");
+    }
+}

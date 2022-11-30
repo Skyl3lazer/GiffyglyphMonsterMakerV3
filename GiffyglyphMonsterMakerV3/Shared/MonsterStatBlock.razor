@@ -1,7 +1,7 @@
 ﻿@using GiffyglyphMonsterMakerV3.Data
 @using System.Diagnostics
 @using GiffyglyphMonsterMakerV3.Utility
-<div class="@(Hidden ? "d-none " : "")border-black border-2 p-1 px-2 card">
+<div class="@(Hidden ? "d-none " : "")border-black border-2 p-1 px-2 card bg-light-text-dark">
     <div class="monsterPrimary px-2">
         <div class="name text-white fw-bold fs-2">@model.Name</div>
         <div class="text-white fst-italic">@model.Size @model.Type @(String.IsNullOrWhiteSpace(model.TypeDetail) ? "" : "(" + model.TypeDetail + ")")</div>

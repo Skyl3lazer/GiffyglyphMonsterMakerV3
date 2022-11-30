@@ -26,5 +26,13 @@
   {
     "outputFile": "Shared/_FeatureModal.razor.css",
     "inputFile": "Shared/_FeatureModal.razor.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/bootstrap.custom.dark.css",
+    "inputFile": "wwwroot/css/bootstrap.custom.dark.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/Site.css",
+    "inputFile": "wwwroot/css/Site.scss"
   }
 ]

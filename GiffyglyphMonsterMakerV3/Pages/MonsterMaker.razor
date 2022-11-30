@@ -245,7 +245,7 @@ else
                 <div class="row overflow-auto px-1 d-block" style="height: 250px;">
                     @foreach (var mon in Monsters)
                     {
-                        <MonsterTitleCard model="mon" DeleteCallback="() => RemoveMonster(mon)" ActiveClick="() => ActiveClick(mon)" Focused="@(mon.Id == active.Id)" SaveCallback="(m) => SaveMonsterAsync((Monster)m, true)" />
+                        <MonsterTitleCard model="mon" DeleteCallback="() => RemoveMonster(mon)" ActiveClick="() => ActiveClick(mon)" FocusedMonster="@(mon.Id == active.Id)" SaveCallback="(m) => SaveMonsterAsync((Monster)m, true)" />
                     }
                 </div>
                 @*<div class="alert alert-warning">You Have Unsaved Changes!</div>*@
