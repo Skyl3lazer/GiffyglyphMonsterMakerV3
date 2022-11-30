@@ -23,7 +23,7 @@ var credential = new DefaultAzureCredential(credentialOptions);*/
 
 //var connectionString = config["ConnectionStrings__Azure"];
 //var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__Azure");
-var connectionString = config.GetConnectionString("Azure");
+var connectionString = config.GetConnectionString("Azure") ?? config["ConnectionStrings__Azure"];
 // Add services to the container.
 builder.Services.AddDbContextFactory<ApplicationDbContext>(item => item.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();

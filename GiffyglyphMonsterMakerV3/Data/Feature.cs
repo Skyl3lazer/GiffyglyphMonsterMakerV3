@@ -9,6 +9,7 @@ using System.Security.Claims;
 
 namespace GiffyglyphMonsterMakerV3.Data
 {
+    [Table("Features")]
     public class Feature
     {
 
@@ -22,7 +23,7 @@ namespace GiffyglyphMonsterMakerV3.Data
         public virtual string MarkupDescription(Creature parentCreature)
         {
             string desc =
-                "<span class=\"text-white fa-solid p-1 " + (String.IsNullOrWhiteSpace(CustomIcon) ? Icon : CustomIcon) + " " + RarityStyle + "\"></span></span><span class=\"ms-1\">";
+                "<span class=\"text-white fa-solid p-1 align-middle " + (String.IsNullOrWhiteSpace(CustomIcon) ? Icon : CustomIcon) + " " + RarityStyle + "\"></span></span><span class=\"ms-1\">";
 
             desc += @"<span class=""fw-bold"">" + Name;
             if (Frequency.Type != FrequencyType.passive)
@@ -58,7 +59,15 @@ namespace GiffyglyphMonsterMakerV3.Data
         public virtual FeatureType Type { get; init; }
         public RarityType Rarity { get; set; }
         public AttributeType RelevantAttribute { get; set; }
-        public virtual string Icon { get; } = "";
+
+        public virtual string Icon
+        {
+            get
+            {
+                return "fa-play";
+            }
+        }
+
         public string CustomIcon { get; set; } = "";
         public virtual string RarityStyle
         {

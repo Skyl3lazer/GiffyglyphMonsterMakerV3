@@ -169,7 +169,9 @@
                             </div>
                             <hr />
                             <div>
-                                <span class="fw-bold card-header collapsed" data-bs-toggle="collapse" data-bs-target="#overrideProperties" aria-expanded="false" aria-controls="overrideProperties">Override Properties<span class="fas fa-chevrons-down mx-1" /><span class="fas fa-chevrons-up mx-1" /></span>
+                                <span class="fw-bold card-header collapsed" data-bs-toggle="collapse" data-bs-target="#overrideProperties" aria-expanded="false" aria-controls="overrideProperties">
+                                    Override Properties<span class="fas fa-chevrons-down mx-1"/><span class="fas fa-chevrons-up mx-1"/>
+                                </span>
                                 <div class="collapse" id="overrideProperties">
                                     <div class="my-1">
                                         <span>Custom Icon (See FontAwesome): </span><input @bind="SpecificFeature.CustomIcon" @bind:event="oninput" />
@@ -186,10 +188,14 @@
                                 {
                                     case FeatureType.Trait:
                                         var trait = SpecificFeature as Trait;
+                                        <div class="my-1">
+                                            <span>Trait Description: </span><textarea @bind="trait.TraitDescription" maxlength="5000" @bind:event="oninput"></textarea>
+                                        </div>
                                         break;
                                     case FeatureType.Free:
-                                    case FeatureType.Action:
                                     case FeatureType.Bonus:
+                                    case FeatureType.Reaction:
+                                    case FeatureType.Action:
                                         var action = SpecificFeature as Action;
                                         <div class="my-1">
                                             <span>Distance: </span>
@@ -262,11 +268,11 @@
                                         </div>
 
                                         break;
-                                    case FeatureType.Reaction:
-                                        var reaction = SpecificFeature as Reaction;
-                                        break;
                                     case FeatureType.Countermeasure:
                                         var countermeasure = SpecificFeature as Countermeasure;
+                                        <div class="my-1">
+                                            <span>Trait Description: </span><textarea @bind="countermeasure.CountermeasureDescription" maxlength="5000" @bind:event="oninput"></textarea>
+                                        </div>
                                         break;
                                 }
                             </div>

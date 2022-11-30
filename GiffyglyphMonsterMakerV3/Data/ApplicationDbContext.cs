@@ -33,9 +33,9 @@ namespace GiffyglyphMonsterMakerV3.Data
                 .HasBaseType<Action>();
             modelBuilder.Entity<FreeAction>()
                 .HasBaseType<Action>();
-            modelBuilder.Entity<Countermeasure>()
-                .HasBaseType<Feature>();
             modelBuilder.Entity<Reaction>()
+                .HasBaseType<Action>();
+            modelBuilder.Entity<Countermeasure>()
                 .HasBaseType<Feature>();
             modelBuilder.Entity<Trait>()
                 .HasBaseType<Feature>();

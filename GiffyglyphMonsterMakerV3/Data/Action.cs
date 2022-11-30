@@ -18,7 +18,7 @@ namespace GiffyglyphMonsterMakerV3.Data
         public override string MarkupDescription(Creature parentCreature)
         {
             string desc =
-                "<span class=\"text-white fa-solid p-1 " + (String.IsNullOrWhiteSpace(CustomIcon) ? Icon : CustomIcon) + " " + RarityStyle + "\"></span></span><span class=\"ms-1\">";
+                "<span class=\"text-white fa-solid p-1 align-middle " + (String.IsNullOrWhiteSpace(CustomIcon) ? Icon : CustomIcon) + " " + RarityStyle + "\"></span></span><span class=\"ms-1\">";
 
             desc += @"<span class=""fw-bold"">" + Name;
             if (Frequency.Type != FrequencyType.passive)
@@ -26,7 +26,7 @@ namespace GiffyglyphMonsterMakerV3.Data
                 desc += " (" + Frequency.StringValue + ")";
             }
             desc += @": </span>";
-            
+
             //If you want to just totally override a thing, go for it
             if (!string.IsNullOrWhiteSpace(OverrideMarkup))
             {
@@ -127,14 +127,25 @@ namespace GiffyglyphMonsterMakerV3.Data
         {
             get
             {
-                switch (Distance)
+                if (IsSpell)
                 {
-                    case RangeType.Melee:
-                        return "fa-sword";
-                    case RangeType.Ranged:
-                        return "fa-bow-arrow";
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                    return "fa-wand-magic-sparkles";
+                }
+                else if(DealsDamage)
+                {
+                    switch (Distance)
+                    {
+                        case RangeType.Melee:
+                            return "fa-sword";
+                        case RangeType.Ranged:
+                            return "fa-bow-arrow";
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                }
+                else
+                {
+                    return "fa-caret-right";
                 }
             }
         }

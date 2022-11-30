@@ -231,7 +231,7 @@ else
                                 {
                                     <div class="py-1">
                                         <span>
-                                            <span class="line-icon"><span class="text-white fa-solid p-1 @(String.IsNullOrWhiteSpace(feature.CustomIcon) ? feature.Icon : feature.CustomIcon) @feature.RarityStyle"></span></span><span class="ms-1">@feature.Name</span>
+                                            <span class="line-icon"><span class="text-white fa-solid p-1 align-middle @(String.IsNullOrWhiteSpace(feature.CustomIcon) ? feature.Icon : feature.CustomIcon) @feature.RarityStyle"></span></span><span class="ms-1">@feature.Name</span>
                                             <span class="fa-solid fa-pencil ms-1" data-bs-toggle="modal" data-bs-target="#featureModal" @onclick="() => EditFeature = feature" />
                                             <span class="fa-solid fa-circle-xmark ms-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteFeatureModal" @onclick="() => DeleteFeatureModalTarget = feature" />
                                         </span>
