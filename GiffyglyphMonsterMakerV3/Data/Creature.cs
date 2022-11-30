@@ -74,6 +74,8 @@ namespace GiffyglyphMonsterMakerV3.Data
 
         public int ParagonThreat { get; set; } = 3;
 
+        public LayoutType Layout { get; set; } = LayoutType.Single;
+
         public int MaxRange
         {
             get
@@ -100,6 +102,12 @@ namespace GiffyglyphMonsterMakerV3.Data
 
 
         public event PropertyChangedEventHandler? PropertyChanged;
+    }
+
+    public enum LayoutType
+    {
+        Single = 0,
+        TwoColumn
     }
     public enum Rank
     {
