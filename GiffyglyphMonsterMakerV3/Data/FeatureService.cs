@@ -124,7 +124,7 @@ namespace GiffyglyphMonsterMakerV3.Data
             return true;
         }
 
-        public async Task<bool> DeleteFeatureAsync(Feature feature)
+        public async Task<bool> DeleteFeatureAsync(Feature feature, bool cascade = false)
         {
             await using var _context = await _dbContextFactory.CreateDbContextAsync();
 
@@ -137,6 +137,14 @@ namespace GiffyglyphMonsterMakerV3.Data
             {
                 Loading = true;
                 _context.Remove(feature);
+                if (cascade)
+                {
+                    foreach (var item in _context.Features.Where(a => a.TemplateId == feature.Id))
+                    {
+                        item.TemplateId = null;
+                    }
+                }
+
                 await _context.SaveChangesAsync();
             }
             finally

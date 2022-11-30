@@ -43,7 +43,7 @@
                             
                             @if (SelectedFeatureTemplate != null && SelectedFeatureTemplate.CreateUserId == CurrentUserId)
                             {
-                                <button class="btn btn-outline-danger float-end" style="margin-top: -6px;" type="button" @onclick="() => DeleteTemplate(SelectedFeatureTemplate)"><span class="me-1 fas fa-trash" />Delete Template</button>
+                                <button class="btn btn-outline-danger float-end hoverDeleteButton" style="margin-top: -6px;" type="button" @onclick="() => DeleteTemplate(SelectedFeatureTemplate)"><span><span class="me-1 fas fa-trash" />Delete Template</span></button>
                             }
                             
                         </div>
@@ -337,6 +337,7 @@
 
     protected override async Task OnParametersSetAsync()
     {
+        SelectedFeatureTemplateId = null;
         var authState = await authenticationStateTask;
         var User = authState.User;
         CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -349,11 +350,12 @@
         {
             SelectedFeatureTemplate = FeatureTemplates.First(a => a.Id == SpecificFeature.TemplateId);
         }
-        if (SelectedFeatureTemplate == null && FeatureTemplates.Count > 0)
+        if (SpecificFeature == null && SelectedFeatureTemplate == null && FeatureTemplates.Count > 0)
         {
             SelectedFeatureTemplateId = FeatureTemplates.First().Id;
             SelectedFeatureType = SelectedFeatureTemplate.Type;
         }
+        StateHasChanged();
     }
 
 
@@ -369,7 +371,7 @@
         {
             SelectedFeatureTemplateId = null;
         }
-        var result = await _fs.DeleteFeatureAsync(f);
+        var result = await _fs.DeleteFeatureAsync(f, true);
         if (result)
         {
             _ts.ShowWarning(f.Name, "Removed Template");

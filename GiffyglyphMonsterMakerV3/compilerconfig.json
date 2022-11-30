@@ -22,5 +22,9 @@
   {
     "outputFile": "Pages/Print.razor.css",
     "inputFile": "Pages/Print.razor.scss"
+  },
+  {
+    "outputFile": "Shared/_FeatureModal.razor.css",
+    "inputFile": "Shared/_FeatureModal.razor.scss"
   }
 ]

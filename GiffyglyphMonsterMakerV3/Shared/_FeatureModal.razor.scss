@@ -1,0 +1,6 @@
+﻿.hoverDeleteButton:hover:before{
+    content:"This will disconnect it everywhere!" !important;
+}
+.hoverDeleteButton:hover span{
+    display:none;
+}
