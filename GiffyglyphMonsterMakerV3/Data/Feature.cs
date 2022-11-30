@@ -183,10 +183,10 @@ namespace GiffyglyphMonsterMakerV3.Data
                 switch (Delay)
                 {
                     case DelayType.delay:
-                        desc += "Delayed " + Value;
+                        desc += "Delayed " + DelayValue;
                         break;
                     case DelayType.doom:
-                        desc += "Dooming " + Value;
+                        desc += "Dooming " + DelayValue;
                         break;
                 }
 
