@@ -4,9 +4,11 @@
 @using GiffyglyphMonsterMakerV3.Utility
 @using Action = GiffyglyphMonsterMakerV3.Data.Action
 @using System.Security.Claims;
+@using ChromiumHTMLToPDF;
 @inject MonsterService _ms;
 @inject FeatureService _fs;
 @inject IToastService _ts;
+@inject IJSRuntime _javascript;
 
 
 @if (active == null)
@@ -216,11 +218,11 @@ else
                         </div>
                         <div class="fw-bold" data-bs-toggle="modal" data-bs-target="#featureModal" @onclick="() => EditFeature = null">Add Feature<span class="fas fa-plus ms-1"></span></div>
                         @foreach (var fType in
-                            active.Features
-                                .Select(a => a.Type)
-                                .Distinct()
-                                .OrderBy(b => (int)b)
-                            )
+                       active.Features
+                       .Select(a => a.Type)
+                       .Distinct()
+                       .OrderBy(b => (int)b)
+                       )
 
                         {
                             <div>
@@ -230,8 +232,8 @@ else
                                     <div class="py-1">
                                         <span>
                                             <span class="line-icon"><span class="text-white fa-solid p-1 @(String.IsNullOrWhiteSpace(feature.CustomIcon) ? feature.Icon : feature.CustomIcon) @feature.RarityStyle"></span></span><span class="ms-1">@feature.Name</span>
-                                            <span class="fa-solid fa-pencil ms-1" data-bs-toggle="modal" data-bs-target="#featureModal" @onclick="() => EditFeature = feature"/>
-                                            <span class="fa-solid fa-circle-xmark ms-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteFeatureModal" @onclick="() => DeleteFeatureModalTarget = feature"/>
+                                            <span class="fa-solid fa-pencil ms-1" data-bs-toggle="modal" data-bs-target="#featureModal" @onclick="() => EditFeature = feature" />
+                                            <span class="fa-solid fa-circle-xmark ms-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteFeatureModal" @onclick="() => DeleteFeatureModalTarget = feature" />
                                         </span>
                                     </div>
                                 }
@@ -256,9 +258,17 @@ else
                             <MonsterStatBlock model="mon" Hidden="@(mon.Id != active.Id)" />
                         </div>
                     }
+
                 </div>
                 <div class="row my-1">
-                    <button class="btn btn-primary" @onclick="() => SaveActiveMonster(true)"><span class="mx-1 fas fa-floppy-disk" />Save Monster</button>
+                        <button class="btn btn-primary d-inline-block" @onclick="() => SaveActiveMonster(true)"><span class="mx-1 fas fa-floppy-disk" />Save Monster</button>
+                        @if (active != null)
+                        {
+                            <div class="d-inline-flex justify-content-center my-1">
+                                <span class="btn btn-outline-dark rounded-circle justify-content-center" style="width: 42px; height: 42px;" @onclick="() => ConvertBlockToPng()"><span class="fa fa-camera align-middle" /></span>
+                                <span class="ms-2 btn btn-outline-dark rounded-circle justify-content-center" style="width: 42px; height: 42px;"><span class="fas fa-columns align-middle" /></span>
+                            </div>
+                        }
                 </div>
             </div>
         </div>
@@ -297,6 +307,12 @@ else
         {
             active = Monsters.First();
         }
+    }
+
+    private void ConvertBlockToPng()
+    {
+        var args = new object[] { "monster-" + active.Id, active.Name.Replace(" ", "-") + "_image.png" };
+        _javascript.InvokeAsync<string>("takeScreenshot", args);
     }
 
     private async Task ConfirmDeleteFeatureModalResult(Feature target)
@@ -469,13 +485,13 @@ else
     {
         if (Monsters.Count > 50)
             return;
-        
+
         var mon = new Monster(name, CurrentUserId);
-            active = mon;
-            Monsters.Add(mon);
-            await _ms.InsertMonsterAsync(mon);
-            UpdateValues();
-        
+        active = mon;
+        Monsters.Add(mon);
+        await _ms.InsertMonsterAsync(mon);
+        UpdateValues();
+
     }
     public async Task RemoveMonster(Monster mon)
     {
