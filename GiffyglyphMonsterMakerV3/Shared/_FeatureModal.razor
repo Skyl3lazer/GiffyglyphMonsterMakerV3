@@ -163,6 +163,21 @@
                                     </InputSelect>
                                     @if (SpecificFeature.Frequency.Delay != DelayType.none)
                                     {
+                                        <span class="ms-1">Value: </span>
+
+                                        <input @bind="SpecificFeature.Frequency.DelayValue" @bind:event="oninput" style="width: 50px;" />
+                                    }
+                                </div>
+                                <div class="my-1">
+                                    <span>Delay: </span>
+                                    <InputSelect @bind-Value="SpecificFeature.Frequency.Delay" class="" TValue="DelayType">
+                                        @foreach (var item in Enum.GetValues(typeof(DelayType)))
+                                        {
+                                            <option value="@item">@item</option>
+                                        }
+                                    </InputSelect>
+                                    @if (SpecificFeature.Frequency.Delay != DelayType.none)
+                                    {
                                         <input @bind="SpecificFeature.Frequency.DelayValue" @bind:event="oninput" style="width: 50px;" />
                                     }
                                 </div>
