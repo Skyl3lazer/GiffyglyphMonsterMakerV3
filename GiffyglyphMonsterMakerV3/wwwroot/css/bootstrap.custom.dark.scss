@@ -1,11 +1,30 @@
 ﻿@import "../lib/bootstrap/scss/mixins/banner";
 @include bsBanner("");
 
-// scss-docs-start import-stack
-// Configuration
+$font-size-base: 1rem;
+$line-height-base: 1.5;
+$line-height-sm: 1.25;
+$line-height-lg: 2;
+$spacer: 1rem;
 
-// Your variable overrides can go here, e.g.:
-// $h1-font-size: 3rem;
+$h1-font-size: $font-size-base * 2.5;
+$h2-font-size: $font-size-base * 2;
+$h3-font-size: $font-size-base * 1.75;
+$h4-font-size: $font-size-base * 1.5;
+$h5-font-size: $font-size-base * 1.25;
+$h6-font-size: $font-size-base;
+
+$font-sizes: ( 1: $h1-font-size, 2: $h2-font-size, 3: $h3-font-size, 4: $h4-font-size, 5: $h5-font-size, 6: $h6-font-size );
+
+$nav-link-padding-y: .5rem;
+$nav-link-padding-x:  1rem;
+
+$navbar-padding-y: $spacer * .5;
+
+$breadcrumb-padding-y: 0;
+$breadcrumb-padding-x: 0;
+
+
 
 @import "../lib/darkly/variables";
 @import "../lib/bootstrap/scss/bootstrap";
