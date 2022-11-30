@@ -163,6 +163,7 @@
                                     </InputSelect>
                                     @if (SpecificFeature.Frequency.Delay != DelayType.none)
                                     {
+                                        <span class="ms-1">Value: </span>
                                         <input @bind="SpecificFeature.Frequency.DelayValue" @bind:event="oninput" style="width: 50px;" />
                                     }
                                 </div>
