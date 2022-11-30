@@ -261,10 +261,10 @@ else
 
                 </div>
                 <div class="row my-1">
-                        <button class="btn btn-primary d-inline-block" @onclick="() => SaveActiveMonster(true)"><span class="mx-1 fas fa-floppy-disk" />Save Monster</button>
+                        <button class="btn btn-primary d-inline-block col-9" @onclick="() => SaveActiveMonster(true)"><span class="mx-1 fas fa-floppy-disk" />Save Monster</button>
                         @if (active != null)
                         {
-                            <div class="d-inline-flex justify-content-center my-1">
+                            <div class="d-flex my-1 justify-content-start col">
                                 <span class="btn btn-outline-dark rounded-circle justify-content-center" style="width: 42px; height: 42px;" @onclick="() => ConvertBlockToPng()"><span class="fa fa-camera align-middle" /></span>
                                 <span class="ms-2 btn btn-outline-dark rounded-circle justify-content-center" style="width: 42px; height: 42px;"><span class="fas fa-columns align-middle" /></span>
                             </div>
