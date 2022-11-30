@@ -21,7 +21,7 @@ namespace GiffyglyphMonsterMakerV3.Data
                 "<span class=\"text-white fa-solid p-1 align-middle " + (String.IsNullOrWhiteSpace(CustomIcon) ? Icon : CustomIcon) + " " + RarityStyle + "\"></span></span><span class=\"ms-1\">";
 
             desc += @"<span class=""fw-bold"">" + Name;
-            if (Frequency.Type != FrequencyType.passive)
+            if (Frequency.Type != FrequencyType.passive && Frequency.Delay != DelayType.none)
             {
                 desc += " (" + Frequency.StringValue + ")";
             }
