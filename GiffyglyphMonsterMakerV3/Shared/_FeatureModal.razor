@@ -40,19 +40,19 @@
                                 <span class="fas fa-plus mx-1" />
                                 <span>Add to Active</span>
                             </span>
-                            
+
                             @if (SelectedFeatureTemplate != null && SelectedFeatureTemplate.CreateUserId == CurrentUserId)
                             {
                                 <button class="btn btn-outline-danger float-end hoverDeleteButton" style="margin-top: -6px;" type="button" @onclick="() => DeleteTemplate(SelectedFeatureTemplate)"><span><span class="me-1 fas fa-trash" />Delete Template</span></button>
                             }
-                            
+
                         </div>
                         if (SelectedFeatureTemplate != null)
                         {
-                                <div>
-                                    <span class="fw-bold">Preview: </span>
-                                    <span class="">@((MarkupString)SelectedFeatureTemplate.MarkupDescription(ActiveMonster))</span>
-                                </div>
+                            <div>
+                                <span class="fw-bold">Preview: </span>
+                                <span class="">@((MarkupString)SelectedFeatureTemplate.MarkupDescription(ActiveMonster))</span>
+                            </div>
                         }
                         <hr />
                         <div class="h4 mb-1"> <span class="fw-bold">Create New Feature</span></div>
@@ -98,184 +98,261 @@
                                 <button class="btn btn-outline-danger" type="button" @onclick="() => DisconnectFeatureFromTemplate(SpecificFeature)"><span class="me-1 fas fa-plug-circle-xmark" />Disconnect from Template</button>
                             </div>
                             <div>
-                                <span class="">Template Preview: @((MarkupString)SelectedFeatureTemplate.MarkupDescription(ActiveMonster))</span>
+                                <span class=""><span class="fst-italic">Template Preview:</span> @((MarkupString)SelectedFeatureTemplate.MarkupDescription(ActiveMonster))</span>
                             </div>
                             <hr />
                         }
                         <div>
-                            <span class="fw-bold">Preview: </span>
+                            <span class="fst-italic">Preview: </span>
                             <span class="">@((MarkupString)SpecificFeature.MarkupDescription(ActiveMonster))</span>
                             @*Default feature stuff*@
-                            <div>
-                                <span class="fw-bold">General Properties</span>
-                                <div class="my-1">
-                                    <span>Name: </span><input @bind="SpecificFeature.Name" @bind:event="oninput" />
-                                </div>
-                                <div class="my-1">
-                                    <span>Rarity: </span>
-                                    <InputSelect @bind-Value="SpecificFeature.Rarity" class="" TValue="RarityType">
-                                        @foreach (var item in Enum.GetValues(typeof(RarityType)))
-                                        {
-                                            <option value="@item">@item</option>
-                                        }
-                                    </InputSelect>
-                                </div>
-                                <div class="my-1">
-                                    <span>Associated Monster Attribute: </span>
-                                    <InputSelect @bind-Value="SpecificFeature.RelevantAttribute" class="" TValue="AttributeType">
-                                        @foreach (var item in Enum.GetValues(typeof(AttributeType)))
-                                        {
-                                            <option value="@item">@item</option>
-                                        }
-                                    </InputSelect>
-                                </div>
-                                <div class="my-1">
-                                    <span>Has a Save? </span><InputCheckbox @bind-Value="SpecificFeature.HasSave" />
-
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="row fw-bold">General Properties</div>
+                                    <div class="row">
+                                        <div class="col-4">Name:</div>
+                                        <div class="col-6">
+                                            <input class="w-100" @bind="SpecificFeature.Name" @bind:event="oninput" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-4">Rarity:</div>
+                                        <div class="col-6">
+                                            <InputSelect class="w-100" @bind-Value="SpecificFeature.Rarity" TValue="RarityType">
+                                                @foreach (var item in Enum.GetValues(typeof(RarityType)))
+                                                {
+                                                    <option value="@item">@item</option>
+                                                }
+                                            </InputSelect>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-4">Associated Attribute:</div>
+                                        <div class="col-6">
+                                            <InputSelect class="w-100" @bind-Value="SpecificFeature.RelevantAttribute" TValue="AttributeType">
+                                                @foreach (var item in Enum.GetValues(typeof(AttributeType)))
+                                                {
+                                                    <option value="@item">@item</option>
+                                                }
+                                            </InputSelect>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-4">Has a Save? </div>
+                                        <div class="col-2">
+                                            <InputCheckbox class="h-100 w-100" @bind-Value="SpecificFeature.HasSave" />
+                                        </div>
+                                    </div>
                                     @if (SpecificFeature.HasSave)
                                     {
-                                        <span class="ms-1">Vs? </span>
-                                        <input @bind="SpecificFeature.SaveVs" @bind:event="oninput" style="width: 65px;" />
+                                        <div class="row">
+                                            <div class="col-4"><span class="fa-regular fa-caret-right me-1" />Save Vs?</div>
+                                            <div class="col-6">
+                                                <input @bind="SpecificFeature.SaveVs" @bind:event="oninput" style="width: 65px;" />
+                                            </div>
+                                        </div>
                                     }
-                                </div>
-                                <div class="my-1">
-                                    <span>Frequency: </span>
-                                    <InputSelect @bind-Value="SpecificFeature.Frequency.Type" class="" TValue="FrequencyType">
-                                        @foreach (var item in Enum.GetValues(typeof(FrequencyType)))
-                                        {
-                                            <option value="@item">@item</option>
-                                        }
-                                    </InputSelect>
+                                    <div class="row">
+                                        <div class="col-4">Frequency:</div>
+                                        <div class="col-6">
+                                            <InputSelect class="w-100" @bind-Value="SpecificFeature.Frequency.Type" TValue="FrequencyType">
+                                                @foreach (var item in Enum.GetValues(typeof(FrequencyType)))
+                                                {
+                                                    <option value="@item">@item</option>
+                                                }
+                                            </InputSelect>
+                                        </div>
+                                    </div>
                                     @if (SpecificFeature.Frequency.Type != FrequencyType.passive)
                                     {
-                                        <span class="ms-1">Value: </span>
-
-                                        <input @bind="SpecificFeature.Frequency.Value" @bind:event="oninput" style="width: 50px;" />
+                                        <div class="row">
+                                            <div class="col-4"><span class="fa-regular fa-caret-right me-1" />Frequency Value:</div>
+                                            <div class="col-6">
+                                                <input class="w-100" @bind="SpecificFeature.Frequency.Value" @bind:event="oninput" style="width: 50px;" />
+                                            </div>
+                                        </div>
                                     }
-                                </div>
-                                <div class="my-1">
-                                    <span>Delay: </span>
-                                    <InputSelect @bind-Value="SpecificFeature.Frequency.Delay" class="" TValue="DelayType">
-                                        @foreach (var item in Enum.GetValues(typeof(DelayType)))
-                                        {
-                                            <option value="@item">@item</option>
-                                        }
-                                    </InputSelect>
+                                    <div class="row">
+                                        <div class="col-4">Delay:</div>
+                                        <div class="col-6">
+                                            <InputSelect class="w-100" @bind-Value="SpecificFeature.Frequency.Delay" TValue="DelayType">
+                                                @foreach (var item in Enum.GetValues(typeof(DelayType)))
+                                                {
+                                                    <option value="@item">@item</option>
+                                                }
+                                            </InputSelect>
+                                        </div>
+                                    </div>
                                     @if (SpecificFeature.Frequency.Delay != DelayType.none)
                                     {
-                                        <span class="ms-1">Value: </span>
-                                        <input @bind="SpecificFeature.Frequency.DelayValue" @bind:event="oninput" style="width: 50px;" />
+                                        <div class="row">
+                                            <div class="col-4"><span class="fa-regular fa-caret-right me-1" />Delay Value:</div>
+                                            <div class="col-6">
+                                                <input @bind="SpecificFeature.Frequency.DelayValue" @bind:event="oninput" style="width: 50px;" />
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="col-6 border-left border-light">
+                                    <span class="row fw-bold">@SpecificFeature.Type Specific</span>
+                                    @switch (SpecificFeature.Type)
+                                    {
+                                        case FeatureType.Trait:
+                                            var trait = SpecificFeature as Trait;
+                                            <div class="row">
+                                                <div>Trait Description:</div>
+                                            </div>
+                                            <div class="row">
+                                                <textarea @bind="trait.TraitDescription" maxlength="5000" @bind:event="oninput"></textarea>
+                                            </div>
+                                            break;
+                                        case FeatureType.Free:
+                                        case FeatureType.Bonus:
+                                        case FeatureType.Reaction:
+                                        case FeatureType.Action:
+                                            var action = SpecificFeature as Action;
+                                            <div class="row">
+                                                <div class="col-4">Distance:</div>
+                                                <div class="col-6">
+                                                    <InputSelect class="w-100" @bind-Value="action.Distance" TValue="RangeType">
+                                                        @foreach (var item in Enum.GetValues(typeof(RangeType)))
+                                                        {
+                                                            <option value="@item">@item</option>
+                                                        }
+                                                    </InputSelect>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-4">Range/Reach:</div>
+                                                <div class="col-6">
+                                                    <InputNumber class="w-100" @bind-Value="@action.Range" min="0" TValue="int" />
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-4">Spell?</div>
+                                                <div class="col-2">
+                                                    <InputCheckbox class="h-100 w-100" @bind-Value="action.IsSpell" />
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                @if (action.IsSpell)
+                                                {
+                                                    <div class="col-4"><span class="fa-regular fa-caret-right me-1" />Description:</div>
+                                                    <div class="col-6">
+                                                        <input class="w-100" @bind="action.SpellDesc" @bind:event="oninput" />
+                                                    </div>
+                                                }
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-4">Deals Damage?</div>
+                                                <div class="col-2">
+                                                    <InputCheckbox class="h-100 w-100" @bind-Value="action.DealsDamage" />
+                                                </div>
+                                            </div>
+                                            @if (action.DealsDamage)
+                                            {
+                                                <div class="row">
+                                                    <div class="col-4"><span class="fa-regular fa-caret-right me-1" />Damage Type:</div>
+                                                    <div class="col-6">
+                                                        <InputSelect class="w-100" @bind-Value="action.ActionDamageType" TValue="DamageType">
+                                                            @foreach (var item in Enum.GetValues(typeof(DamageType)))
+                                                            {
+                                                                <option value="@item">@item</option>
+                                                            }
+                                                        </InputSelect>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-4"><span class="fa-regular fa-caret-right me-1" />Multiplier:</div>
+                                                    <div class="col-6">
+                                                        <InputNumber class="w-100" @bind-Value="@action.DamageMultiplier" min="0" TValue="double" />
+                                                    </div>
+                                                </div>
+                                            }
+                                            <div class="row">
+                                                <div class="col-4">Multiattack?</div>
+                                                <div class="col-2">
+                                                    <InputCheckbox class="h-100 w-100" @bind-Value="action.IsMultiAttack" />
+                                                </div>
+                                            </div>
+                                            @if (action.IsMultiAttack)
+                                            {
+                                                <div class="row">
+                                                    <div class="col-4"><span class="fa-regular fa-caret-right me-1" />How Many?</div>
+                                                    <div class="col-6">
+                                                        <InputNumber class="w-100" @bind-Value="@action.MultiAttack" min="0" TValue="int" />
+                                                    </div>
+                                                </div>
+                                            }
+                                            <div class="row">
+                                                <div class="col-4">Other Effect:</div>
+                                                <div class="col-6">
+                                                    <input class="w-100" @bind="action.OtherEffect" @bind:event="oninput" />
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-4">Miss Effect:</div>
+                                                <div class="col-6">
+                                                    <input class="w-100" @bind="action.MissEffect" @bind:event="oninput" />
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-4">Effect Area:</div>
+                                                <div class="col-6">
+                                                    <InputSelect class="w-100" @bind-Value="action.Shape" TValue="TargetShape">
+                                                        @foreach (var item in Enum.GetValues(typeof(TargetShape)))
+                                                        {
+                                                            <option value="@item">@item</option>
+                                                        }
+                                                    </InputSelect>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                @if (action.Shape == TargetShape.target)
+                                                {
+                                                    <div class="col-4"><span class="fa-regular fa-caret-right me-1" />Number of Targets:</div>
+                                                    <div class="col-6">
+                                                        <InputNumber class="w-100" @bind-Value="@action.Targets" min="0" TValue="int" />
+                                                    </div>
+                                                }
+                                                else if (action.Shape != TargetShape.self)
+                                                {
+                                                    <div class="col-4"><span class="fa-regular fa-caret-right me-1" />Radius</div>
+                                                    <div class="col-6">
+                                                        <InputNumber class="w-100" @bind-Value="@action.Radius" min="0" TValue="int" />
+                                                    </div>
+                                                }
+                                            </div>
+
+                                            break;
+                                        case FeatureType.Countermeasure:
+                                            var countermeasure = SpecificFeature as Countermeasure;
+                                            <div class="row">
+                                                <div class="col">Trait Description:</div>
+                                            </div>
+
+                                            <div class="row">
+                                                <textarea @bind="countermeasure.CountermeasureDescription" maxlength="5000" @bind:event="oninput"></textarea>
+                                            </div>
+                                            break;
                                     }
                                 </div>
                             </div>
                             <hr />
                             <div>
                                 <span class="fw-bold card-header collapsed" data-bs-toggle="collapse" data-bs-target="#overrideProperties" aria-expanded="false" aria-controls="overrideProperties">
-                                    Override Properties<span class="fas fa-chevrons-down mx-1"/><span class="fas fa-chevrons-up mx-1"/>
+                                    Override Properties<span class="fas fa-chevrons-down mx-1" /><span class="fas fa-chevrons-up mx-1" />
                                 </span>
                                 <div class="collapse" id="overrideProperties">
-                                    <div class="my-1">
-                                        <span>Custom Icon (See FontAwesome): </span><input @bind="SpecificFeature.CustomIcon" @bind:event="oninput" />
+                                    <div class="">
+                                        <span class="">Custom Icon (See FontAwesome): </span>
+                                        <input @bind="SpecificFeature.CustomIcon" @bind:event="oninput" />
                                     </div>
-                                    <div class="my-1">
-                                        <span>Custom Markup: </span><textarea @bind="SpecificFeature.OverrideMarkup" maxlength="5000" @bind:event="oninput"></textarea>
+                                    <div>Custom Markup:</div>
+                                    <div>
+                                        <textarea @bind="SpecificFeature.OverrideMarkup" class="w-100" maxlength="5000" @bind:event="oninput"></textarea>
                                     </div>
                                 </div>
-                            </div>
-                            <hr />
-                            <div>
-                                <span class="fw-bold">@SpecificFeature.Type Specific</span>
-                                @switch (SpecificFeature.Type)
-                                {
-                                    case FeatureType.Trait:
-                                        var trait = SpecificFeature as Trait;
-                                        <div class="my-1">
-                                            <span>Trait Description: </span><textarea @bind="trait.TraitDescription" maxlength="5000" @bind:event="oninput"></textarea>
-                                        </div>
-                                        break;
-                                    case FeatureType.Free:
-                                    case FeatureType.Bonus:
-                                    case FeatureType.Reaction:
-                                    case FeatureType.Action:
-                                        var action = SpecificFeature as Action;
-                                        <div class="my-1">
-                                            <span>Distance: </span>
-                                            <InputSelect @bind-Value="action.Distance" class="" TValue="RangeType">
-                                                @foreach (var item in Enum.GetValues(typeof(RangeType)))
-                                                {
-                                                    <option value="@item">@item</option>
-                                                }
-                                            </InputSelect>
-                                        </div>
-                                        <div class="my-1">
-                                            <span>Range/Reach: </span><InputNumber @bind-Value="@action.Range" min="0" TValue="int" style="width: 65px;" />
-                                        </div>
-                                        <div class="my-1">
-                                            <span>Spell? </span><InputCheckbox @bind-Value="action.IsSpell" />
-                                            @if (action.IsSpell)
-                                            {
-                                                <span>Description: </span>
-                                                <input @bind="action.SpellDesc" @bind:event="oninput" />
-                                            }
-                                        </div>
-                                        <div class="my-1">
-                                            <span>Deals Damage? </span><InputCheckbox @bind-Value="action.DealsDamage" />
-                                            @if (action.DealsDamage)
-                                            {
-                                                <span class="ms-1">Damage Type: </span>
-                                                <InputSelect @bind-Value="action.ActionDamageType" class="" TValue="DamageType">
-                                                    @foreach (var item in Enum.GetValues(typeof(DamageType)))
-                                                    {
-                                                        <option value="@item">@item</option>
-                                                    }
-                                                </InputSelect>
-                                                <span>Damage Multiplier: </span>
-
-                                                <InputNumber @bind-Value="@action.DamageMultiplier" min="0" TValue="double" style="width: 50px;" />
-                                            }
-                                        </div>
-                                        <div class="my-1">
-                                            <span>Multiattack? </span><InputCheckbox @bind-Value="action.IsMultiAttack" />
-                                            @if (action.IsMultiAttack)
-                                            {
-                                                <span class="ms-1">How Many?</span>
-                                                <InputNumber @bind-Value="@action.MultiAttack" min="0" TValue="int" />
-                                            }
-                                        </div>
-                                        <div class="my-1">
-                                            <span>Non-Damage Effect: </span><input @bind="action.OtherEffect" @bind:event="oninput" />
-                                        </div>
-                                        <div class="my-1">
-                                            <span>Miss Effect: </span><input @bind="action.MissEffect" @bind:event="oninput" />
-                                        </div>
-                                        <div class="my-1">
-                                            <span>Effect Area: </span>
-                                            <InputSelect @bind-Value="action.Shape" class="" TValue="TargetShape">
-                                                @foreach (var item in Enum.GetValues(typeof(TargetShape)))
-                                                {
-                                                    <option value="@item">@item</option>
-                                                }
-                                            </InputSelect>
-                                            @if (action.Shape == TargetShape.target)
-                                            {
-                                                <span class="ms-1">Number of Targets: </span>
-                                                <InputNumber @bind-Value="@action.Targets" min="0" TValue="int" style="width: 50px;" />
-                                            }
-                                            else if (action.Shape != TargetShape.self)
-                                            {
-                                                <span class="ms-1">Radius</span>
-                                                <InputNumber @bind-Value="@action.Radius" min="0" TValue="int" style="width: 65px;" />
-                                            }
-                                        </div>
-
-                                        break;
-                                    case FeatureType.Countermeasure:
-                                        var countermeasure = SpecificFeature as Countermeasure;
-                                        <div class="my-1">
-                                            <span>Trait Description: </span><textarea @bind="countermeasure.CountermeasureDescription" maxlength="5000" @bind:event="oninput"></textarea>
-                                        </div>
-                                        break;
-                                }
                             </div>
                         </div>
                     }
@@ -288,11 +365,11 @@
                         <button type="button" class="btn btn-primary" @onclick="() => SaveFeature()"><span class="fas fa-floppy-disk" />Save</button>
                         if (SelectedFeatureTemplate == null || SelectedFeatureTemplate.CreateUserId == CurrentUserId)
                         {
-                            <button type="button" class="btn btn-primary ms-1" @onclick="() => SaveAndUpdateTemplate()"><span class="fak fa-solid-floppy-disk-circle-plus"/>Save and @(SpecificFeature?.TemplateId == null ? "Add" : "Update") Template</button>
+                            <button type="button" class="btn btn-primary ms-1" @onclick="() => SaveAndUpdateTemplate()"><span class="fak fa-solid-floppy-disk-circle-plus" />Save and @(SpecificFeature?.TemplateId == null ? "Add" : "Update") Template</button>
                         }
                         else if (SelectedFeatureTemplate != null && SelectedFeatureTemplate.CreateUserId != CurrentUserId)
                         {
-                            <button type="button" class="btn btn-secondary disabled ms-1"><span class="fas fa-floppy-disk-circle-xmark"/>Generic Template</button>
+                            <button type="button" class="btn btn-secondary disabled ms-1"><span class="fas fa-floppy-disk-circle-xmark" />Generic Template</button>
                         }
                     }
                     <button type="button" class="btn btn-secondary ms-1" data-bs-dismiss="modal"><span class="fas fa-x" />Close</button>
@@ -604,7 +681,7 @@
                     var templateTrait = (await _fs.GetFeatureByIdAsync(SpecificFeature.TemplateId.Value) as Trait);
                     templateTrait.UpdateThisToMatch(SpecificFeature as Trait);
                     result1 = await _fs.UpdateFeatureAsync(SpecificFeature as Trait);
-                    result2 =await _fs.UpdateFeatureAsync(templateTrait);
+                    result2 = await _fs.UpdateFeatureAsync(templateTrait);
                     break;
                 case FeatureType.Free:
                     var templateFree = (await _fs.GetFeatureByIdAsync(SpecificFeature.TemplateId.Value) as FreeAction);
