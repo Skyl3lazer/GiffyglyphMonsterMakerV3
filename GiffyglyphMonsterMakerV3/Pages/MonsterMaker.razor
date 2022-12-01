@@ -31,52 +31,75 @@ else
                 <div class="row">
                     <div><span class="fs-2 card-header" data-bs-toggle="collapse" data-bs-target="#monsterDetails" aria-expanded="true" aria-controls="monsterDetails">Monster Details<span class="fas fa-chevrons-down mx-1 fs-3" /><span class="fas fa-chevrons-up mx-1 fs-3" /></span></div>
                     <div id="monsterDetails" class="collapse show">
-                        <div><span>Name: </span><input @bind="active.Name" @bind:event="oninput" /></div>
-                        <div>
-                            <span>Size: </span>
-                            <InputSelect @bind-Value="active.Size">
-                                @foreach (var item in Enum.GetValues(typeof(SizeType)))
-                                {
-                                    <option value="@item">@item</option>
-                                }
-                            </InputSelect>
+                        <div class="row"><span class="col-6">Name:</span><input @bind="active.Name" @bind:event="oninput" class="col-6" /></div>
+                        <div class="row">
+                            <div class="col-6">Size: </div>
+                            <div class="col-6">
+                                <InputSelect @bind-Value="active.Size">
+                                    @foreach (var item in Enum.GetValues(typeof(SizeType)))
+                                    {
+                                        <option value="@item">@item</option>
+                                    }
+                                </InputSelect>
+                            </div>
                         </div>
-                        <div>
-                            <span>Creature Type: </span>
-                            <InputSelect @bind-Value="active.Type">
-                                @foreach (var item in Enum.GetValues(typeof(CreatureType)))
-                                {
-                                    <option value="@item">@item</option>
-                                }
-                            </InputSelect>
+                        <div class="row">
+                            <div class="col-6">Creature Type:</div>
+                            <div class="col-6">
+                                <InputSelect @bind-Value="active.Type">
+                                    @foreach (var item in Enum.GetValues(typeof(CreatureType)))
+                                    {
+                                        <option value="@item">@item</option>
+                                    }
+                                </InputSelect>
+                            </div>
                         </div>
-                        <div><span>Type Detail: </span><input @bind="active.TypeDetail" @bind:event="oninput" /></div>
-                        <div><span>Combat Level: </span><InputNumber Value="@active.CombatLevel" min="0" ValueChanged="(int i) => LevelChanged(i)" ValueExpression="() => active.CombatLevel" TValue="int" /></div>
-                        <div><span>Proficiency Bonus:</span> @active.Proficiency</div>
-                        <div>
-                            <span>Rank: </span>
-                            <InputSelect Value="@active.MonsterRank" ValueChanged="(Rank i) => RankChanged(i)" ValueExpression="() => active.MonsterRank" TValue="Rank">
-                                @foreach (var item in Enum.GetValues(typeof(Rank)))
-                                {
-                                    <option value="@item">@item</option>
-                                }
-                            </InputSelect>
+                        <div class="row">
+                            <div class="col-6">Type Detail:</div>
+                            <div class="col-6"><input @bind="active.TypeDetail" @bind:event="oninput" /></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">Combat Level:</div>
+                            <div class="col-6"><InputNumber class="col-6" Value="@active.CombatLevel" min="0" ValueChanged="(int i) => LevelChanged(i)" ValueExpression="() => active.CombatLevel" TValue="int" /></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">Proficiency Bonus:</div>
+                            <div class="col-6">@active.Proficiency</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">Rank: </div><div class="col-6">
+                                <InputSelect Value="@active.MonsterRank" ValueChanged="(Rank i) => RankChanged(i)" ValueExpression="() => active.MonsterRank" TValue="Rank">
+                                    @foreach (var item in Enum.GetValues(typeof(Rank)))
+                                    {
+                                        <option value="@item">@item</option>
+                                    }
+                                </InputSelect>
+                            </div>
                             @if (active.MonsterRank == Rank.Paragon)
                             {
-                                <span> Threat: </span>
-                                <InputNumber Value="active.ParagonThreat" min="1" ValueChanged="(int i) => ParagonChanged(i)" TValue="int" ValueExpression="() => active.ParagonThreat" />
+                                <div class="col-6"> Threat:</div>
+                                <div class="col-6">
+                                    <InputNumber class="col-6" Value="active.ParagonThreat" min="1" ValueChanged="(int i) => ParagonChanged(i)" TValue="int" ValueExpression="() => active.ParagonThreat" />
+                                </div>
                             }
                         </div>
-                        <div>
-                            <span>Role: </span>
-                            <InputSelect Value="@active.MonsterRole" ValueChanged="(Role i) => RoleChanged(i)" ValueExpression="() => active.MonsterRole" TValue="Role">
-                                @foreach (var item in Enum.GetValues(typeof(Role)))
-                                {
-                                    <option value="@item">@item</option>
-                                }
-                            </InputSelect>
+                        <div class="row">
+                            <div class="col-6">Role: </div>
+                            <div class="col-6">
+                                <InputSelect Value="@active.MonsterRole" ValueChanged="(Role i) => RoleChanged(i)" ValueExpression="() => active.MonsterRole" TValue="Role">
+                                    @foreach (var item in Enum.GetValues(typeof(Role)))
+                                    {
+                                        <option value="@item">@item</option>
+                                    }
+                                </InputSelect>
+                            </div>
                         </div>
-                        <div><span>Role Special Type: </span><input @bind="active.MonsterRoleDetail" @bind:event="oninput" /></div>
+                        <div class="row">
+                            <div class="col-6">Role Special Type: </div>
+                            <div class="col-6">
+                                <input @bind="active.MonsterRoleDetail" @bind:event="oninput" />
+                            </div>
+                        </div>
                         <div class="fw-bold">Base Stats</div>
                         <div><span class="fst-italic">Recommended</span>: +@(HighStat), +@(HighStat), +@(MedStat), +@(MedStat), @(LowStat >= 0 ? "+" : "")@(LowStat), @(LowStat >= 0 ? "+" : "")@(LowStat)</div>
 
@@ -131,46 +154,54 @@ else
                 <div class="row">
                     <div><span class="fs-2 card-header collapsed" data-bs-toggle="collapse" data-bs-target="#monsterOffense" aria-expanded="true" aria-controls="monsterOffense">Offense<span class="fas fa-chevrons-down mx-1 fs-3" /><span class="fas fa-chevrons-up mx-1 fs-3" /></span></div>
                     <div id="monsterOffense" class="collapse">
-                        <div><span>Attack Bonus: </span><span><InputNumber @bind-Value="active.Offense.Attack" min="0" /></span></div>
-                        <div><span>DC Mod: </span><InputNumber @bind-Value="active.Offense.DifficultyCheck" min="0" /></div>
-                        <div>
-                            <span>Damage Average: </span>
-                            <span>
-                                <InputNumber @bind-Value="active.Offense.Damage" min="0" /> Random: <InputCheckbox @bind-Value="active.Offense.RandomizeDamage" />
-                            </span>
+                        <div class="row"><span class="col-6">Attack Bonus:</span><InputNumber class="col-6" @bind-Value="active.Offense.Attack" min="0" /></div>
+                        <div class="row"><span class="col-6">DC Mod:</span><InputNumber class="col-6" @bind-Value="active.Offense.DifficultyCheck" min="0" /></div>
+                        <div class="row">
+                            <span class="col-6">Damage Average:</span>
+                            <InputNumber class="col-6" @bind-Value="active.Offense.Damage" min="0" />
                         </div>
-                        <div>
-                            <span>
-                                @if (active.Offense.RandomizeDamage)
-                                {
-                                    <InputSelect @bind-Value="@active.Offense.RandomDamageRange" TValue="DamageRange">
-                                        @foreach (var item in Enum.GetValues(typeof(DamageRange)))
-                                        {
-                                            <option value="@item">@item</option>
-                                        }
-                                    </InputSelect>
-                                    <span>(@(DiceTools.ConvertToDiceString(active.Offense.RandomDamageRange, active.Offense.Damage)))</span>
-                                }
-                            </span>
+                        <div class="row">
+                            <span class="col-6">Randomize?</span>
+                            <div class="col-6">
+                                <div class="d-flex">
+                                    <InputCheckbox class="flex-shrink-1" @bind-Value="active.Offense.RandomizeDamage" />
+                                    @if (active.Offense.RandomizeDamage)
+                                    {
+                                        <InputSelect class="flex-grow-1" @bind-Value="@active.Offense.RandomDamageRange" TValue="DamageRange">
+                                            @foreach (var item in Enum.GetValues(typeof(DamageRange)))
+                                            {
+                                                <option value="@item">@item</option>
+                                            }
+                                        </InputSelect>
+                                        <span class="">(@(DiceTools.ConvertToDiceString(active.Offense.RandomDamageRange, active.Offense.Damage)))</span>
+                                    }
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div><span class="fs-2 card-header collapsed" data-bs-toggle="collapse" data-bs-target="#monsterDefense" aria-expanded="true" aria-controls="monsterDefense">Defense<span class="fas fa-chevrons-down mx-1 fs-3" /><span class="fas fa-chevrons-up mx-1 fs-3" /></span></div>
                     <div id="monsterDefense" class="collapse">
-                        <div><span>Armor Class: </span><InputNumber @bind-Value="active.Defenses.ArmorClass" min="0" /></div>
-                        <div><span>Hit Points: </span><InputNumber @bind-Value="active.Defenses.HitPoints" min="0" /></div>
-                        <div><span>Save Bonus: </span><InputNumber @bind-Value="active.Defenses.SaveBonus" min="0" /></div>
-                        <div><span>Proficient Saves</span></div>
-                        <div>
-                            <span>STR </span><InputCheckbox @bind-Value="active.Defenses.ProficientSavingThrows.Strength" />
-                            <span>DEX </span><InputCheckbox @bind-Value="active.Defenses.ProficientSavingThrows.Dexterity" />
-                            <span>CON </span><InputCheckbox @bind-Value="active.Defenses.ProficientSavingThrows.Constitution" />
-                        </div>
-                        <div>
-                            <span>INT </span><InputCheckbox @bind-Value="active.Defenses.ProficientSavingThrows.Intelligence" />
-                            <span>WIS </span><InputCheckbox @bind-Value="active.Defenses.ProficientSavingThrows.Wisdom" />
-                            <span>CHA </span><InputCheckbox @bind-Value="active.Defenses.ProficientSavingThrows.Charisma" />
+                        <div class="row"><span class="col-6">Armor Class:</span><InputNumber class="col-6" @bind-Value="active.Defenses.ArmorClass" min="0" /></div>
+                        <div class="row"><span class="col-6">Hit Points:</span><InputNumber class="col-6" @bind-Value="active.Defenses.HitPoints" min="0" /></div>
+                        <div class="row"><span class="col-6">Save Bonus:</span><InputNumber class="col-6" @bind-Value="active.Defenses.SaveBonus" min="0" /></div>
+                        <div class="row">
+                            <span class="col-6">Prof. Saves (2):</span>
+                            <div class="col-6">
+                                <div class="row">
+                                    <span class="col">STR</span><InputCheckbox class="col" @bind-Value="active.Defenses.ProficientSavingThrows.Strength" />
+                                    <span class="col">INT</span><InputCheckbox class="col" @bind-Value="active.Defenses.ProficientSavingThrows.Intelligence" />
+                                </div>
+                                <div class="row">
+                                    <span class="col">DEX</span><InputCheckbox class="col" @bind-Value="active.Defenses.ProficientSavingThrows.Dexterity" />
+                                    <span class="col">WIS</span><InputCheckbox class="col" @bind-Value="active.Defenses.ProficientSavingThrows.Wisdom" />
+                                </div>
+                                <div class="row">
+                                    <span class="col">CON</span><InputCheckbox class="col" @bind-Value="active.Defenses.ProficientSavingThrows.Constitution" />
+                                    <span class="col">CHA</span><InputCheckbox class="col" @bind-Value="active.Defenses.ProficientSavingThrows.Charisma" />
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -261,14 +292,14 @@ else
 
                 </div>
                 <div class="row my-1">
-                        <button class="btn btn-primary d-inline-block col-9" @onclick="() => SaveActiveMonster(true)"><span class="mx-1 fas fa-floppy-disk" />Save Monster</button>
-                        @if (active != null)
-                        {
-                            <div class="d-flex my-1 justify-content-start col">
-                                <span class="btn btn-outline-dark rounded-circle justify-content-center" style="width: 42px; height: 42px;" @onclick="() => ConvertBlockToPng()"><span class="fa fa-camera align-middle" /></span>
-                                <span class="ms-2 btn btn-outline-dark rounded-circle justify-content-center" style="width: 42px; height: 42px;"><span class="fas fa-columns align-middle" /></span>
-                            </div>
-                        }
+                    <button class="btn btn-primary d-inline-block col-9" @onclick="() => SaveActiveMonster(true)"><span class="mx-1 fas fa-floppy-disk" />Save Monster</button>
+                    @if (active != null)
+                    {
+                        <div class="d-flex my-1 justify-content-start col">
+                            <span class="btn btn-outline-dark rounded-circle justify-content-center" style="width: 42px; height: 42px;" @onclick="() => ConvertBlockToPng()"><span class="fa fa-camera align-middle" /></span>
+                            <span class="ms-2 btn btn-outline-dark rounded-circle justify-content-center" style="width: 42px; height: 42px;"><span class="fas fa-columns align-middle" /></span>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
