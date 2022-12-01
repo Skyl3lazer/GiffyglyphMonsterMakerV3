@@ -73,6 +73,8 @@ namespace GiffyglyphMonsterMakerV3.Data
         public List<string> Items { get; set; } = new();
 
         public int ParagonThreat { get; set; } = 3;
+        public int ParagonPowers { get; set; } = 0;
+        public int ParagonDefenses { get; set; } = 0;
 
         public LayoutType Layout { get; set; } = LayoutType.Single;
 
