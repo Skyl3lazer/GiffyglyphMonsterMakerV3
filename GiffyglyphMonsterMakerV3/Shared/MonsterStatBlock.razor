@@ -120,6 +120,26 @@
                 </div>
             }
         </div>
+        @if(!model.Features.Any(f => f.Type == FeatureType.Free) && (model.ParagonDefenses > 0 || model.ParagonPowers > 0))
+        {
+            <div>
+                <div class="monsterTertiary" style="height: 24px">
+                    <span class="monsterPrimary text-white fw-bold h-100 d-inline-block ps-1 align-top" style="z-index: 10; position: relative">Free</span>
+                    <span class="slant-45 monsterPrimary d-inline-block h-100 align-top" style="width: 48px; margin-left: -30px; position: relative; z-index: 1;"/>
+                </div>
+                <div class="monsterPrimary d-block" style="height: 4px; margin-top: -1px;" />
+                @if(model.ParagonPowers > 0){
+                  <div class="py-1">
+                      <span>@((MarkupString)ParagonPower.MarkupDescription(model))</span>
+                  </div>
+                }
+                @if(model.ParagonDefenses > 0){
+                    <div class="py-1">
+                        <span>@((MarkupString)ParagonDefense.MarkupDescription(model))</span>
+                    </div>
+                }
+            </div>
+        }
         @foreach (var fType in 
             model.Features
                 .Select(a => a.Type)
@@ -136,6 +156,19 @@
                         <span>@((MarkupString)feature.MarkupDescription(model))</span>
                     </div>
                 }
+                @if(fType == FeatureType.Free && (model.ParagonDefenses > 0 || model.ParagonPowers > 0))
+                {
+                    @if(model.ParagonPowers > 0){
+                        <div class="py-1">
+                            <span>@((MarkupString)ParagonPower.MarkupDescription(model))</span>
+                        </div>
+                    }
+                    @if(model.ParagonDefenses > 0){
+                        <div class="py-1">
+                            <span>@((MarkupString)ParagonDefense.MarkupDescription(model))</span>
+                        </div>
+                    }
+                }
             </div>
         }
     </div>
@@ -145,4 +178,22 @@
     public Monster model { get; set; }
     [Parameter]
     public bool Hidden { get; set; }
+
+    public FreeAction ParagonPower
+    {
+        get
+        {
+            return new FreeAction(null){Name="Paragon Power", Rarity = RarityType.Uncommon, Frequency = new FeatureFrequency(){Type = FrequencyType.round, Value = model.ParagonPowers},CustomIcon = "fa-crown", OverrideMarkup = "At the end of another creature's turn, you may either a) take an action and regain your reaction or b) reroll a saving throw."};
+        }
+    }
+
+    public FreeAction ParagonDefense
+    {
+        get
+        {
+            return new FreeAction(null) { Name = "Paragon Defense", Rarity = RarityType.Rare, Frequency = new FeatureFrequency() { Type = FrequencyType.longrest, Value = model.ParagonDefenses }, CustomIcon = "fa-crown", OverrideMarkup = "When you would fail a saving throw, you may spend " + (2 * model.CombatLevel) + " hit points to succeed." }; 
+
+        }
+    }
+
 }

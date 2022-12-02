@@ -80,14 +80,36 @@ else
                                     }
                                 </InputSelect>
                             </div>
+                            </div>
                             @if (active.MonsterRank == Rank.Paragon)
                             {
-                                <div class="col-6"><span class="fa-regular fa-caret-right me-1"/>Threat:</div>
-                                <div class="col-6">
-                                    <InputNumber Value="active.ParagonThreat" min="1" ValueChanged="(int i) => ParagonChanged(i)" TValue="int" ValueExpression="() => active.ParagonThreat" />
+                                <div class="row">
+                                    <div class="col-6"><span class="fa-regular fa-caret-right me-1"/>Threat:</div>
+                                    <div class="col-6">
+                                        <InputNumber Value="active.ParagonThreat" min="1" ValueChanged="(int i) => ParagonChanged(i)" TValue="int" ValueExpression="() => active.ParagonThreat" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6"><span class="fa-regular fa-caret-right me-1"/><span class="fa-regular fa-caret-right me-1"/>Paragon Powers:</div>
+                                    <div class="col-6">
+                                        <InputNumber @bind-Value="active.ParagonPowers" min="0" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6"><span class="fa-regular fa-caret-right me-1"/><span class="fa-regular fa-caret-right me-1"/>Paragon Defense:</div>
+                                    <div class="col-6">
+                                        <InputNumber @bind-Value="active.ParagonDefenses" min="0" />
+                                    </div>
+                                </div>
+                            }else if (active.MonsterRank == Rank.Elite)
+                            {
+                                <div class="row">
+                                    <div class="col-6"><span class="fa-regular fa-caret-right me-1"/>Paragon Powers:</div>
+                                    <div class="col-6">
+                                        <InputNumber @bind-Value="active.ParagonPowers" min="0" />
+                                    </div>
                                 </div>
                             }
-                        </div>
                         <div class="row">
                             <div class="col-6">Role: </div>
                             <div class="col-6">
@@ -623,6 +645,9 @@ else
         double hp = 16 + active.CombatLevel * 7;
         double tst = 2;
 
+        int paraPower = 0;
+        int paraDef = 0;
+
         double atk = active.Proficiency;
         double dc = 8 + active.Proficiency;
         double dmg = active.CombatLevel * 3;
@@ -663,12 +688,15 @@ else
                 ac += 1;
                 tst += 1;
                 dmg *= 1.1;
+                paraPower = 1;
                 break;
             case Rank.Paragon:
                 ac += 2;
                 hp *= active.ParagonThreat;
                 tst += 1;
                 dmg *= 1.2;
+                paraPower = active.ParagonThreat;
+                paraDef = (int)Math.Floor(active.ParagonThreat / 2.0);
                 break;
         }
 
@@ -679,6 +707,8 @@ else
         active.Offense.Damage = Math.Max((int)Math.Floor(dmg), 1);
         active.Offense.DifficultyCheck = (int)Math.Floor(dc);
         active.WalkSpeed = 30;
+        active.ParagonPowers = paraPower;
+        active.ParagonDefenses = paraDef;
         StateHasChanged();
     }
 }
