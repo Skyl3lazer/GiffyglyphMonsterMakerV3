@@ -33,7 +33,7 @@
     public string? CreateUserId { get; set; }
 
     Regex _creatureTypeRegex = new Regex(@"(?:(?<mType>\w+) [|].*[\r\n](?<traitText>(?:\d.*\n)+))");
-    Regex _traitMatchRegex = new Regex(@"(?:[\d]+) (?:(?<traitName>\w+[ '-](?:\w+[ '-]){0,2}))(?<traitDesc>You .*\n|At .*\n|Any .*\n|When .*\n|Where .*\n|While .*\n|The .*\n|A .*\n|Creatures .*\n|All .*\n|Difficult .*\n|If .*\n?|Allied .*\n|Divide .*\n|Enemies .*\n|Critical .*\n|Each .*\n|For .*\n|Magical .*\n|During .*\n|Once .*\n|The .*\n|In .*\n|At .*\n|One .*\n|Your .*|Allies .*\n)");
+    Regex _traitMatchRegex = new Regex(@"(?:[\d]+) (?:(?<traitName>\w+[ '-](?:\w+[ '-]){0,2}))(?<traitDesc>You .*\n|At .*\n|Any .*\n|When .*\n|Where .*\n|While .*\n|The .*\n|A .*\n|Creatures .*\n|All .*\n|Difficult .*\n|If .*\n?|Allied .*\n|Divide .*\n|Enemies .*\n|Critical .*\n|Each .*\n|For .*\n|Magical .*\n|During .*\n|Once .*\n|The .*\n|In .*\n|At .*\n|One .*\n|Your .*\n|Allies .*\n)");
 
     public async Task ImportActions()
     {
