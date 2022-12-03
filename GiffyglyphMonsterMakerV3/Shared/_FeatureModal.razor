@@ -32,27 +32,28 @@
                                 }
                             </InputSelect>
                             <InputSelect @bind-Value="@SelectedFeatureTemplateId" TValue="Guid?">
-                                @foreach (var item in 
-                                    FeatureTemplates.Where(feature => feature.Type == SelectedFeatureType)
-                                        .OrderBy(feature => (
-                                            feature.Type != FeatureType.Trait
-                                                ? feature.Name
-                                                : (((Trait)feature).AssociatedCreatureType == ActiveMonster.Type ? "*" : "") + feature.Name)))
+                                @foreach (var item in
+                               FeatureTemplates.Where(feature => feature.Type == SelectedFeatureType)
+                               .OrderBy(feature => (
+                               feature.Type != FeatureType.Trait
+                               ? feature.Name
+                               : (((Trait)feature).AssociatedCreatureType == ActiveMonster.Type ? "*" : "") + feature.Name)))
                                 {
-                                    <option value="@item.Id">@((item.Type != FeatureType.Trait
-                                                                 ? item.Name
-                                                                 : (((Trait)item).AssociatedCreatureType == ActiveMonster.Type ? "*" : "") + item.Name))
+                                    <option value="@item.Id">
+                                        @((item.Type != FeatureType.Trait
+                                            ? item.Name
+                                            : (((Trait)item).AssociatedCreatureType == ActiveMonster.Type ? "*" : "") + item.Name))
                                     </option>
                                 }
                             </InputSelect>
                             <span @onclick="() => AddSelectedTemplateToActive()">
-                                <span class="fas fa-plus mx-1"/>
+                                <span class="fas fa-plus mx-1" />
                                 <span>Add to Active</span>
                             </span>
 
                             @if (SelectedFeatureTemplate != null && SelectedFeatureTemplate.CreateUserId == CurrentUserId)
                             {
-                                <button class="btn btn-outline-danger float-end hoverDeleteButton" style="margin-top: -6px;" type="button" @onclick="() => DeleteTemplate(SelectedFeatureTemplate)"><span><span class="me-1 fas fa-trash"/>Delete Template</span></button>
+                                <button class="btn btn-outline-danger float-end hoverDeleteButton" style="margin-top: -6px;" type="button" @onclick="() => DeleteTemplate(SelectedFeatureTemplate)"><span><span class="me-1 fas fa-trash" />Delete Template</span></button>
                             }
 
                         </div>
@@ -243,15 +244,21 @@
                                                     <InputCheckbox class="h-100 w-100" @bind-Value="action.IsSpell" />
                                                 </div>
                                             </div>
-                                            <div class="row">
-                                                @if (action.IsSpell)
-                                                {
+                                            @if (action.IsSpell)
+                                            {
+                                                <div class="row">
                                                     <div class="col-4"><span class="fa-regular fa-caret-right me-1" />Description:</div>
                                                     <div class="col-6">
                                                         <input class="w-100" @bind="action.SpellDesc" @bind:event="oninput" />
                                                     </div>
-                                                }
-                                            </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-4"><span class="fa-regular fa-caret-right me-1" />Concentration:</div>
+                                                    <div class="col-6">
+                                                        <InputCheckbox class="h-100 w-100" @bind-Value="action.Concentration" />
+                                                    </div>
+                                                </div>
+                                            }
                                             <div class="row">
                                                 <div class="col-4">Deals Damage?</div>
                                                 <div class="col-2">
@@ -289,7 +296,7 @@
                                                 <div class="row">
                                                     <div class="col-4"><span class="fa-regular fa-caret-right me-1" />Multiattack?</div>
                                                     <div class="col-2">
-                                                        <InputCheckbox class="h-100 w-100" @bind-Value="action.IsMultiAttack"/>
+                                                        <InputCheckbox class="h-100 w-100" @bind-Value="action.IsMultiAttack" />
                                                     </div>
                                                 </div>
                                                 @if (action.IsMultiAttack)
@@ -297,7 +304,7 @@
                                                     <div class="row">
                                                         <div class="col-4"><span class="fa-regular fa-caret-right me-1" /><span class="fa-regular fa-caret-right me-1" />How Many?</div>
                                                         <div class="col-6">
-                                                            <InputNumber class="w-100" @bind-Value="@action.MultiAttack" min="0" TValue="int"/>
+                                                            <InputNumber class="w-100" @bind-Value="@action.MultiAttack" min="0" TValue="int" />
                                                         </div>
                                                     </div>
                                                 }
