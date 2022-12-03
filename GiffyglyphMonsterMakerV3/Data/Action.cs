@@ -36,7 +36,7 @@ namespace GiffyglyphMonsterMakerV3.Data
                 return desc + sanitizer.Sanitize(html);
             }
 
-            desc += (IsSpell ? "<span class=\"fst-italic\">Spell</span>: " + SpellDesc : " ");
+            desc += (IsSpell ? "<span class=\"fst-italic\">Spell</span>: " + SpellDesc + " " : "");
             desc += "<span class=\"fst-italic\">" + Distance.ToString() + "</span>: ";
 
             string shapeText = "";
@@ -66,6 +66,10 @@ namespace GiffyglyphMonsterMakerV3.Data
                 case TargetShape.self:
                     shapeText += "on yourself.";
                     break;
+                case TargetShape.wall:
+                    shapeText += "a " + Radius + " ft. long wall, 5 ft. wide, with its midpoint within " + Range +
+                                 " ft.";
+                    break;
                 case TargetShape.target:
                 default:
                     shapeText += Targets + " target";
@@ -80,32 +84,39 @@ namespace GiffyglyphMonsterMakerV3.Data
             {
                 desc += "DC" + (parentCreature.Offense.DifficultyCheck + parentCreature.Attributes.Dict[RelevantAttribute] + parentCreature.Attributes.AttributeMod) + " vs " + SaveVs + ", ";
             }
-            else
+
+            if (IsAttack)
             {
                 desc += ((parentCreature.Offense.Attack + parentCreature.Attributes.Dict[RelevantAttribute] + parentCreature.Attributes.AttributeMod) >= 0 ? "+" : "") + (parentCreature.Offense.Attack + parentCreature.Attributes.Dict[RelevantAttribute] + parentCreature.Attributes.AttributeMod) + " to hit, ";
             }
 
-            switch (Distance)
+            if (Shape == TargetShape.target)
             {
-                case RangeType.Melee:
-                    desc += "reach ";
-                    desc += Range + " ft.,";
-                    break;
-                case RangeType.Ranged:
-                default:
-                    desc += "range " + Range + " ft.,";
-                    break;
+                switch (Distance)
+                {
+                    case RangeType.Melee:
+                        desc += "reach ";
+                        desc += Range + " ft.,";
+                        break;
+                    case RangeType.Ranged:
+                    default:
+                        desc += "range " + Range + " ft.,";
+                        break;
+                }
             }
 
 
 
-            if (MultiAttack > 1)
+            if (IsAttack && MultiAttack > 1)
             {
                 desc += " " + MultiAttack + " attacks, ";
             }
             desc += " " + shapeText;
 
-            desc += " <span class=\"fst-italic\">Hit</span>: ";
+            if (DealsDamage || IsAttack)
+            {
+                desc += " <span class=\"fst-italic\">Hit</span>: ";
+            }
 
             if (DealsDamage)
             {
@@ -182,6 +193,7 @@ namespace GiffyglyphMonsterMakerV3.Data
             ActionDamageType = a.ActionDamageType;
             Targets = a.Targets;
             Shape = a.Shape;
+            IsAttack = a.IsAttack;
 
             base.UpdateThisToMatch(o);
         }

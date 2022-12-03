@@ -10,7 +10,8 @@
     "Range": 5,
     "OtherEffect": "The target is blinded (save ends).",
     "HasSave": true,
-    "SaveVs": "CON"
+    "SaveVs": "CON",
+    "IsAttack": true
   },
   {
     "Name": "Concussion",
@@ -23,7 +24,8 @@
     "Range": 5,
     "OtherEffect": "The target is stunned (save ends).",
     "HasSave": true,
-    "SaveVs": "CON"
+    "SaveVs": "CON",
+    "IsAttack": true
   },
   {
     "Name": "Frighten",
@@ -36,7 +38,8 @@
     "Range": 5,
     "OtherEffect": "The target is frightened of you (save ends).",
     "HasSave": true,
-    "SaveVs": "WIS"
+    "SaveVs": "WIS",
+    "IsAttack": true
   },
   {
     "Name": "Knockdown",
@@ -48,7 +51,8 @@
     "Distance": 0,
     "Range": 5,
     "OtherEffect": "The target falls prone.",
-    "HasSave": false
+    "HasSave": false,
+    "IsAttack": true
   },
   {
     "Name": "Poison Attack",
@@ -60,7 +64,8 @@
     "Distance": 0,
     "Range": 5,
     "OtherEffect": "The target is poisoned until the end of its next turn.",
-    "HasSave": false
+    "HasSave": false,
+    "IsAttack": true
   },
   {
     "Name": "Sticky Floor",
@@ -68,11 +73,12 @@
     "Rarity": 0,
     "Distance": 1,
     "Shape": 6,
-    "Radius": 2,
+    "Radius": 10,
     "SpellDesc": "The targeted area is difficult terrain until the start of your next turn.",
     "Range": 30,
     "IsSpell": true,
-    "DealsDamage": false
+    "DealsDamage": false,
+    "IsAttack": false
   },
   {
     "Name": "Barrier",
@@ -80,32 +86,34 @@
     "Rarity": 2,
     "Distance": 1,
     "Shape": 5,
-    "Radius": 2,
+    "Radius": 30,
     "SpellDesc": "The targeted area is impassable and grants total cover.",
     "Range": 30,
     "IsSpell": true,
-    "DealsDamage": false
+    "DealsDamage": false,
+    "IsAttack": false
   },
   {
     "Name": "Zone of Darkness",
     "Type": 3,
     "Rarity": 2,
     "Distance": 1,
-    "Shape": 5,
-    "Radius": 3,
+    "Shape": 6,
+    "Radius": 15,
     "SpellDesc": "The targeted area is filled with magical darkness.",
     "Range": 30,
     "IsSpell": true,
-    "DealsDamage": false
+    "DealsDamage": false,
+    "IsAttack": false
   },
   {
     "Name": "Zone of Pain",
     "Type": 2,
     "Rarity": 2,
     "Distance": 1,
-    "Shape": 5,
-    "Radius": 2,
-    "SpellDesc": "The targeted area is damaging and unstable.",
+    "Shape": 6,
+    "Radius": 10,
+    "SpellDesc": "The targeted area is unstable. Creatures which move into or end their turn within the area take damage.",
     "Range": 30,
     "IsSpell": true,
     "DealsDamage": true,

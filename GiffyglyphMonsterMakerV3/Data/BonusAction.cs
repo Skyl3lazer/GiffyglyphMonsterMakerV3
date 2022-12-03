@@ -9,13 +9,6 @@ namespace GiffyglyphMonsterMakerV3.Data
             Name = "New Bonus Action";
             Type = FeatureType.Bonus;
         }
-
-        public override void UpdateThisToMatch(Object o)
-        {
-            if (o is not BonusAction a)
-                throw new InvalidDataException("Target is not a Bonus Action");
-
-            base.UpdateThisToMatch(o);
-        }
+        
     }
 }

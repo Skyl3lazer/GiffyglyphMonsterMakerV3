@@ -238,7 +238,7 @@
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-4">Spell?</div>
+                                                <div class="col-4">Is a Spell?</div>
                                                 <div class="col-2">
                                                     <InputCheckbox class="h-100 w-100" @bind-Value="action.IsSpell" />
                                                 </div>
@@ -279,19 +279,28 @@
                                                 </div>
                                             }
                                             <div class="row">
-                                                <div class="col-4">Multiattack?</div>
+                                                <div class="col-4">Is an Attack?</div>
                                                 <div class="col-2">
-                                                    <InputCheckbox class="h-100 w-100" @bind-Value="action.IsMultiAttack" />
+                                                    <InputCheckbox class="h-100 w-100" @bind-Value="action.IsAttack" />
                                                 </div>
                                             </div>
-                                            @if (action.IsMultiAttack)
+                                            @if (action.IsAttack)
                                             {
                                                 <div class="row">
-                                                    <div class="col-4"><span class="fa-regular fa-caret-right me-1" />How Many?</div>
-                                                    <div class="col-6">
-                                                        <InputNumber class="w-100" @bind-Value="@action.MultiAttack" min="0" TValue="int" />
+                                                    <div class="col-4">Multiattack?</div>
+                                                    <div class="col-2">
+                                                        <InputCheckbox class="h-100 w-100" @bind-Value="action.IsMultiAttack"/>
                                                     </div>
                                                 </div>
+                                                @if (action.IsMultiAttack)
+                                                {
+                                                    <div class="row">
+                                                        <div class="col-4"><span class="fa-regular fa-caret-right me-1"/>How Many?</div>
+                                                        <div class="col-6">
+                                                            <InputNumber class="w-100" @bind-Value="@action.MultiAttack" min="0" TValue="int"/>
+                                                        </div>
+                                                    </div>
+                                                }
                                             }
                                             <div class="row">
                                                 <div class="col-4">Other Effect:</div>
