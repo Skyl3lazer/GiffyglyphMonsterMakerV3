@@ -277,5 +277,27 @@
     "DealsDamage": false,
     "IsAttack": false,
     "Concentration": true
+  },
+  {
+    "Name": "Hit Me",
+    "AssociatedRole": 1,
+    "Type": 3,
+    "Rarity": 0,
+    "IsSpell": true,
+    "SpellDesc": "A marked creature has disadvantage on any attack roll that doesn't include you.",
+    "Concentration": true,
+    "IsAttack": true,
+    "OtherEffect": "The creature is marked.",
+    "DealsDamage": false
+  },
+  {
+    "Name": "Shield Wall",
+    "AssociatedRole": 1,
+    "Type": 2,
+    "Rarity": 0,
+    "OtherEffect": "You grant an adjacent target total cover until the start of your next turn. You must remain adjacent to the target to maintain this effect.",
+    "IsAttack": false,
+    "IsSpell": false,
+    "DealsDamage": false
   }
 ]

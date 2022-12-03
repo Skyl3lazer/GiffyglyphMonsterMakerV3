@@ -209,6 +209,7 @@ namespace GiffyglyphMonsterMakerV3.Data
             Shape = a.Shape;
             IsAttack = a.IsAttack;
             AssociatedRole = a.AssociatedRole;
+            Concentration = a.Concentration;
 
             base.UpdateThisToMatch(o);
         }
