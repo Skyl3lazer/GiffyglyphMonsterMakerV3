@@ -36,13 +36,19 @@
                                FeatureTemplates.Where(feature => feature.Type == SelectedFeatureType)
                                .OrderBy(feature => (
                                feature.Type != FeatureType.Trait
-                               ? feature.Name
+                               ? feature is Action ?
+                                   (((Action)feature).AssociatedRole == ActiveMonster.MonsterRole ? "*" : "") + feature.Name
+                                   :
+                                   feature.Name
                                : (((Trait)feature).AssociatedCreatureType == ActiveMonster.Type ? "*" : "") + feature.Name)))
                                 {
                                     <option value="@item.Id">
                                         @((item.Type != FeatureType.Trait
-                                            ? item.Name
-                                            : (((Trait)item).AssociatedCreatureType == ActiveMonster.Type ? "*" : "") + item.Name))
+                                            ? item is Action ?
+                                            (((Action)item).AssociatedRole == ActiveMonster.MonsterRole ? "*" : "") + item.Name + " (" + ((Action)item).AssociatedRole + ")"
+                                                :
+                                            item.Name
+                                            : (((Trait)item).AssociatedCreatureType == ActiveMonster.Type ? "*" : "") + item.Name + " (" + ((Trait)item).AssociatedCreatureType + ")"))
                                     </option>
                                 }
                             </InputSelect>

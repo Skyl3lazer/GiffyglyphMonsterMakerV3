@@ -53,7 +53,7 @@ namespace GiffyglyphMonsterMakerV3.Data
                     shapeText += "a " + Range + " ft. cone extending from yourself.";
                     break;
                 case TargetShape.emanation:
-                    shapeText += "within " + Range + " of yourself.";
+                    shapeText += "Targets within " + Range + " ft. of yourself.";
                     break;
                 case TargetShape.circle:
                     shapeText += "a " + Radius + " ft. circle centered within " + Range + " ft.";
