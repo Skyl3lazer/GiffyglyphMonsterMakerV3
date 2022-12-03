@@ -3,6 +3,7 @@
 @using NJsonSchema
 @using Action = GiffyglyphMonsterMakerV3.Data.Action
 @using System.Text.Json
+@using GiffyglyphMonsterMakerV3.Utility
 @inject FeatureService _fs;
 @inject IToastService _ts;
 @inject NavigationManager nav;
@@ -17,7 +18,7 @@
             <div class="modal-body">
                 <p>Click the button to import from the file</p>
                 <button class="btn btn-primary" @onclick="ImportTraits" data-bs-dismiss="modal">Import Features</button>
-                <button class="btn btn-primary" @onclick="CreateActionSchema" data-bs-dismiss="modal">Import Actions</button>
+                <button class="btn btn-primary" @onclick="ImportActions" data-bs-dismiss="modal">Import Actions</button>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -52,7 +53,23 @@
             item.ParentId = null;
             if (!Features.Any(f => f.Name.Equals(item.Name) && item.Type == f.Type && item.CreateUserId == f.CreateUserId))
             {
-                await _fs.InsertFeatureAsync(item);
+                switch (item.Type)
+                {
+                    case FeatureType.Free:
+                        await _fs.InsertFeatureAsync(item.To<FreeAction>());
+                        break;
+                    case FeatureType.Action:
+                        await _fs.InsertFeatureAsync(item);
+                        break;
+                    case FeatureType.Bonus:
+                        await _fs.InsertFeatureAsync(item.To<BonusAction>());
+                        break;
+                    case FeatureType.Reaction:
+                        await _fs.InsertFeatureAsync(item.To<Reaction>());
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
                 insertFeatNum += 1;
             }
             else

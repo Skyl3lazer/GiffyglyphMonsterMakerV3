@@ -32,6 +32,9 @@
               "type": "integer",
               "format": "int32"
             },
+            "IsAttack": {
+              "type": "boolean"
+            },
             "IsSpell": {
               "type": "boolean"
             },

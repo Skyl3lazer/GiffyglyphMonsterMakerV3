@@ -36,7 +36,7 @@ namespace GiffyglyphMonsterMakerV3.Data
                 return desc + sanitizer.Sanitize(html);
             }
 
-            desc += (IsSpell ? "<span class=\"fst-italic\">Spell</span>: " + SpellDesc : "");
+            desc += (IsSpell ? "<span class=\"fst-italic\">Spell</span>: " + SpellDesc : " ");
             desc += "<span class=\"fst-italic\">" + Distance.ToString() + "</span>: ";
 
             string shapeText = "";
@@ -131,21 +131,14 @@ namespace GiffyglyphMonsterMakerV3.Data
                 {
                     return "fa-wand-magic-sparkles";
                 }
-                else if(DealsDamage)
+                switch (Distance)
                 {
-                    switch (Distance)
-                    {
-                        case RangeType.Melee:
-                            return "fa-sword";
-                        case RangeType.Ranged:
-                            return "fa-bow-arrow";
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }
-                }
-                else
-                {
-                    return "fa-caret-right";
+                    case RangeType.Melee:
+                        return "fa-sword";
+                    case RangeType.Ranged:
+                        return "fa-bow-arrow";
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
             }
         }
@@ -153,6 +146,7 @@ namespace GiffyglyphMonsterMakerV3.Data
         public RangeType Distance { get; set; }
         public int Range { get; set; } = 5;
         public int Radius { get; set; }
+        public bool IsAttack { get; set; }
         public bool IsSpell { get; set; }
         public string SpellDesc { get; set; } = "";
         public bool DealsDamage { get; set; } = true;

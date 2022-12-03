@@ -13,6 +13,102 @@
     "SaveVs": "CON"
   },
   {
-    
+    "Name": "Concussion",
+    "Type": 2,
+    "Rarity": 2,
+    "Targets": 1,
+    "Shape": 4,
+    "DealsDamage": false,
+    "Distance": 0,
+    "Range": 5,
+    "OtherEffect": "The target is stunned (save ends).",
+    "HasSave": true,
+    "SaveVs": "CON"
+  },
+  {
+    "Name": "Frighten",
+    "Type": 2,
+    "Rarity": 1,
+    "Targets": 1,
+    "Shape": 4,
+    "DealsDamage": false,
+    "Distance": 0,
+    "Range": 5,
+    "OtherEffect": "The target is frightened of you (save ends).",
+    "HasSave": true,
+    "SaveVs": "WIS"
+  },
+  {
+    "Name": "Knockdown",
+    "Type": 2,
+    "Rarity": 0,
+    "Targets": 1,
+    "Shape": 4,
+    "DealsDamage": false,
+    "Distance": 0,
+    "Range": 5,
+    "OtherEffect": "The target falls prone.",
+    "HasSave": false
+  },
+  {
+    "Name": "Poison Attack",
+    "Type": 2,
+    "Rarity": 0,
+    "Targets": 1,
+    "Shape": 4,
+    "DealsDamage": false,
+    "Distance": 0,
+    "Range": 5,
+    "OtherEffect": "The target is poisoned until the end of its next turn.",
+    "HasSave": false
+  },
+  {
+    "Name": "Sticky Floor",
+    "Type": 2,
+    "Rarity": 0,
+    "Distance": 1,
+    "Shape": 6,
+    "Radius": 2,
+    "SpellDesc": "The targeted area is difficult terrain until the start of your next turn.",
+    "Range": 30,
+    "IsSpell": true,
+    "DealsDamage": false
+  },
+  {
+    "Name": "Barrier",
+    "Type": 2,
+    "Rarity": 2,
+    "Distance": 1,
+    "Shape": 5,
+    "Radius": 2,
+    "SpellDesc": "The targeted area is impassable and grants total cover.",
+    "Range": 30,
+    "IsSpell": true,
+    "DealsDamage": false
+  },
+  {
+    "Name": "Zone of Darkness",
+    "Type": 3,
+    "Rarity": 2,
+    "Distance": 1,
+    "Shape": 5,
+    "Radius": 3,
+    "SpellDesc": "The targeted area is filled with magical darkness.",
+    "Range": 30,
+    "IsSpell": true,
+    "DealsDamage": false
+  },
+  {
+    "Name": "Zone of Pain",
+    "Type": 2,
+    "Rarity": 2,
+    "Distance": 1,
+    "Shape": 5,
+    "Radius": 2,
+    "SpellDesc": "The targeted area is damaging and unstable.",
+    "Range": 30,
+    "IsSpell": true,
+    "DealsDamage": true,
+    "ActionDamageType": 6
   }
 ]
