@@ -56,7 +56,7 @@ namespace GiffyglyphMonsterMakerV3.Data
             }
         }
 
-        public virtual FeatureType Type { get; init; }
+        public virtual FeatureType Type { get; set; }
         public RarityType Rarity { get; set; }
         public AttributeType RelevantAttribute { get; set; }
 

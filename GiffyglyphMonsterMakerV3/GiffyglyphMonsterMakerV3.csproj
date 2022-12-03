@@ -83,7 +83,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.0" />
+    <PackageReference Include="NJsonSchema" Version="10.8.0" />
     <PackageReference Include="Z.EntityFramework.Plus.EFCore" Version="7.17.1" />
   </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties wwwroot_4formattedmonsteractions_1json__JsonSchema="FormattedMonsterActionSchema.json" /></VisualStudio></ProjectExtensions>
 
 </Project>

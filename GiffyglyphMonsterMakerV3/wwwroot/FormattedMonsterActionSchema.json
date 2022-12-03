@@ -1,0 +1,325 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "ListOfAction",
+  "type": "array",
+  "items": {
+    "$ref": "#/definitions/Action"
+  },
+  "definitions": {
+    "Action": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/Feature"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "Icon": {
+              "type": "string"
+            },
+            "Type": {
+              "$ref": "#/definitions/FeatureType"
+            },
+            "Distance": {
+              "$ref": "#/definitions/RangeType"
+            },
+            "Range": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "Radius": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "IsSpell": {
+              "type": "boolean"
+            },
+            "SpellDesc": {
+              "type": "string"
+            },
+            "DealsDamage": {
+              "type": "boolean"
+            },
+            "MultiAttack": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "IsMultiAttack": {
+              "type": "boolean"
+            },
+            "DamageMultiplier": {
+              "type": "number",
+              "format": "double"
+            },
+            "OtherEffect": {
+              "type": "string"
+            },
+            "MissEffect": {
+              "type": "string"
+            },
+            "ActionDamageType": {
+              "$ref": "#/definitions/DamageType"
+            },
+            "Targets": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "Shape": {
+              "$ref": "#/definitions/TargetShape"
+            }
+          }
+        }
+      ]
+    },
+    "FeatureType": {
+      "type": "integer",
+      "description": "",
+      "x-enumNames": [
+        "Trait",
+        "Free",
+        "Action",
+        "Bonus",
+        "Reaction",
+        "Countermeasure"
+      ],
+      "enum": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    "RangeType": {
+      "type": "integer",
+      "description": "",
+      "x-enumNames": [
+        "Melee",
+        "Ranged"
+      ],
+      "enum": [
+        0,
+        1
+      ]
+    },
+    "DamageType": {
+      "type": "integer",
+      "description": "",
+      "x-enumNames": [
+        "acid",
+        "bludgeoning",
+        "cold",
+        "fire",
+        "force",
+        "lightning",
+        "necrotic",
+        "piercing",
+        "poison",
+        "psychic",
+        "radiant",
+        "slashing",
+        "thunder"
+      ],
+      "enum": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ]
+    },
+    "TargetShape": {
+      "type": "integer",
+      "description": "",
+      "x-enumNames": [
+        "line",
+        "cone",
+        "emanation",
+        "circle",
+        "target",
+        "wall",
+        "square",
+        "cube",
+        "sphere",
+        "self"
+      ],
+      "enum": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    "Feature": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Id": {
+          "type": "string",
+          "format": "guid"
+        },
+        "TemplateId": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "format": "guid"
+        },
+        "CreateUserId": {
+          "type": "string"
+        },
+        "Name": {
+          "type": "string"
+        },
+        "OverrideMarkup": {
+          "type": "string"
+        },
+        "Type": {
+          "$ref": "#/definitions/FeatureType"
+        },
+        "Rarity": {
+          "$ref": "#/definitions/RarityType"
+        },
+        "RelevantAttribute": {
+          "$ref": "#/definitions/AttributeType"
+        },
+        "Icon": {
+          "type": "string"
+        },
+        "CustomIcon": {
+          "type": "string"
+        },
+        "RarityStyle": {
+          "type": "string"
+        },
+        "HasSave": {
+          "type": "boolean"
+        },
+        "SaveVs": {
+          "type": "string"
+        },
+        "Frequency": {
+          "$ref": "#/definitions/FeatureFrequency"
+        },
+        "ParentId": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "format": "guid"
+        }
+      }
+    },
+    "RarityType": {
+      "type": "integer",
+      "description": "",
+      "x-enumNames": [
+        "Common",
+        "Uncommon",
+        "Rare"
+      ],
+      "enum": [
+        0,
+        1,
+        2
+      ]
+    },
+    "AttributeType": {
+      "type": "integer",
+      "description": "",
+      "x-enumNames": [
+        "Strength",
+        "Dexterity",
+        "Constitution",
+        "Intelligence",
+        "Wisdom",
+        "Charisma"
+      ],
+      "enum": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    "FeatureFrequency": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Id": {
+          "type": "string",
+          "format": "guid"
+        },
+        "Type": {
+          "$ref": "#/definitions/FrequencyType"
+        },
+        "Delay": {
+          "$ref": "#/definitions/DelayType"
+        },
+        "Value": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "DelayValue": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "StringValue": {
+          "type": "string"
+        }
+      }
+    },
+    "FrequencyType": {
+      "type": "integer",
+      "description": "",
+      "x-enumNames": [
+        "passive",
+        "cooldown",
+        "shortrest",
+        "longrest",
+        "charge",
+        "round"
+      ],
+      "enum": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    "DelayType": {
+      "type": "integer",
+      "description": "",
+      "x-enumNames": [
+        "none",
+        "delay",
+        "doom"
+      ],
+      "enum": [
+        0,
+        1,
+        2
+      ]
+    }
+  }
+}

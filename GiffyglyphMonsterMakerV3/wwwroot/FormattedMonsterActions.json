@@ -1,0 +1,18 @@
+[
+  {
+    "Name": "Blinding Attacks",
+    "Type": 2,
+    "Rarity": 1,
+    "Targets": 1,
+    "Shape": 4,
+    "DealsDamage": false,
+    "Distance": 0,
+    "Range": 5,
+    "OtherEffect": "The target is blinded (save ends).",
+    "HasSave": true,
+    "SaveVs": "CON"
+  },
+  {
+    
+  }
+]

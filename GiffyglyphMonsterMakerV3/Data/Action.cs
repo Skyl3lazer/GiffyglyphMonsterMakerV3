@@ -149,7 +149,7 @@ namespace GiffyglyphMonsterMakerV3.Data
                 }
             }
         }
-        public override FeatureType Type { get; init; } = FeatureType.Action;
+        public override FeatureType Type { get; set; } = FeatureType.Action;
         public RangeType Distance { get; set; }
         public int Range { get; set; } = 5;
         public int Radius { get; set; }
