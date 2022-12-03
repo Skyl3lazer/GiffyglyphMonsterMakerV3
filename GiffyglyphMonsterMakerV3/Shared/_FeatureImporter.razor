@@ -83,6 +83,10 @@
         _ts.ShowSuccess("Updated " + updateFeatNum + " actions and inserted " + insertFeatNum + " new actions.", "Found " + typeNum + " Actions.");
     }
 
+    /// <summary>
+    /// Can hook this up to a button if you need to regenerate the action schema
+    /// </summary>
+    /// <returns></returns>
     public async Task CreateActionSchema()
     {
         var schema = JsonSchema.FromType<List<Action>>();
