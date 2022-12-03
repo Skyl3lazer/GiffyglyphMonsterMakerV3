@@ -3,6 +3,7 @@
 @using Microsoft.EntityFrameworkCore.Diagnostics
 @using Action = GiffyglyphMonsterMakerV3.Data.Action
 @using System.Security.Claims;
+@using Microsoft.Extensions.Azure
 @inject FeatureService _fs;
 @inject IToastService _ts;
 
@@ -45,10 +46,9 @@
                                     <option value="@item.Id">
                                         @((item.Type != FeatureType.Trait
                                             ? item is Action ?
-                                            (((Action)item).AssociatedRole == ActiveMonster.MonsterRole ? "*" : "") + item.Name + " (" + ((Action)item).AssociatedRole + ")"
-                                                :
-                                            item.Name
-                                            : (((Trait)item).AssociatedCreatureType == ActiveMonster.Type ? "*" : "") + item.Name + " (" + ((Trait)item).AssociatedCreatureType + ")"))
+                                            (((Action)item).AssociatedRole == ActiveMonster.MonsterRole ? "*" : "") + item.Name + (((Action)item).AssociatedRole != null ? " (" + ((Action)item).AssociatedRole + ")" : "")
+                                                : item.Name
+                                        : (((Trait)item).AssociatedCreatureType == ActiveMonster.Type ? "*" : "") + item.Name + (((Trait)item).AssociatedCreatureType != null ? " (" + ((Trait)item).AssociatedCreatureType + ")" : "")))
                                     </option>
                                 }
                             </InputSelect>
