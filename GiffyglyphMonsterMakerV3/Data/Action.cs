@@ -26,7 +26,10 @@ namespace GiffyglyphMonsterMakerV3.Data
                 desc += " (" + Frequency.StringValue + ")";
             }
             desc += @": </span>";
-
+            if (Concentration)
+            {
+                desc += "<span class=\"fst-italic\">Requires Concentration </span>";
+            }
             //If you want to just totally override a thing, go for it
             if (!string.IsNullOrWhiteSpace(OverrideMarkup))
             {
@@ -37,7 +40,8 @@ namespace GiffyglyphMonsterMakerV3.Data
             }
 
             desc += (IsSpell ? "<span class=\"fst-italic\">Spell</span>: " + SpellDesc + " " : "");
-            desc += "<span class=\"fst-italic\">" + Distance.ToString() + "</span>: ";
+            if ((IsAttack || IsSpell) && Shape != TargetShape.self)
+                desc += "<span class=\"fst-italic\">" + Distance.ToString() + "</span>: ";
 
             string shapeText = "";
             switch (Shape)
@@ -64,7 +68,7 @@ namespace GiffyglyphMonsterMakerV3.Data
                     shapeText += "a " + Radius + " ft. sphere centered within " + Range + " ft.";
                     break;
                 case TargetShape.self:
-                    shapeText += "on yourself.";
+                    shapeText += "";
                     break;
                 case TargetShape.wall:
                     shapeText += "a " + Radius + " ft. long wall, 5 ft. wide, with its midpoint within " + Range +
@@ -142,17 +146,25 @@ namespace GiffyglyphMonsterMakerV3.Data
                 {
                     return "fa-wand-magic-sparkles";
                 }
-                switch (Distance)
+                
+                if (IsAttack)
                 {
-                    case RangeType.Melee:
-                        return "fa-sword";
-                    case RangeType.Ranged:
-                        return "fa-bow-arrow";
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                    switch (Distance)
+                    {
+                        case RangeType.Melee:
+                            return "fa-sword";
+                        case RangeType.Ranged:
+                            return "fa-bow-arrow";
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
                 }
+
+                return "fa-hand-back-fist";
+
+
             }
-        }
+            }
         public override FeatureType Type { get; set; } = FeatureType.Action;
         public RangeType Distance { get; set; }
         public int Range { get; set; } = 5;
@@ -162,6 +174,7 @@ namespace GiffyglyphMonsterMakerV3.Data
         public string SpellDesc { get; set; } = "";
         public bool DealsDamage { get; set; } = true;
         public int MultiAttack { get; set; } = 1;
+        public bool Concentration { get; set; }
 
         [NotMapped]
         public bool IsMultiAttack
@@ -195,6 +208,7 @@ namespace GiffyglyphMonsterMakerV3.Data
             Targets = a.Targets;
             Shape = a.Shape;
             IsAttack = a.IsAttack;
+            AssociatedRole = a.AssociatedRole;
 
             base.UpdateThisToMatch(o);
         }

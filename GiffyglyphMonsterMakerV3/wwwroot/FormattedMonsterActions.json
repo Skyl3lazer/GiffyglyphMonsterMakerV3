@@ -11,7 +11,8 @@
     "OtherEffect": "The target is blinded (save ends).",
     "HasSave": true,
     "SaveVs": "CON",
-    "IsAttack": true
+    "IsAttack": true,
+    "AssociatedRole": 0
   },
   {
     "Name": "Concussion",
@@ -25,7 +26,8 @@
     "OtherEffect": "The target is stunned (save ends).",
     "HasSave": true,
     "SaveVs": "CON",
-    "IsAttack": true
+    "IsAttack": true,
+    "AssociatedRole": 0
   },
   {
     "Name": "Frighten",
@@ -39,7 +41,8 @@
     "OtherEffect": "The target is frightened of you (save ends).",
     "HasSave": true,
     "SaveVs": "WIS",
-    "IsAttack": true
+    "IsAttack": true,
+    "AssociatedRole": 0
   },
   {
     "Name": "Knockdown",
@@ -52,7 +55,8 @@
     "Range": 5,
     "OtherEffect": "The target falls prone.",
     "HasSave": false,
-    "IsAttack": true
+    "IsAttack": true,
+    "AssociatedRole": 0
   },
   {
     "Name": "Poison Attack",
@@ -65,7 +69,8 @@
     "Range": 5,
     "OtherEffect": "The target is poisoned until the end of its next turn.",
     "HasSave": false,
-    "IsAttack": true
+    "IsAttack": true,
+    "AssociatedRole": 0
   },
   {
     "Name": "Sticky Floor",
@@ -78,7 +83,9 @@
     "Range": 30,
     "IsSpell": true,
     "DealsDamage": false,
-    "IsAttack": false
+    "IsAttack": false,
+    "AssociatedRole": 0,
+    "Concentration": true
   },
   {
     "Name": "Barrier",
@@ -91,7 +98,9 @@
     "Range": 30,
     "IsSpell": true,
     "DealsDamage": false,
-    "IsAttack": false
+    "IsAttack": false,
+    "AssociatedRole": 0,
+    "Concentration": true
   },
   {
     "Name": "Zone of Darkness",
@@ -104,7 +113,9 @@
     "Range": 30,
     "IsSpell": true,
     "DealsDamage": false,
-    "IsAttack": false
+    "IsAttack": false,
+    "AssociatedRole": 0,
+    "Concentration": true
   },
   {
     "Name": "Zone of Pain",
@@ -117,7 +128,9 @@
     "Range": 30,
     "IsSpell": true,
     "DealsDamage": true,
-    "ActionDamageType": 6
+    "ActionDamageType": 6,
+    "AssociatedRole": 0,
+    "Concentration": true
   },
   {
     "Name": "Distracting Noise",
@@ -130,7 +143,9 @@
     "Distance": 1,
     "Radius": 15,
     "DealsDamage": false,
-    "Shape": 6
+    "Shape": 6,
+    "AssociatedRole": 0,
+    "Concentration": true
   },
   {
     "Name": "Explosive Force",
@@ -142,7 +157,8 @@
     "Range": 10,
     "Distance": 0,
     "Radius": 10,
-    "Shape": 6
+    "Shape": 6,
+    "AssociatedRole": 0
   },
   {
     "Name": "Get Over Here",
@@ -154,7 +170,8 @@
     "Targets": 1,
     "Shape": 5,
     "Range": 30,
-    "Distance": 1
+    "Distance": 1,
+    "AssociatedRole": 0
   },
   {
     "Name": "Pinning Attack",
@@ -167,7 +184,8 @@
     "DealsDamage": false,
     "Shape": 5,
     "Targets": 1,
-    "IsAttack": true
+    "IsAttack": true,
+    "AssociatedRole": 0
   },
   {
     "Name": "Knockback",
@@ -178,7 +196,8 @@
     "OtherEffect": "The target is pushed up to 10 ft. from you.",
     "Targets": 1,
     "Shape": 5,
-    "Range": 5
+    "Range": 5,
+    "AssociatedRole": 0
   },
   {
     "Name": "Reshuffle",
@@ -189,9 +208,74 @@
     "Shape": 5,
     "Targets": 1,
     "Range": 5,
-    "IsAttack": true
+    "IsAttack": true,
+    "AssociatedRole": 0
   },
   {
-    "Name": "Raise Shield"
+    "Name": "Raise Shield",
+    "AssociatedRole": 1,
+    "Type": 3,
+    "Rarity": 1,
+    "IsSpell": false,
+    "IsAttack": false,
+    "OtherEffect": "You gain +2 AC and advantage on one saving throw of your choice until the end of your next turn.",
+    "Shape": 9,
+    "DealsDamage": false,
+    "IsAttack": false
+  },
+  {
+    "Name": "Immunity",
+    "AssociatedRole": 1,
+    "Type": 3,
+    "Rarity": 1,
+    "IsSpell": false,
+    "OtherEffect": "You are immune to one damage type or one condition of your choice until the end of your next turn.",
+    "Shape": 9,
+    "DealsDamage": false,
+    "IsAttack": false
+  },
+  {
+    "Name": "Determination",
+    "AssociatedRole": 1,
+    "Type": 3,
+    "Rarity": 1,
+    "Shape": 9,
+    "IsSpell": false,
+    "DealsDamage": false,
+    "OtherEffect": "Requires you are below 25% hit points. You gain temporary hit points equal to twice your combat level",
+    "IsAttack": false
+  },
+  {
+    "Name": "Relentless",
+    "AssociatedRole": 1,
+    "Type": 1,
+    "Rarity": 2,
+    "OtherEffect": "When you are reduced to 0 hit points, you are instead reduced to 1 hit point.",
+    "Shape": 9,
+    "DealsDamage": false,
+    "IsAttack": false,
+    "IsSpell": false
+  },
+  {
+    "Name": "Shockproof",
+    "AssociatedRole": 1,
+    "Type": 2,
+    "Rarity": 0,
+    "OtherEffect": "Requires you have at least 25% hit points. Until the end of your next turn, any critical hit made against you counts as a normal hit.",
+    "Shape": 9,
+    "DealsDamage": false,
+    "IsAttack": false,
+    "IsSpell": false
+  },
+  {
+    "Name": "Get Behind Me",
+    "AssociatedRole": 1,
+    "Type": 2,
+    "Rarity": 1,
+    "SpellDesc": "Until the effect ends, adjacent allies count as having three-quarters cover.",
+    "IsSpell": true,
+    "DealsDamage": false,
+    "IsAttack": false,
+    "Concentration": true
   }
 ]

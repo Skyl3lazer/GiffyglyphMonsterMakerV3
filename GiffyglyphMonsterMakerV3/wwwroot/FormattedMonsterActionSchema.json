@@ -214,6 +214,9 @@
           ],
           "format": "guid"
         },
+        "Concentration": {
+          "type": "boolean"
+        },
         "CreateUserId": {
           "type": "string"
         },
