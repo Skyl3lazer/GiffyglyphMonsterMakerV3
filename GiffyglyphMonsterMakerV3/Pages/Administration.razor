@@ -3,6 +3,7 @@
 @using Microsoft.AspNetCore.Identity;
 @using GiffyglyphMonsterMakerV3.Data
 @using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration
+@using System.Security.Claims
 @inject UserManager<ApplicationUser> _UserManager
 @inject RoleManager<IdentityRole> _RoleManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
@@ -13,31 +14,35 @@
     <Authorized>
         @if (@context.User.IsInRole(ADMINISTRATION_ROLE))
         {
+            <_FeatureImporter CreateUserId="@CurrentUserId"/>
             <table class="table">
                 <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>User Name</th>
-                        <th>Email</th>
-                    </tr>
+                <tr>
+                    <th>Id</th>
+                    <th>User Name</th>
+                    <th>Email</th>
+                </tr>
                 </thead>
                 <tbody>
-                    @foreach (var user in ColUsers)
-                    {
-                        <tr>
-                            <td>@user.Id.Substring(0, 5) ...</td>
-                            <td>@user.UserName</td>
-                            <td>@user.Email</td>
-                            <td>
-                                <button class="btn btn-primary"
-                                        @onclick="(() => EditUser(user))">
-                                    Edit
-                                </button>
-                            </td>
-                        </tr>
-                    }
+                @foreach (var user in ColUsers)
+                {
+                    <tr>
+                        <td>@user.Id.Substring(0, 5) ...</td>
+                        <td>@user.UserName</td>
+                        <td>@user.Email</td>
+                        <td>
+                            <button class="btn btn-primary"
+                                    @onclick="(() => EditUser(user))">
+                                Edit
+                            </button>
+                        </td>
+                    </tr>
+                }
                 </tbody>
             </table>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#featureImporterModal">
+                Open Feature Importer Modal
+            </button>
             @if (ShowPopup)
             {
                 <!-- This is the popup to create or edit a user -->
@@ -119,6 +124,7 @@
     string BASIC_ROLE = "User";
 
     System.Security.Claims.ClaimsPrincipal CurrentUser;
+    string? CurrentUserId { get; set; }
 
     // Property used to add or edit the currently selected user
 
@@ -179,6 +185,7 @@
 
         // Get the current logged in user
         CurrentUser = (await authenticationStateTask).User;
+        CurrentUserId = CurrentUser.FindFirstValue(ClaimTypes.NameIdentifier);
         GetUsers();
     }
 

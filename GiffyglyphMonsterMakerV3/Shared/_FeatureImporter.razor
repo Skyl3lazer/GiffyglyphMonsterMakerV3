@@ -1,0 +1,74 @@
+﻿@using System.Text.RegularExpressions
+@using GiffyglyphMonsterMakerV3.Data
+@inject FeatureService _fs;
+@inject IToastService _ts;
+@inject NavigationManager nav;
+
+<div class="modal fade" tabindex="-1" id="featureImporterModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Feature Importer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Click the button to import from the file</p>
+                <button class="btn btn-primary" @onclick="ImportFeatures" data-bs-dismiss="modal">Import Features</button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public string? CreateUserId { get; set; }
+
+    Regex _creatureTypeRegex = new Regex(@"(?:(?<mType>\w+) [|].*[\r\n](?<traitText>(?:\d.*\n)+))");
+    Regex _traitMatchRegex = new Regex(@"(?:[\d]+) (?:(?<traitName>\w+[ '-](?:\w+[ '-]){0,2}))(?<traitDesc>You .*\n|At .*\n|Any .*\n|When .*\n|Where .*\n|While .*\n|The .*\n|A .*\n|Creatures .*\n|All .*\n|Difficult .*\n|If .*\n?|Allied .*\n|Divide .*\n|Enemies .*\n|Critical .*\n|Each .*\n|For .*\n|Magical .*\n|During .*\n|Once .*\n|The .*\n|In .*\n|At .*\n|One .*\n|Your .*|Allies .*\n)");
+
+    public async Task ImportFeatures()
+    {
+        var Features = await _fs.GetAllFeatureTemplatesAsync();
+        string text = "";
+        using (HttpClient client = new HttpClient())
+        {
+            text = await client.GetStringAsync(nav.BaseUri+"FormattedMonsterTraits.txt");
+        }
+        var TypeMatches = _creatureTypeRegex.Matches(text);
+        int typeNum = TypeMatches.Count;
+        int updateFeatNum = 0;
+        int insertFeatNum = 0;
+        foreach (Match typeMatch in TypeMatches)
+        {
+            GroupCollection typeGroups = typeMatch.Groups;
+            CreatureType matchedType = Enum.Parse<CreatureType>(typeGroups["mType"].Value);
+            var TraitMatches = _traitMatchRegex.Matches(typeGroups["traitText"].Value);
+            foreach (Match traitMatch in TraitMatches)
+            {
+                GroupCollection traitGroups = traitMatch.Groups;
+                Trait newTrait = new Trait(CreateUserId);
+                newTrait.ParentId = null;
+                newTrait.Name = traitGroups["traitName"].Value;
+                newTrait.TraitDescription = traitGroups["traitDesc"].Value;
+                newTrait.AssociatedCreatureType = matchedType;
+                if (!Features.Any(f => f.Name.Equals(newTrait.Name) && f.Type == FeatureType.Trait && ((Trait)f).AssociatedCreatureType == newTrait.AssociatedCreatureType))
+                {
+                    await _fs.InsertFeatureAsync(newTrait);
+                    insertFeatNum += 1;
+                }
+                else
+                {
+                    var updateTrait = (Trait)Features.First(f => f.Name.Equals(newTrait.Name) && f.Type == FeatureType.Trait && ((Trait)f).AssociatedCreatureType == newTrait.AssociatedCreatureType);
+                    updateTrait.UpdateThisToMatch(newTrait);
+                    await _fs.UpdateFeatureAsync(updateTrait);
+                    updateFeatNum += 1;
+                }
+            }
+        }
+        _ts.ShowSuccess("Updated "+updateFeatNum+" traits and inserted "+insertFeatNum+" new traits.","Found "+typeNum+" monster types.");
+    }
+}

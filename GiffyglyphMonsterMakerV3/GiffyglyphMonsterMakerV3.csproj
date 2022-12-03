@@ -21,6 +21,7 @@
     <None Include="Areas\Identity\Pages\Shared\_LoginPartial.cshtml" />
     <None Include="compilerconfig.json" />
     <None Include="wwwroot\css\bootstrap.custom.dark.scss" />
+    <None Include="wwwroot\FormattedMonsterTraits.txt" />
     <None Include="wwwroot\lib\webfonts\fa-brands-400.woff2" />
     <None Include="wwwroot\lib\webfonts\fa-duotone-900.woff2" />
     <None Include="wwwroot\lib\webfonts\fa-light-300.woff2" />

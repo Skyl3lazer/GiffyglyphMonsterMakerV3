@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.InteropServices;
 using Ganss.Xss;
 
 namespace GiffyglyphMonsterMakerV3.Data
@@ -33,6 +34,10 @@ namespace GiffyglyphMonsterMakerV3.Data
         {
             if (o is not Trait a)
                 throw new InvalidDataException("Target is not a Trait");
+
+            TraitDescription = ((Trait)o).TraitDescription;
+            AssociatedCreatureType = ((Trait)o).AssociatedCreatureType;
+
             base.UpdateThisToMatch(o);
         }
         public override string Icon
@@ -43,5 +48,6 @@ namespace GiffyglyphMonsterMakerV3.Data
             }
         }
         public string TraitDescription { get; set; }
+        public CreatureType? AssociatedCreatureType { get; set; }
     }
 }
