@@ -19,6 +19,8 @@
                 <p>Click the button to import from the file</p>
                 <button class="btn btn-primary" @onclick="ImportTraits" data-bs-dismiss="modal">Import Features</button>
                 <button class="btn btn-primary" @onclick="ImportActions" data-bs-dismiss="modal">Import Actions</button>
+                <br />
+                <button class="btn btn-primary" @onclick="CreateActionSchema" data-bs-dismiss="modal">Create Action Schema Actions</button>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -87,7 +89,7 @@
     {
         var schema = JsonSchema.FromType<List<Action>>();
         var schemaJson = schema.ToJson();
-        using (StreamWriter fileWriter = File.CreateText(@"C:\Users\Derek\Desktop\FormattedMonsterActionSchema.json"))
+        using (StreamWriter fileWriter = File.CreateText(@"C:\FormattedMonsterActionSchema.json"))
         {
             fileWriter.WriteLine(schemaJson);
         }

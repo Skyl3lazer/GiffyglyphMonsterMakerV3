@@ -70,6 +70,16 @@
             },
             "Shape": {
               "$ref": "#/definitions/TargetShape"
+            },
+            "AssociatedRole": {
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "$ref": "#/definitions/Role"
+                }
+              ]
             }
           }
         }
@@ -167,6 +177,26 @@
         7,
         8,
         9
+      ]
+    },
+    "Role": {
+      "type": "integer",
+      "description": "",
+      "x-enumNames": [
+        "Controller",
+        "Defender",
+        "Lurker",
+        "Skirmisher",
+        "Striker",
+        "Supporter"
+      ],
+      "enum": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
       ]
     },
     "Feature": {

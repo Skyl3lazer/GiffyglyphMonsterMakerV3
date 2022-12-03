@@ -175,6 +175,7 @@ namespace GiffyglyphMonsterMakerV3.Data
         public DamageType ActionDamageType { get; set; } = DamageType.bludgeoning;
         public int Targets { get; set; } = 1;
         public TargetShape Shape { get; set; } = TargetShape.target;
+        public Role? AssociatedRole { get; set; }
         public override void UpdateThisToMatch(Object o)
         {
             if (o is not Action a)

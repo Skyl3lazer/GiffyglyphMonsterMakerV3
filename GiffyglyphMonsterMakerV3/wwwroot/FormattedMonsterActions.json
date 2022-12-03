@@ -118,5 +118,80 @@
     "IsSpell": true,
     "DealsDamage": true,
     "ActionDamageType": 6
+  },
+  {
+    "Name": "Distracting Noise",
+    "Type": 2,
+    "Rarity": 0,
+    "IsSpell": true,
+    "IsAttack": false,
+    "SpellDesc": "The area is uncomfortable.",
+    "Range": 30,
+    "Distance": 1,
+    "Radius": 15,
+    "DealsDamage": false,
+    "Shape": 6
+  },
+  {
+    "Name": "Explosive Force",
+    "Rarity": 1,
+    "Type": 2,
+    "IsAttack": true,
+    "DealsDamage": false,
+    "OtherEffect": "All enemies are knocked away from the center of the area.",
+    "Range": 10,
+    "Distance": 0,
+    "Radius": 10,
+    "Shape": 6
+  },
+  {
+    "Name": "Get Over Here",
+    "Rarity": 0,
+    "Type": 2,
+    "IsAttack": true,
+    "DealsDamage": false,
+    "OtherEffect": "The target is pulled up to 10 ft. towards you.",
+    "Targets": 1,
+    "Shape": 5,
+    "Range": 30,
+    "Distance": 1
+  },
+  {
+    "Name": "Pinning Attack",
+    "Rarity": 1,
+    "Type": 2,
+    "OtherEffect": "The target is restrained (save ends).",
+    "Range": 5,
+    "HasSave": true,
+    "SaveVs": "STR",
+    "DealsDamage": false,
+    "Shape": 5,
+    "Targets": 1,
+    "IsAttack": true
+  },
+  {
+    "Name": "Knockback",
+    "Rarity": 0,
+    "Type": 2,
+    "IsAttack": true,
+    "DealsDamage": false,
+    "OtherEffect": "The target is pushed up to 10 ft. from you.",
+    "Targets": 1,
+    "Shape": 5,
+    "Range": 5
+  },
+  {
+    "Name": "Reshuffle",
+    "Type": 2,
+    "Rarity": 0,
+    "DealsDamage": false,
+    "OtherEffect": "You move both yourself and the target 5 ft. in any direction. This movement doesn't trigger opportunity attacks.",
+    "Shape": 5,
+    "Targets": 1,
+    "Range": 5,
+    "IsAttack": true
+  },
+  {
+    "Name": "Raise Shield"
   }
 ]
