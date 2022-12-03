@@ -380,17 +380,17 @@
                 <span>
                     @if (SpecificFeature != null)
                     {
-                        <button type="button" class="btn btn-primary" @onclick="() => SaveFeature()"><span class="fas fa-floppy-disk" />Save</button>
+                        <button type="button" class="btn btn-primary" @onclick="() => SaveFeature()"><span class="fas fa-floppy-disk me-1" />Save</button>
                         if (SelectedFeatureTemplate == null || SelectedFeatureTemplate.CreateUserId == CurrentUserId)
                         {
-                            <button type="button" class="btn btn-primary ms-1" @onclick="() => SaveAndUpdateTemplate()"><span class="fak fa-solid-floppy-disk-circle-plus" />Save and @(SpecificFeature?.TemplateId == null ? "Add" : "Update") Template</button>
+                            <button type="button" class="btn btn-primary ms-1" @onclick="() => SaveAndUpdateTemplate()"><span class="fak fa-solid-floppy-disk-circle-plus me-1" />Save and @(SpecificFeature?.TemplateId == null ? "Add" : "Update") Template</button>
                         }
                         else if (SelectedFeatureTemplate != null && SelectedFeatureTemplate.CreateUserId != CurrentUserId)
                         {
-                            <button type="button" class="btn btn-secondary disabled ms-1"><span class="fas fa-floppy-disk-circle-xmark" />Generic Template</button>
+                            <button type="button" class="btn btn-secondary disabled ms-1"><span class="fas fa-floppy-disk-circle-xmark me-1" />Generic Template</button>
                         }
                     }
-                    <button type="button" class="btn btn-secondary ms-1" data-bs-dismiss="modal"><span class="fas fa-x" />Close</button>
+                    <button type="button" class="btn btn-secondary ms-1" data-bs-dismiss="modal"><span class="fas fa-x me-1" />Close</button>
                 </span>
             </div>
         </div>
