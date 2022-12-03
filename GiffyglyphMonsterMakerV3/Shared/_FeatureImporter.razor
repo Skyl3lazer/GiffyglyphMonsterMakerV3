@@ -115,8 +115,8 @@
                 GroupCollection traitGroups = traitMatch.Groups;
                 Trait newTrait = new Trait(CreateUserId);
                 newTrait.ParentId = null;
-                newTrait.Name = traitGroups["traitName"].Value;
-                newTrait.TraitDescription = traitGroups["traitDesc"].Value;
+                newTrait.Name = traitGroups["traitName"].Value.Trim();
+                newTrait.TraitDescription = traitGroups["traitDesc"].Value.Trim();
                 newTrait.AssociatedCreatureType = matchedType;
                 if (!Features.Any(f => f.Name.Equals(newTrait.Name) && f.Type == FeatureType.Trait && ((Trait)f).AssociatedCreatureType == newTrait.AssociatedCreatureType))
                 {
