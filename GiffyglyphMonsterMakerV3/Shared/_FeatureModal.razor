@@ -22,6 +22,7 @@
                     }
                     else if (FeatureTemplates != null && SpecificFeature == null)
                     {
+                        <div class="fst-italic align-text-top" style="font-size: 0.6rem">(* indicates the premade template is related to the monster's type or other attributes)</div>
                         <div class="mb-2">
                             <span class="fw-bold">Template Abilities: </span>
                             <InputSelect Value="@SelectedFeatureType" TValue="FeatureType" ValueExpression="() => SelectedFeatureType" ValueChanged="(FeatureType t) => SelectedFeatureChanged(t)">
@@ -31,19 +32,27 @@
                                 }
                             </InputSelect>
                             <InputSelect @bind-Value="@SelectedFeatureTemplateId" TValue="Guid?">
-                                @foreach (var item in FeatureTemplates.Where(feature => feature.Type == SelectedFeatureType))
+                                @foreach (var item in 
+                                    FeatureTemplates.Where(feature => feature.Type == SelectedFeatureType)
+                                        .OrderBy(feature => (
+                                            feature.Type != FeatureType.Trait
+                                                ? feature.Name
+                                                : (((Trait)feature).AssociatedCreatureType == ActiveMonster.Type ? "*" : "") + feature.Name)))
                                 {
-                                    <option value="@item.Id">@item.Name</option>
+                                    <option value="@item.Id">@((item.Type != FeatureType.Trait
+                                                                 ? item.Name
+                                                                 : (((Trait)item).AssociatedCreatureType == ActiveMonster.Type ? "*" : "") + item.Name))
+                                    </option>
                                 }
                             </InputSelect>
                             <span @onclick="() => AddSelectedTemplateToActive()">
-                                <span class="fas fa-plus mx-1" />
+                                <span class="fas fa-plus mx-1"/>
                                 <span>Add to Active</span>
                             </span>
 
                             @if (SelectedFeatureTemplate != null && SelectedFeatureTemplate.CreateUserId == CurrentUserId)
                             {
-                                <button class="btn btn-outline-danger float-end hoverDeleteButton" style="margin-top: -6px;" type="button" @onclick="() => DeleteTemplate(SelectedFeatureTemplate)"><span><span class="me-1 fas fa-trash" />Delete Template</span></button>
+                                <button class="btn btn-outline-danger float-end hoverDeleteButton" style="margin-top: -6px;" type="button" @onclick="() => DeleteTemplate(SelectedFeatureTemplate)"><span><span class="me-1 fas fa-trash"/>Delete Template</span></button>
                             }
 
                         </div>
