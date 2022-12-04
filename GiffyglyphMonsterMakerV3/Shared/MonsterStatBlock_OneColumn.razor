@@ -1,6 +1,7 @@
 ﻿@using GiffyglyphMonsterMakerV3.Data
 @using System.Diagnostics
 @using GiffyglyphMonsterMakerV3.Utility
+
 <div class="@(Hidden ? "d-none " : "")border-black border-2 p-1 px-2 card bg-light text-dark" id="monster-@(model.Id)">
     <div class="monsterPrimary px-2">
         <div class="name text-white fw-bold fs-2">@model.Name</div>
@@ -20,12 +21,12 @@
             <div class="col col-2 fs-6 border border-1 border-opacity-50 border-white text-center fw-bold">CHA</div>
         </div>
         <div class="row monsterPrimary text-white">
-                <div class="col fs-4 border border-opacity-50 border-white text-center fw-bold">@(model.Attributes.Strength+model.Attributes.AttributeMod)</div>
-                <div class="col fs-4 border border-opacity-50 border-white text-center fw-bold">@(model.Attributes.Dexterity + model.Attributes.AttributeMod)</div>
-                <div class="col fs-4 border border-opacity-50 border-white text-center fw-bold">@(model.Attributes.Constitution + model.Attributes.AttributeMod)</div>
-                <div class="col fs-4 border border-opacity-50 border-white text-center fw-bold">@(model.Attributes.Intelligence + model.Attributes.AttributeMod)</div>
-                <div class="col fs-4 border border-opacity-50 border-white text-center fw-bold">@(model.Attributes.Wisdom + model.Attributes.AttributeMod)</div>
-                <div class="col fs-4 border border-opacity-50 border-white text-center fw-bold">@(model.Attributes.Charisma + model.Attributes.AttributeMod)</div>
+            <div class="col fs-4 border border-opacity-50 border-white text-center fw-bold">@(model.Attributes.Strength + model.Attributes.AttributeMod)</div>
+            <div class="col fs-4 border border-opacity-50 border-white text-center fw-bold">@(model.Attributes.Dexterity + model.Attributes.AttributeMod)</div>
+            <div class="col fs-4 border border-opacity-50 border-white text-center fw-bold">@(model.Attributes.Constitution + model.Attributes.AttributeMod)</div>
+            <div class="col fs-4 border border-opacity-50 border-white text-center fw-bold">@(model.Attributes.Intelligence + model.Attributes.AttributeMod)</div>
+            <div class="col fs-4 border border-opacity-50 border-white text-center fw-bold">@(model.Attributes.Wisdom + model.Attributes.AttributeMod)</div>
+            <div class="col fs-4 border border-opacity-50 border-white text-center fw-bold">@(model.Attributes.Charisma + model.Attributes.AttributeMod)</div>
         </div>
     </div>
     <div>
@@ -64,12 +65,14 @@
         <div>
             <span class="fa-solid fa-swords line-icon" /><span class="monsterPrimaryText fw-bold">ATK </span><span>+@(model.Offense.Attack).</span>
             <span class="monsterPrimaryText fw-bold">DC </span><span>+@(model.Offense.DifficultyCheck).</span>
-            <span class="monsterPrimaryText fw-bold">DMG </span><span>
+            <span class="monsterPrimaryText fw-bold">DMG </span>
+            <span>
                 @(model.Offense.Damage)
                 @if (model.Offense.RandomizeDamage)
                 {
                     <span> (@(DiceTools.ConvertToDiceString(model.Offense.RandomDamageRange, model.Offense.Damage)))</span>
-                }.
+                }
+                .
             </span>
             <span class="monsterPrimaryText fw-bold">Reach </span><span>@model.MaxReach ft.</span>
             @if (model.MaxRange > 0)
@@ -120,35 +123,39 @@
                 </div>
             }
         </div>
-        @if(!model.Features.Any(f => f.Type == FeatureType.Free) && (model.ParagonDefenses > 0 || model.ParagonPowers > 0))
+
+
+        @if (!model.Features.Any(f => f.Type == FeatureType.Free) && (model.ParagonDefenses > 0 || model.ParagonPowers > 0))
         {
             <div>
                 <div class="monsterTertiary" style="height: 24px">
                     <span class="monsterPrimary text-white fw-bold h-100 d-inline-block ps-1 align-top" style="z-index: 10; position: relative">Free</span>
-                    <span class="slant-45 monsterPrimary d-inline-block h-100 align-top" style="width: 48px; margin-left: -30px; position: relative; z-index: 1;"/>
+                    <span class="slant-45 monsterPrimary d-inline-block h-100 align-top" style="width: 48px; margin-left: -30px; position: relative; z-index: 1;" />
                 </div>
                 <div class="monsterPrimary d-block" style="height: 4px; margin-top: -1px;" />
-                @if(model.ParagonPowers > 0){
-                  <div class="py-1">
-                      <span>@((MarkupString)ParagonPower.MarkupDescription(model))</span>
-                  </div>
+                @if (model.ParagonPowers > 0)
+                {
+                    <div class="py-1">
+                        <span>@((MarkupString)ParagonPower.MarkupDescription(model))</span>
+                    </div>
                 }
-                @if(model.ParagonDefenses > 0){
+                @if (model.ParagonDefenses > 0)
+                {
                     <div class="py-1">
                         <span>@((MarkupString)ParagonDefense.MarkupDescription(model))</span>
                     </div>
                 }
             </div>
         }
-        @foreach (var fType in 
-            model.Features
-                .Select(a => a.Type)
-                .Distinct()
-                .OrderBy(b => (int)b)
-            )
+        @foreach (var fType in
+        model.Features
+        .Select(a => a.Type)
+        .Distinct()
+        .OrderBy(b => (int)b)
+        )
         {
             <div>
-                <div class="monsterTertiary" style="height: 24px"><span class="monsterPrimary text-white fw-bold h-100 d-inline-block ps-1 align-top" style="z-index: 10; position:relative">@fType@(fType.ToString().EndsWith("s") ? "" : "s")</span><span class="slant-45 monsterPrimary d-inline-block h-100 align-top" style="width: 48px; margin-left: -30px; position: relative; z-index: 1;" /></div>
+                <div class="monsterTertiary" style="height: 24px"><span class="monsterPrimary text-white fw-bold h-100 d-inline-block ps-1 align-top" style="z-index: 10; position: relative">@fType@(fType.ToString().EndsWith("s") ? "" : "s")</span><span class="slant-45 monsterPrimary d-inline-block h-100 align-top" style="width: 48px; margin-left: -30px; position: relative; z-index: 1;" /></div>
                 <div class="monsterPrimary d-block" style="height: 4px; margin-top: -1px;" />
                 @foreach (var feature in model.Features.Where(b => b.Type == fType).OrderBy(d => d.Rarity).ThenByDescending(c => c.Name))
                 {
@@ -156,14 +163,16 @@
                         <span>@((MarkupString)feature.MarkupDescription(model))</span>
                     </div>
                 }
-                @if(fType == FeatureType.Free && (model.ParagonDefenses > 0 || model.ParagonPowers > 0))
+                @if (fType == FeatureType.Free && (model.ParagonDefenses > 0 || model.ParagonPowers > 0))
                 {
-                    @if(model.ParagonPowers > 0){
+                    @if (model.ParagonPowers > 0)
+                    {
                         <div class="py-1">
                             <span>@((MarkupString)ParagonPower.MarkupDescription(model))</span>
                         </div>
                     }
-                    @if(model.ParagonDefenses > 0){
+                    @if (model.ParagonDefenses > 0)
+                    {
                         <div class="py-1">
                             <span>@((MarkupString)ParagonDefense.MarkupDescription(model))</span>
                         </div>
@@ -179,11 +188,12 @@
     [Parameter]
     public bool Hidden { get; set; }
 
+
     public FreeAction ParagonPower
     {
         get
         {
-            return new FreeAction(null){Name="Paragon Power", Rarity = RarityType.Uncommon, Frequency = new FeatureFrequency(){Type = FrequencyType.round, Value = model.ParagonPowers},CustomIcon = "fa-crown", OverrideMarkup = "At the end of another creature's turn, you may either a) take an action and regain your reaction or b) reroll a saving throw."};
+            return new FreeAction(null) { Name = "Paragon Power", Rarity = RarityType.Uncommon, Frequency = new FeatureFrequency() { Type = FrequencyType.round, Value = model.ParagonPowers }, CustomIcon = "fa-crown", OverrideMarkup = "At the end of another creature's turn, you may either a) take an action and regain your reaction or b) reroll a saving throw." };
         }
     }
 
@@ -191,9 +201,10 @@
     {
         get
         {
-            return new FreeAction(null) { Name = "Paragon Defense", Rarity = RarityType.Rare, Frequency = new FeatureFrequency() { Type = FrequencyType.longrest, Value = model.ParagonDefenses }, CustomIcon = "fa-crown", OverrideMarkup = "When you would fail a saving throw, you may spend " + (2 * model.CombatLevel) + " hit points to succeed." }; 
+            return new FreeAction(null) { Name = "Paragon Defense", Rarity = RarityType.Rare, Frequency = new FeatureFrequency() { Type = FrequencyType.longrest, Value = model.ParagonDefenses }, CustomIcon = "fa-crown", OverrideMarkup = "When you would fail a saving throw, you may spend " + (2 * model.CombatLevel) + " hit points to succeed." };
 
         }
     }
+
 
 }

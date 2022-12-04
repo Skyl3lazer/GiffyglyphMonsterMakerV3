@@ -12,27 +12,36 @@
             <span class="visually-hidden">Loading...</span>
         </div>
     </div>
-}else
+}
+else
 {
     <div class="container-xxl" id="print">
         <div class="d-print-none alert alert-info">Use your browser's Print feature to print stat blocks. 2 per page, with overflow that looks bad (for now)</div>
-        @for (int i = 0; i < Math.Ceiling(Monsters.Count / 2.0); i++)
+        @while (popQueue.Count > 0)
         {
-            <div class="row">
-                @if (popQueue.Count > 0)
+            <div class="d-block" style="page-break-after: always; break-after: page;">
+                @if (popQueue.Peek().Layout == LayoutType.Single)
                 {
-                    <div class="col-6">
-                        <MonsterStatBlock model="popQueue.Dequeue()" Hidden="false"/>
-                    </div>
+                    @if (popQueue.Count > 0)
+                    {
+                        <div class="d-inline-block col-6">
+                            <MonsterStatBlock_OneColumn model="popQueue.Dequeue()" Hidden="false" />
+                        </div>
+                    }
+                    @if (popQueue.Count > 0 && popQueue.Peek().Layout == LayoutType.Single)
+                    {
+                        <div class="d-inline-block col-6">
+                            <MonsterStatBlock_OneColumn model="popQueue.Dequeue()" Hidden="false" />
+                        </div>
+                    }
                 }
-                @if (popQueue.Count > 0)
+                else if (popQueue.Peek().Layout == LayoutType.TwoColumn)
                 {
-                    <div class="col-6">
-                        <MonsterStatBlock model="popQueue.Dequeue()" Hidden="false"/>
+                    <div class="d-block">
+                        <MonsterStatBlock_TwoColumn model="popQueue.Dequeue()" Hidden="false" />
                     </div>
                 }
             </div>
-            <div class="my-1" style="page-break-after: always">&nbsp;</div>
         }
     </div>
 }

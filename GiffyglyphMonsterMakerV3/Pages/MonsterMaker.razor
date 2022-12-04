@@ -349,9 +349,18 @@ else
                 <div class="row my-1">
                     @foreach (var mon in Monsters)
                     {
-                        <div class="col-8">
-                            <MonsterStatBlock model="mon" Hidden="@(mon.Id != active.Id)" />
-                        </div>
+                        if (mon.Layout == LayoutType.Single)
+                        {
+                            <div class="col-8">
+                                <MonsterStatBlock_OneColumn model="mon" Hidden="@(mon.Id != active.Id)"/>
+                            </div>
+                        }
+                        else if(mon.Layout == LayoutType.TwoColumn)
+                        {
+                            <div class="col-12">
+                                <MonsterStatBlock_TwoColumn model="mon" Hidden="@(mon.Id != active.Id)" />
+                            </div>
+                        }
                     }
 
                 </div>
@@ -361,7 +370,7 @@ else
                     {
                         <div class="d-flex my-1 justify-content-start col">
                             <span class="btn btn-outline-dark rounded-circle justify-content-center" style="width: 42px; height: 42px;" @onclick="() => ConvertBlockToPng()"><span class="fa fa-camera align-middle" /></span>
-                            <span class="ms-2 btn btn-outline-dark rounded-circle justify-content-center" style="width: 42px; height: 42px;"><span class="fas fa-columns align-middle" /></span>
+                            <span class="ms-2 btn btn-outline-dark rounded-circle justify-content-center" style="width: 42px; height: 42px;" @onclick="() => ChangeMonsterColumnLayout()"><span class="fas fa-columns align-middle" /></span>
                         </div>
                     }
                 </div>
@@ -402,6 +411,12 @@ else
         {
             active = Monsters.First();
         }
+    }
+
+    private void ChangeMonsterColumnLayout()
+    {
+        active.Layout = active.Layout == LayoutType.Single ? LayoutType.TwoColumn : LayoutType.Single;
+        StateHasChanged();
     }
 
     private void ConvertBlockToPng()
