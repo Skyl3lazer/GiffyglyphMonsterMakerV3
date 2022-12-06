@@ -1,8 +1,12 @@
 ﻿@page "/"
+@using System.Reflection
 
 <PageTitle>Giffyglyph's Monster Maker V3</PageTitle>
 
-<h1>Giffyglyph's Monster Maker V3</h1>
+<div>
+    <h1>Giffyglyph's Monster Maker V3</h1>
+    <p class="float-end text-secondary fst-italic fw-bold">@(GetType()?.Assembly?.GetName()?.Version?.ToString())</p>
+</div>
 
 <div>Unofficial App developed by Skyl3lazer, system by Giffyglyph</div>
 
@@ -36,7 +40,7 @@
                 <div class="my-2"><span class="fw-bold">Recent Changes</span></div>
                 <div>
                     <ul>
-                        <li>Added first pass on 2 column layout</li>
+                        <li>Added first pass on 2 column layout. Printed pages may or may not work entirely correctly with them.</li>
                         <li>
                             Added the "IsAttack" and "Concentration" flag to Actions(and subtypes) to allow for concentration, non-attack spells, or attacks with saves, etc.
                             <ul>

@@ -5,6 +5,9 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>b0115544-12f6-4cbb-9755-cbd049d9963e</UserSecretsId>
+    <AssemblyVersion>1.0.22340</AssemblyVersion>
+    <FileVersion>1.0.*</FileVersion>
+	  <Deterministic>false</Deterministic>
   </PropertyGroup>
 
   <ItemGroup>
