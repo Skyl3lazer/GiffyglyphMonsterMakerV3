@@ -76,12 +76,25 @@
             Dict[key] = (ValueType)System.Convert.ChangeType(0, typeof(ValueType));
             ValueChangedEvent.InvokeAsync(Dict);
         }
-        var valueAsType = (ValueType?)System.Convert.ChangeType(newValue, typeof(ValueType));
-        if (valueAsType != null && Dict[key] != null && (!Dict[key].Equals(valueAsType)))
+        else
         {
-            Dict[key] = valueAsType;
-            ValueChangedEvent.InvokeAsync(Dict);
+            try
+            {
+                var valueAsType = (ValueType?)System.Convert.ChangeType(newValue, typeof(ValueType));
+                if (valueAsType != null && Dict[key] != null && (!Dict[key].Equals(valueAsType)))
+                {
+                    Dict[key] = valueAsType;
+                    ValueChangedEvent.InvokeAsync(Dict);
+                }
+            }
+            catch(FormatException ex)
+            {
+                Dict[key] = (ValueType)System.Convert.ChangeType(0, typeof(ValueType));
+                ValueChangedEvent.InvokeAsync(Dict);
+            }
+            
         }
+        
     }
 
     public void RemoveItem(KeyType key)
