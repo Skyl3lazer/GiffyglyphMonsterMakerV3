@@ -1,26 +1,22 @@
 ﻿@inject IJSRuntime _jscript;
 
+<div>
+    <label class="theme-switch rounded-circle" for="themeCheckbox">
+        <input type="checkbox" id="themeCheckbox" onchange="toggleTheme()" />
+        <div class="slider " />
+    </label>
+    <em id="darkLabel"></em>
+</div>
+
 <AuthorizeView>
     <Authorized>
-        @*<a
-            href="javascript:void(0)"
-            class="btn btn-outline-info btn-lg ml-auto fw-bold text-light bg-dark bg-opacity-50"
-            id="theme-toggler"
-            onclick="toggleTheme()"
-        ></a>*@
-        <div>
-            <label class="theme-switch rounded-circle" for="themeCheckbox">
-                <input type="checkbox" id="themeCheckbox" onchange="toggleTheme()"/>
-                <div class="slider " />
-            </label>
-            <em id="darkLabel"></em>
-        </div>
         <a href="Identity/Account/Manage" class="me-1 text-dark">Logged in as @context.User.Identity?.Name!</a>
         <form method="post" action="Identity/Account/Logout">
             <button type="submit" class="nav-link btn btn-link text-dark">Log out</button>
         </form>
     </Authorized>
     <NotAuthorized>
+        
         <a href="Identity/Account/Register">Register</a>
         <a href="Identity/Account/Login">Log in</a>
     </NotAuthorized>
