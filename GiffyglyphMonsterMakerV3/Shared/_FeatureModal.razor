@@ -346,7 +346,7 @@
                                                         <InputNumber class="w-100" @bind-Value="@action.Targets" min="0" TValue="int" />
                                                     </div>
                                                 }
-                                                else if (action.Shape != TargetShape.self)
+                                                else if (action.Shape != TargetShape.self && action.Shape != TargetShape.emanation)
                                                 {
                                                     <div class="col-4"><span class="fa-regular fa-caret-right me-1" />Radius</div>
                                                     <div class="col-6">
