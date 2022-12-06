@@ -52,7 +52,8 @@ namespace GiffyglyphMonsterMakerV3.Data
                     new PropertyChangedEventArgs(nameof(Features)));
             }
         }
-        public int WalkSpeed { get; set; }
+
+        public int WalkSpeed { get; set; } = 30;
         [ForeignKey("SpeedsId")]
         public Dictionary<MovementType, int> OtherSpeeds { get; set; } = new();
 
