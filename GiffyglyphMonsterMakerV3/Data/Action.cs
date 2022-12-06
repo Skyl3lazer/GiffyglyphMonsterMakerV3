@@ -132,7 +132,11 @@ namespace GiffyglyphMonsterMakerV3.Data
             if (!String.IsNullOrWhiteSpace(OtherEffect))
                 desc += " " + OtherEffect;
             if (!String.IsNullOrWhiteSpace(MissEffect))
+            {
+                desc += " <span class=\"fst-italic\">Miss</span>: ";
                 desc += " " + MissEffect;
+            }
+
             desc += "</span>";
             return desc;
 
