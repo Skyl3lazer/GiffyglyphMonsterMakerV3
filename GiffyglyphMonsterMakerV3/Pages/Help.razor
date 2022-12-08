@@ -1,0 +1,107 @@
+﻿@page "/help"
+
+<PageTitle>User Help</PageTitle>
+
+<div class="container-xxl">
+    <div class="my-3 fs-3">
+        Welcome to the user help. The V3 app has some cool features, let's walk through them.
+    </div>
+    <div>
+        <img src="images/Help1.png" class="my-2" />
+        <ol>
+            <li>
+                <span class="fw-bold">Stat Blocks</span>
+                <ul>
+                    <li>Each monster you have will appear in this area (which becomes scrollable)</li>
+                    <li>Click on a monster's name to switch to it (2/3)</li>
+                    <li>Click the <span class="fw-bold">+</span> button to add a new monster</li>
+                    <li>The save/delete buttons allow you to remove monsters, or to save a monster without switching to it</li>
+                </ul>
+            </li>
+            <li>
+                <span class="fw-bold">Monster Details</span>
+                <ul>
+                    <li>In this column you will see all of the basic stats for your monster</li>
+                    <li>Clicking on one of the bold heaers will open/collapse the stats in that category</li>
+                    <li>Stats will be automatically adjusted if you change combat level, rank, or role</li>
+                    <li>For some controls, you can add an item from a premade list, or add one of your own (such as with languages)</li>
+                </ul>
+            </li>
+            <li>
+                <span class="fw-bold">Active Monster</span>
+                <ul>
+                    <li>Here you'll see the resultant stat block for the active monster</li>
+                    <li>Below the stat block is a save button, as well as a PNG conversion, and column layout switching</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+    <div>
+        <img src="images/Help2.png"class="my-2" />
+        <ol start="4">
+            <li>
+                <span class="fw-bold">Features</span>
+                <ul>
+                    <li>Press the + to add a new feature, the pencil to edit a feature, or the X to remove one</li>
+                    <li>Adding a new feature will show the next screen</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+    <div>
+        <img src="images/Help3.png" class="my-2" />
+        <ol start="5">
+            <li><span class="fw-bold">Templates</span>
+                <ul>
+                    <li>These dropdowns will show available templates</li>
+                    <li>Below the dropdowns is a preview of the selected template</li>
+                    <li>The dropdowns will contain all of the pre-made templates with their category in parentheses</li>
+                    <li>Asteriks indicate that the options are for your current monster's recommended features</li>
+                    <li>Custom templates will also show in here</li>
+                    <li>Press the + to add the selected template to your monster</li>
+                </ul>
+                </li>
+            <li><span class="fw-bold">New Features</span>
+                <ul>
+                    <li>Clicking on one of these six buttons will add a new feature of that type, rather than from a template</li>
+                    <li>No matter new or template feature, adding a feature will go to the next screen</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+    <div>
+        <img src="images/Help4.png" class="my-2" />
+        <ol start="7">
+            <li><span class="fw-bold">Template Info</span>
+                <ul>
+                    <li>If your feature is tied to a template, you can view that here</li>
+                    <li>Buttons will let you reset your feature to match the template, or disconnect it from a template</li>
+                </ul>
+            </li>
+            <li><span class="fw-bold">Feature Properties</span>
+                <ul>
+                    <li>Similar to the Monster Details section, these details are for your feature.</li>
+                </ul>
+            </li>
+            <li><span class="fw-bold">Overrides</span>
+                <ul>
+                    <li>Sometimes you just want to freeform it. Clicking Override Properties will show you the override fields</li>
+                    <li>The icons come from <a href="https://fontawesome.com/search">FontAwesome</a>, and generally look like "fa-icon"</li>
+                    <li>The Override Description field can take HTML with some simple bootstrap classes if you wish</li>
+                </ul>
+            </li>
+            <li><span class="fw-bold">Save/Template Buttons</span>
+                <ul>
+                    <li>These buttons will change depending on your feature</li>
+                    <li>If the feature is not tied to a template, you'll have the option to make your feature into a template</li>
+                    <li>If the feature has a template which you made, you'll be able to update the template to match the feature</li>
+                    <li>Note that this won't change the features on other monsters, but you can reset those features to match the template!</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+</div>
+
+@code {
+
+}

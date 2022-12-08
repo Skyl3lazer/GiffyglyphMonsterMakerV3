@@ -132,7 +132,21 @@ namespace GiffyglyphMonsterMakerV3.Data
     public enum DefaultLanguages
     {
         Common,
-        Undercommon
+        Undercommon,
+        Abyssal,
+        Celestial,
+        Deep,
+        Draconic,
+        Dwarvish,
+        Elvish,
+        Giant,
+        Gnomish,
+        Goblin,
+        Halfling,
+        Infernal,
+        Orc,
+        Primordial,
+        Sylvan
     }
 
     public enum AttributeType
