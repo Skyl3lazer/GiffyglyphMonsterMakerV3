@@ -11,45 +11,30 @@
 <div>Unofficial App developed by Skyl3lazer, system by Giffyglyph</div>
 
 <div class="my-2">
-    <span class="fw-bold">DISCLAIMER:</span><span> This is an ALPHA application! You may lose your work SUDDENLY, and WITHOUT WARNING as I change data schemas.</span>
+    <span class="fw-bold">DISCLAIMER:</span><span> This is a BETA application! There may be data wipes! Please keep an eye on the front page for announcements.</span>
 </div>
 <div class="my-2"><span>This app is provided AS-IS, with no expectation of support!</span></div>
 <div class="my-2">You can contact me on Discord if you have questions/find bugs: <span class="fa-brands fa-discord" /><span class="fw-bold">Skyl3lazer#8532</span></div>
 <AuthorizeView>
     <NotAuthorized>
         <div class="my-2"><span class="fw-bold">You are not currently logged in.</span> Please register an account and log in to access the monster creator and stat block printer.</div>
-        <div>Note that while the app is in alpha, it's currently in whitelist mode. Message me on discord to request access!</div>
     </NotAuthorized>
     <Authorized>
-        @if (context.User.IsInRole("User"))
-        {
-            <div class="my-2"><span class="fw-bold">Thank you for registering.</span> The site is currently in whitelist mode. Message me on discord to request access!</div>
-        }
-        else
-        {
             <div class="fw-bold my-0 alert alert-info">Please message me with errors from your f12 console or the page itself if you get them!</div>
-            <div class="my-1">Thanks for helping out with testing! I hope to not push to Azure more than 1-2 times a day since it'll interrupt anything going on.</div>
-            <div>
-                <div class="my-2"><span class="fw-bold">Things to Focus On Testing</span></div>
-                <ul>
-                    <li>When making various action (and action subtypes) let me know if there's anything you want to do but <span class="fst-italic">can't</span></li>
-                    <li>Without using override markup I mean.</li>
-                </ul>
-            </div>
             <div>
                 <div class="my-2"><span class="fw-bold">Recent Changes</span></div>
                 <div>
                     <ul>
+                        <li>The site is off whitelist mode! Welcome, new users.</li>
+                        <li>Chrome styling fixes</li>
                         <li>Added first pass on 2 column layout. Printed pages may or may not work entirely correctly with them.</li>
                         <li>
                             Added the "IsAttack" and "Concentration" flag to Actions(and subtypes) to allow for concentration, non-attack spells, or attacks with saves, etc.
                             <ul>
-                                <li>Note IsAttack has been automatically set to true for all actions, so you'll need to update if that isn't correct</li>
+                                <li>Note IsAttack has been automatically set to true for all actions, so you'll need to update if that isn't correct on old entries</li>
                             </ul>
                         </li>
                         <li>Added premade Traits and Actions! They will suggest based on the monster type, but you can add some from any if you want.</li>
-                        <li>Paragon Power/Defenses now list, and you can customize the number on elite/paragon monsters</li>
-                        <li>Big styling update</li>
                     </ul>
                 </div>
                 <div class="my-2"><span class="fw-bold">Upcoming Changes</span></div>
@@ -58,11 +43,10 @@
                         <li>Pictures</li>
                         <li>Skins for monster types</li>
                         <li>Don't display generic feature traits that don't matter (like delay on traits)</li>
-                        <li>Prepopulating all of the features from the pdf (some of this is in!)</li>
-                        <li>Constant improvements to styling to make it look+feel better</li>
+                        <li>CR/XP on creatures</li>
+                        <li>Bugfixes, etc.</li>
                     </ul>
                 </div>
             </div>
-        }
     </Authorized>
 </AuthorizeView>
