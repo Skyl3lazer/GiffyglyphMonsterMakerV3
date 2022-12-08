@@ -34,7 +34,7 @@ else
                         <div class="row">
                             <div class="col-6">Name:</div>
                             <div class="col-6">
-                                <input @bind="active.Name" @bind:event="oninput" />
+                                <input @bind="active.Name" @bind:event="oninput" class="w-100" />
                             </div>
                         </div>
                         <div class="row">
@@ -61,11 +61,11 @@ else
                         </div>
                         <div class="row">
                             <div class="col-6"><span class="fa-regular fa-caret-right me-1" />Type Detail:</div>
-                            <div class="col-6"><input @bind="active.TypeDetail" @bind:event="oninput" /></div>
+                            <div class="col-6"><input @bind="active.TypeDetail" @bind:event="oninput" class="w-100" /></div>
                         </div>
                         <div class="row">
                             <div class="col-6">Combat Level:</div>
-                            <div class="col-6"><InputNumber Value="@active.CombatLevel" min="0" ValueChanged="(int i) => LevelChanged(i)" ValueExpression="() => active.CombatLevel" TValue="int" /></div>
+                            <div class="col-6"><InputNumber Value="@active.CombatLevel" class="w-100" min="0" ValueChanged="(int i) => LevelChanged(i)" ValueExpression="() => active.CombatLevel" TValue="int" /></div>
                         </div>
                         <div class="row">
                             <div class="col-6"><span class="fa-regular fa-caret-right me-1" />Proficiency Bonus:</div>
@@ -86,19 +86,19 @@ else
                                 <div class="row">
                                     <div class="col-6"><span class="fa-regular fa-caret-right me-1"/>Threat:</div>
                                     <div class="col-6">
-                                        <InputNumber Value="active.ParagonThreat" min="1" ValueChanged="(int i) => ParagonChanged(i)" TValue="int" ValueExpression="() => active.ParagonThreat" />
+                                    <InputNumber Value="active.ParagonThreat" class="w-100" min="1" ValueChanged="(int i) => ParagonChanged(i)" TValue="int" ValueExpression="() => active.ParagonThreat" />
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-6"><span class="fa-regular fa-caret-right me-1"/><span class="fa-regular fa-caret-right me-1"/>Paragon Powers:</div>
                                     <div class="col-6">
-                                        <InputNumber @bind-Value="active.ParagonPowers" min="0" />
+                                    <InputNumber class="w-100" @bind-Value="active.ParagonPowers" min="0" />
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-6"><span class="fa-regular fa-caret-right me-1"/><span class="fa-regular fa-caret-right me-1"/>Paragon Defense:</div>
                                     <div class="col-6">
-                                        <InputNumber @bind-Value="active.ParagonDefenses" min="0" />
+                                    <InputNumber class="w-100" @bind-Value="active.ParagonDefenses" min="0" />
                                     </div>
                                 </div>
                             }else if (active.MonsterRank == Rank.Elite)
@@ -124,7 +124,7 @@ else
                         <div class="row">
                             <div class="col-6"><span class="fa-regular fa-caret-right me-1" />Role Special Type: </div>
                             <div class="col-6">
-                                <input @bind="active.MonsterRoleDetail" @bind:event="oninput" />
+                                <input @bind="active.MonsterRoleDetail" @bind:event="oninput" class="w-100" />
                             </div>
                         </div>
                         <div class="fw-bold">Base Stats</div>
@@ -184,19 +184,19 @@ else
                         <div class="row">
                             <div class="col-6">Attack Bonus:</div>
                             <div class="col-6">
-                                <InputNumber @bind-Value="active.Offense.Attack" min="0" />
+                                <InputNumber @bind-Value="active.Offense.Attack" class="w-100" min="0" />
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-6">DC Mod:</div>
                             <div class="col-6">
-                                <InputNumber @bind-Value="active.Offense.DifficultyCheck" min="0" />
+                                <InputNumber @bind-Value="active.Offense.DifficultyCheck" class="w-100" min="0" />
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-6">Damage Average:</div>
                             <div class="col-6">
-                                <InputNumber @bind-Value="active.Offense.Damage" min="0" />
+                                <InputNumber @bind-Value="active.Offense.Damage" class="w-100" min="0" />
                             </div>
                         </div>
                         <div class="row">
@@ -235,19 +235,19 @@ else
                         <div class="row">
                             <div class="col-6">Armor Class:</div>
                             <div class="col-6">
-                                <InputNumber @bind-Value="active.Defenses.ArmorClass" min="0" />
+                                <InputNumber @bind-Value="active.Defenses.ArmorClass" class="w-100" min="0" />
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-6">Hit Points:</div>
                             <div class="col-6">
-                                <InputNumber @bind-Value="active.Defenses.HitPoints" min="0" />
+                                <InputNumber @bind-Value="active.Defenses.HitPoints" class="w-100" min="0" />
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-6">Save Bonus:</div>
                             <div class="col-6">
-                                <InputNumber @bind-Value="active.Defenses.SaveBonus" min="0" />
+                                <InputNumber @bind-Value="active.Defenses.SaveBonus" class="w-100" min="0" />
                             </div>
                         </div>
                         <div class="row">
