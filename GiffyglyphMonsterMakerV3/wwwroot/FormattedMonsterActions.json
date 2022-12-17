@@ -1154,7 +1154,7 @@
   {
     "Name": "Opportunist",
     "AssociatedRole": 1,
-    "Type": 0,
+    "Type": 1,
     "Rarity": 0,
     "IsSpell": false,
     "IsAttack": false,
@@ -1187,7 +1187,7 @@
   {
     "Name": "Brutal",
     "AssociatedRole": 4,
-    "Type": 0,
+    "Type": 1,
     "Rarity": 0,
     "IsSpell": false,
     "IsAttack": false,
