@@ -1139,6 +1139,77 @@
     "Range": 30,
     "Shape": 4,
     "Targets": 1
+  },
+  {
+    "Name": "Focused",
+    "AssociatedRole": 0,
+    "Type": 3,
+    "Rarity": 0,
+    "IsSpell": false,
+    "IsAttack": false,
+    "DealsDamage": false,
+    "OtherEffect": "You have advantage on Concentration saving throws.",
+    "Shape": 9
+  },
+  {
+    "Name": "Opportunist",
+    "AssociatedRole": 1,
+    "Type": 0,
+    "Rarity": 0,
+    "IsSpell": false,
+    "IsAttack": false,
+    "DealsDamage": false,
+    "OtherEffect": "When you make an attack of opportunity, you have advantage",
+    "Shape": 9
+  },
+  {
+    "Name": "Sneaky",
+    "AssociatedRole": 2,
+    "Type": 3,
+    "Rarity": 0,
+    "IsSpell": false,
+    "IsAttack": false,
+    "DealsDamage": false,
+    "OtherEffect": "You take the hide action.",
+    "Shape": 9
+  },
+  {
+    "Name": "Evasive",
+    "AssociatedRole": 3,
+    "Type": 3,
+    "Rarity": 0,
+    "IsSpell": false,
+    "IsAttack": false,
+    "DealsDamage": false,
+    "OtherEffect": "You take the disengage action.",
+    "Shape": 9
+  },
+  {
+    "Name": "Brutal",
+    "AssociatedRole": 4,
+    "Type": 0,
+    "Rarity": 0,
+    "IsSpell": false,
+    "IsAttack": false,
+    "DealsDamage": false,
+    "OtherEffect": "You critically hit on a role of 19-20.",
+    "Shape": 9,
+    "Frequency": {
+      "Type": 5,
+      "Value": 1,
+      "Delay": 0
+    }
+  },
+  {
+    "Name": "Supportive",
+    "AssociatedRole": 5,
+    "Type": 3,
+    "Rarity": 0,
+    "IsSpell": false,
+    "IsAttack": false,
+    "DealsDamage": false,
+    "OtherEffect": "You take the help action.",
+    "Shape": 9
   }
 
 ]
