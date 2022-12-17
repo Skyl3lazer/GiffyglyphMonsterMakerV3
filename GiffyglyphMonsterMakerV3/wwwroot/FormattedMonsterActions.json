@@ -329,7 +329,7 @@
   {
     "Name": "Watchful",
     "AssociatedRole": 1,
-    "Type": 4,
+    "Type": 3,
     "Rarity": 0,
     "OtherEffect": "Until the end of your next turn, creatures always provoke opportunity attacks from you (even if they disengage before leaving your reach).",
     "IsAttack": false,

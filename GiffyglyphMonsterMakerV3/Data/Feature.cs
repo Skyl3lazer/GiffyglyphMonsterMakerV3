@@ -175,7 +175,7 @@ namespace GiffyglyphMonsterMakerV3.Data
                         desc += Value + "/lr";
                         break;
                     case FrequencyType.charge:
-                        desc += Value + "charge";
+                        desc += Value + " charge"+(Value != 1 ? "s" : "");
                         break;
                     case FrequencyType.round:
                         desc += Value + "/round";
