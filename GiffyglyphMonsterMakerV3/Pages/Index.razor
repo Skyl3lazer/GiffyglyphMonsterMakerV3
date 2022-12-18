@@ -20,40 +20,42 @@
         <div class="my-2"><span class="fw-bold">You are not currently logged in.</span> Please register an account and log in to access the monster creator and stat block printer.</div>
     </NotAuthorized>
     <Authorized>
-            <div class="fw-bold my-0 alert alert-info">Please message me with errors from your f12 console or the page itself if you get them!</div>
+        <div class="fw-bold my-0 alert alert-info">Please message me with errors from your f12 console or the page itself if you get them!</div>
+        <div>
+            <div class="my-2"><span class="fw-bold">Recent Changes</span></div>
             <div>
-                <div class="my-2"><span class="fw-bold">Recent Changes</span></div>
-                <div>
-                    <ul>
-                        <li>The site is off whitelist mode! Welcome, new users.</li>
-                        <li>Added a basic help page</li>
-                        <li>Chrome styling fixes</li>
-                        <li>Added first pass on 2 column layout. Printed pages may or may not work entirely correctly with them.</li>
-                        <li>
-                            Added the "IsAttack" and "Concentration" flag to Actions(and subtypes) to allow for concentration, non-attack spells, or attacks with saves, etc.
-                            <ul>
-                                <li>Note IsAttack has been automatically set to true for all actions, so you'll need to update if that isn't correct on old entries</li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-                <div class="my-2"><span class="fw-bold">Upcoming Changes</span></div>
-                <div>
-                    <ul>
-                        <li>Encounter sets that work for printing and organizing</li>
-                        <li>Pictures</li>
-                        <li>Skins for monster types</li>
-                        <li>Don't display generic feature traits that don't matter (like delay on traits)</li>
-                        <li>CR/XP on creatures</li>
-                        <li>Bugfixes, etc.</li>
-                    </ul>
-                </div>
-            <div class="my-2"><span class="fw-bold">Recent Bugfixes</span></div>
-                <div>
-                    <ul>Defenders were doing too much damage (100% -> 75%)</ul>
-                    <ul>Monsters weren't sorting correctly (now by name)</ul>
-                    <ul>Charge ability text was malformed</ul>
-                </div>
+                <ul>
+                    <li>The site is off whitelist mode! Welcome, new users.</li>
+                    <li>Added a basic help page</li>
+                    <li>Chrome styling fixes</li>
+                    <li>Added first pass on 2 column layout. Printed pages may or may not work entirely correctly with them.</li>
+                    <li>
+                        Added the "IsAttack" and "Concentration" flag to Actions(and subtypes) to allow for concentration, non-attack spells, or attacks with saves, etc.
+                        <ul>
+                            <li>Note IsAttack has been automatically set to true for all actions, so you'll need to update if that isn't correct on old entries</li>
+                        </ul>
+                    </li>
+                </ul>
             </div>
+            <div class="my-2"><span class="fw-bold">Upcoming Changes</span></div>
+            <div>
+                <ul>
+                    <li>Encounter sets that work for printing and organizing</li>
+                    <li>Pictures</li>
+                    <li>Skins for monster types</li>
+                    <li>Don't display generic feature traits that don't matter (like delay on traits)</li>
+                    <li>CR/XP on creatures</li>
+                    <li>Bugfixes, etc.</li>
+                </ul>
+            </div>
+            <div class="my-2"><span class="fw-bold">Recent Bugfixes</span></div>
+            <div>
+                <ul>
+                    <li>Defenders were doing too much damage (100% -> 75%)</li>
+                    <li>Monsters weren't sorting correctly (now by name)</li>
+                    <li>Charge ability text was malformed</li>
+                </ul>
+            </div>
+        </div>
     </Authorized>
 </AuthorizeView>
