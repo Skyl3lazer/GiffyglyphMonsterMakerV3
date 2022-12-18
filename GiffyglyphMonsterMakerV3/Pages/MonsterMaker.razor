@@ -340,7 +340,7 @@ else
             <div class="col-9 w-50">
                 <div><span>Stat Blocks</span> <span class="fa-solid fa-plus" @onclick="() => AddMonster()" /></div>
                 <div class="row overflow-auto px-1 d-block" style="height: 250px;">
-                    @foreach (var mon in Monsters)
+                    @foreach (var mon in Monsters.OrderBy(m => m.Name))
                     {
                         <MonsterTitleCard model="mon" DeleteCallback="() => RemoveMonster(mon)" ActiveClick="() => ActiveClick(mon)" FocusedMonster="@(mon.Id == active.Id)" SaveCallback="(m) => SaveMonsterAsync((Monster)m, true)" />
                     }
