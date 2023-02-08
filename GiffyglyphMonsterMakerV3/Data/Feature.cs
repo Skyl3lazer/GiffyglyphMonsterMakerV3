@@ -138,7 +138,8 @@ namespace GiffyglyphMonsterMakerV3.Data
         shortrest,
         longrest,
         charge,
-        round
+        round,
+        recharge
     }
 
     public enum DelayType
@@ -179,6 +180,9 @@ namespace GiffyglyphMonsterMakerV3.Data
                         break;
                     case FrequencyType.round:
                         desc += Value + "/round";
+                        break;
+                    case FrequencyType.recharge:
+                        desc += "Recharge " + Value;
                         break;
                 }
 
