@@ -70,6 +70,55 @@ namespace GiffyglyphMonsterMakerV3.Data
             var task = Task.Run<Monster>(async () => await GetMonsterByIdAsync(id));
             return task.Result;
         }
+        public async Task<Monster?> CopyMonsterAsync(Monster monster)
+        {
+            await using var _context = await _dbContextFactory.CreateDbContextAsync();
+            Monster? entity;
+            if (Loading)
+            {
+                return null;
+            }
+
+            try
+            {
+                Loading = true;
+                entity = _context
+                    .Monsters
+                    .AsNoTracking()
+                    .Include(a => a.Features)
+                        .ThenInclude(f => f.Frequency)
+                    .Include(m => m.Offense)
+                    .Include(m => m.Defenses)
+                        .ThenInclude(d => d.ProficientSavingThrows)
+                    .Include(m => m.Attributes)
+                    .FirstOrDefault(x => x.Id == monster.Id);
+
+                if(entity == null)
+                {
+                    Loading = false;
+                    return null;
+                }
+
+                entity.Offense.Id = Guid.NewGuid();
+                entity.Defenses.Id = Guid.NewGuid();
+                entity.Defenses.ProficientSavingThrows.Id = Guid.NewGuid();
+                entity.Features = entity.Features.Select(a => {
+                    a.Id = Guid.NewGuid(); 
+                    a.Frequency.Id = Guid.NewGuid();
+                    return a; 
+                }).ToList();
+                entity.Id = Guid.NewGuid();
+                entity.Attributes.Id = Guid.NewGuid();
+
+                await _context.Monsters.AddAsync(entity);
+                await _context.SaveChangesAsync();
+            }
+            finally
+            {
+                Loading = false;
+            }
+            return entity;
+        }
         public async Task<bool> InsertMonsterAsync(Monster monster)
         {
             await using var _context = await _dbContextFactory.CreateDbContextAsync();

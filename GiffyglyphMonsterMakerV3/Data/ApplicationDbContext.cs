@@ -82,6 +82,11 @@ namespace GiffyglyphMonsterMakerV3.Data
                 .WithMany()
                 .HasForeignKey(b => b.CreateUserId)
                 .IsRequired();
+            modelBuilder.Entity<ApplicationUser>()
+                .HasMany<Creature>()
+                .WithOne()
+                .HasForeignKey(b=>b.CreateUserId)
+                .OnDelete(DeleteBehavior.Cascade); 
             modelBuilder.Entity<Feature>()
                 .HasOne<ApplicationUser>()
                 .WithMany()

@@ -338,7 +338,12 @@ else
                 </div>
             </div>
             <div class="col-9 w-50">
-                <div><span>Stat Blocks</span> <span class="fa-solid fa-plus" @onclick="() => AddMonster()" /></div>
+                <div>
+                    <span>Stat Blocks</span> 
+                        <span class="fa-solid fa-plus" title="Add New Monster" @onclick="() => AddMonster()" />
+                        <span class="fa-solid fa-copy" title="Copy Current Monster" @onclick="() => CopyCurrentMonster()" />
+                        <span class="ms-1">(@(Monsters.Count)/@_maxMonsters)</span>
+                    </div>
                 <div class="row overflow-auto px-1 d-block" style="height: 250px;">
                     @foreach (var mon in Monsters.OrderBy(m => m.Name))
                     {
@@ -386,6 +391,8 @@ else
     [CascadingParameter]
     private Task<AuthenticationState> authenticationStateTask { get; set; }
 
+    private readonly int _maxMonsters = 150;
+
     private string? CurrentUserId = null;
 
     private Monster? active { get; set; }
@@ -430,6 +437,29 @@ else
         await RemoveFeature(target);
     }
 
+    private async Task CopyCurrentMonster()
+    {
+        if (active == null)
+            return;
+        if (Monsters.Count >= _maxMonsters)
+        {
+            _ts.ShowError("At Maximum Monsters ("+_maxMonsters+")!");
+            return;
+        }
+
+        Monster? result = await _ms.CopyMonsterAsync(active);
+
+        if (result != null)
+        {
+            Monsters.Add(result);
+            _ts.ShowSuccess(active.Name, "Copied");
+        }
+        else
+        {
+            _ts.ShowError("Could not copy monster!");
+        }
+    }
+
     private int HighStat
     {
         get
@@ -448,9 +478,9 @@ else
         get { return (int)Math.Floor(active.CombatLevel / 12.0) - 1; }
     }
 
-    private void SaveActiveMonster(bool showToast)
+    private async Task SaveActiveMonster(bool showToast)
     {
-        SaveMonsterAsync(active, showToast);
+        await SaveMonsterAsync(active, showToast);
     }
 
     public async Task SaveMonsterAsync(Monster mon, bool showToast)
@@ -593,8 +623,11 @@ else
     }
     public async Task AddMonster(string name = "My New Monster")
     {
-        if (Monsters.Count > 50)
+        if (Monsters.Count >= _maxMonsters)
+        {
+            _ts.ShowError("At Maximum Monsters (" + _maxMonsters + ")!");
             return;
+        }
 
         var mon = new Monster(name, CurrentUserId);
         active = mon;
