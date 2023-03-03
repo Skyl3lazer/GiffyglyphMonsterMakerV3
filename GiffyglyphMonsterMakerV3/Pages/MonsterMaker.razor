@@ -80,36 +80,37 @@ else
                                     }
                                 </InputSelect>
                             </div>
-                            </div>
-                            @if (active.MonsterRank == Rank.Paragon)
-                            {
-                                <div class="row">
-                                    <div class="col-6"><span class="fa-regular fa-caret-right me-1"/>Threat:</div>
-                                    <div class="col-6">
+                        </div>
+                        @if (active.MonsterRank == Rank.Paragon)
+                        {
+                            <div class="row">
+                                <div class="col-6"><span class="fa-regular fa-caret-right me-1" />Threat:</div>
+                                <div class="col-6">
                                     <InputNumber Value="active.ParagonThreat" class="w-100" min="1" ValueChanged="(int i) => ParagonChanged(i)" TValue="int" ValueExpression="() => active.ParagonThreat" />
-                                    </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-6"><span class="fa-regular fa-caret-right me-1"/><span class="fa-regular fa-caret-right me-1"/>Paragon Powers:</div>
-                                    <div class="col-6">
+                            </div>
+                            <div class="row">
+                                <div class="col-6"><span class="fa-regular fa-caret-right me-1" /><span class="fa-regular fa-caret-right me-1" />Paragon Powers:</div>
+                                <div class="col-6">
                                     <InputNumber class="w-100" @bind-Value="active.ParagonPowers" min="0" />
-                                    </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-6"><span class="fa-regular fa-caret-right me-1"/><span class="fa-regular fa-caret-right me-1"/>Paragon Defense:</div>
-                                    <div class="col-6">
+                            </div>
+                            <div class="row">
+                                <div class="col-6"><span class="fa-regular fa-caret-right me-1" /><span class="fa-regular fa-caret-right me-1" />Paragon Defense:</div>
+                                <div class="col-6">
                                     <InputNumber class="w-100" @bind-Value="active.ParagonDefenses" min="0" />
-                                    </div>
                                 </div>
-                            }else if (active.MonsterRank == Rank.Elite)
-                            {
-                                <div class="row">
-                                    <div class="col-6"><span class="fa-regular fa-caret-right me-1"/>Paragon Powers:</div>
-                                    <div class="col-6">
+                            </div>
+                        }
+                        else if (active.MonsterRank == Rank.Elite)
+                        {
+                            <div class="row">
+                                <div class="col-6"><span class="fa-regular fa-caret-right me-1" />Paragon Powers:</div>
+                                <div class="col-6">
                                     <InputNumber @bind-Value="active.ParagonPowers" min="0" class="w-100" />
-                                    </div>
                                 </div>
-                            }
+                            </div>
+                        }
                         <div class="row">
                             <div class="col-6">Role: </div>
                             <div class="col-6">
@@ -267,11 +268,27 @@ else
                                 </div>
                             </div>
                         </div>
+                        <div class="row">
+                            @{
+                                List<string> immuneDefaults = Enum.GetNames(typeof(DamageType)).ToList();
+                                immuneDefaults.AddRange(Enum.GetNames(typeof(ConditionType)).ToList());
+                            }
+                            <_stringAdder Header="Immunities" ValueList="@active.Defenses.Immunities" ValueChangedEvent="(a) => ImmunitiesUpdated(a)" DefaultList="immuneDefaults"></_stringAdder>
+                        </div>
+                        <div class="row">
+                            <_stringAdder Header="Resistances" ValueList="@active.Defenses.Resistances" ValueChangedEvent="(a) => ResistancesUpdated(a)" DefaultList="Enum.GetNames(typeof(DamageType)).ToList()"></_stringAdder>
+                        </div>
                     </div>
                 </div>
                 <div class="row">
                     <div><span class="fs-2 card-header collapsed" data-bs-toggle="collapse" data-bs-target="#monsterAbilities" aria-expanded="true" aria-controls="monsterAbilities">Abilities<span class="fas fa-chevrons-down mx-1 fs-3" /><span class="fas fa-chevrons-up mx-1 fs-3" /></span></div>
                     <div id="monsterAbilities" class="collapse">
+                        <div class="row">
+                            <div class="col-6">Base Speed:</div>
+                            <div class="col-6">
+                                <InputNumber @bind-Value="active.WalkSpeed" class="w-100" min="0" placeholder="30" />
+                            </div>
+                        </div>
                         <div>
                             <_EnumAdder Dict="@active.OtherSpeeds" Header="Other Speeds" ValueChangedEvent="(a) => SpeedsUpdated(a)"></_EnumAdder>
                         </div>
@@ -339,11 +356,11 @@ else
             </div>
             <div class="col-9 w-50">
                 <div>
-                    <span>Stat Blocks</span> 
-                        <span class="fa-solid fa-plus" title="Add New Monster" @onclick="() => AddMonster()" />
-                        <span class="fa-solid fa-copy" title="Copy Current Monster" @onclick="() => CopyCurrentMonster()" />
-                        <span class="ms-1">(@(Monsters.Count)/@_maxMonsters)</span>
-                    </div>
+                    <span>Stat Blocks</span>
+                    <span class="fa-solid fa-plus" title="Add New Monster" @onclick="() => AddMonster()" />
+                    <span class="fa-solid fa-copy" title="Copy Current Monster" @onclick="() => CopyCurrentMonster()" />
+                    <span class="ms-1">(@(Monsters.Count)/@_maxMonsters)</span>
+                </div>
                 <div class="row overflow-auto px-1 d-block" style="height: 250px;">
                     @foreach (var mon in Monsters.OrderBy(m => m.Name))
                     {
@@ -357,10 +374,10 @@ else
                         if (mon.Layout == LayoutType.Single)
                         {
                             <div class="col-8">
-                                <MonsterStatBlock_OneColumn model="mon" Hidden="@(mon.Id != active.Id)"/>
+                                <MonsterStatBlock_OneColumn model="mon" Hidden="@(mon.Id != active.Id)" />
                             </div>
                         }
-                        else if(mon.Layout == LayoutType.TwoColumn)
+                        else if (mon.Layout == LayoutType.TwoColumn)
                         {
                             <div class="col-12">
                                 <MonsterStatBlock_TwoColumn model="mon" Hidden="@(mon.Id != active.Id)" />
@@ -443,7 +460,7 @@ else
             return;
         if (Monsters.Count >= _maxMonsters)
         {
-            _ts.ShowError("At Maximum Monsters ("+_maxMonsters+")!");
+            _ts.ShowError("At Maximum Monsters (" + _maxMonsters + ")!");
             return;
         }
 
@@ -452,7 +469,7 @@ else
         if (result != null)
         {
             Monsters.Add(result);
-            _ts.ShowSuccess(active.Name, "Copied");
+            _ts.ShowSuccess("Copied " + active.Name);
         }
         else
         {
@@ -492,7 +509,7 @@ else
 
         if (result)
         {
-            _ts.ShowSuccess(mon.Name, "Saved");
+            _ts.ShowSuccess("Saved " + mon.Name);
         }
         else
         {
@@ -582,7 +599,7 @@ else
         var result = await _fs.DeleteFeatureAsync(feature);
         if (result)
         {
-            _ts.ShowWarning(feature.Name, "Removed Feature");
+            _ts.ShowWarning("Removed Feature " + feature.Name);
         }
         else
         {
@@ -608,6 +625,16 @@ else
     {
         var itemList = (List<string>)val;
         active.Languages = itemList;
+    }
+    public void ImmunitiesUpdated(object? val)
+    {
+        var itemList = (List<string>)val;
+        active.Defenses.Immunities = itemList;
+    }
+    public void ResistancesUpdated(object? val)
+    {
+        var itemList = (List<string>)val;
+        active.Defenses.Resistances = itemList;
     }
 
     public void FeaturesUpdated(object? val)
@@ -642,7 +669,7 @@ else
         var result = await _ms.DeleteMonsterAsync(mon);
         if (result)
         {
-            _ts.ShowWarning(mon.Name, "Removed");
+            _ts.ShowWarning("Removed" + mon.Name);
         }
         else
         {

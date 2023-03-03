@@ -48,7 +48,7 @@ namespace GiffyglyphMonsterMakerV3.Data
         [BackingField("_overrideMarkup")]
         public string OverrideMarkup
         {
-            get =>_overrideMarkup;
+            get => _overrideMarkup;
             set
             {
                 var html = value;
@@ -148,6 +148,26 @@ namespace GiffyglyphMonsterMakerV3.Data
         delay,
         doom
     }
+    //Mostly unused except for the immuinities dropdown
+    //These are the 5e default ones
+    public enum ConditionType
+    {
+        blinded,
+        charmed,
+        deafened,
+        frightened,
+        grappled,
+        incapacitated,
+        invisible,
+        paralyzed,
+        petrified,
+        poisoned,
+        prone,
+        pestrained,
+        stunned,
+        unconscious,
+        exhaustion
+    }
     public class FeatureFrequency
     {
         [Key]
@@ -167,7 +187,7 @@ namespace GiffyglyphMonsterMakerV3.Data
                     case FrequencyType.passive:
                         break;
                     case FrequencyType.cooldown:
-                        desc += "Cooldown "+Value;
+                        desc += "Cooldown " + Value;
                         break;
                     case FrequencyType.shortrest:
                         desc += Value + "/sr";
@@ -176,7 +196,7 @@ namespace GiffyglyphMonsterMakerV3.Data
                         desc += Value + "/lr";
                         break;
                     case FrequencyType.charge:
-                        desc += Value + " charge"+(Value != 1 ? "s" : "");
+                        desc += Value + " charge" + (Value != 1 ? "s" : "");
                         break;
                     case FrequencyType.round:
                         desc += Value + "/round";

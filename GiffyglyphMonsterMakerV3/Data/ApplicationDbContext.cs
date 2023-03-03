@@ -71,6 +71,18 @@ namespace GiffyglyphMonsterMakerV3.Data
                     v=>string.Join('+',v),
                     v=>v.Split('+',StringSplitOptions.RemoveEmptyEntries).ToList()
                     );
+            modelBuilder.Entity<DefenseArray>()
+                .Property(e => e.Resistances)
+                .HasConversion(
+                    v => string.Join('+', v),
+                    v => v.Split('+', StringSplitOptions.RemoveEmptyEntries).ToList()
+                    );
+            modelBuilder.Entity<DefenseArray>()
+                .Property(e => e.Immunities)
+                .HasConversion(
+                    v => string.Join('+', v),
+                    v => v.Split('+', StringSplitOptions.RemoveEmptyEntries).ToList()
+                    );
             modelBuilder.Entity<Creature>()
                 .Property(e => e.Languages)
                 .HasConversion(

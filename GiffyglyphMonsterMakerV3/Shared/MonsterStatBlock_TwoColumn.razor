@@ -31,96 +31,132 @@
             </div>
         </div>
         <div>
-            <div>
-                <span class="fa-solid fa-shield-halved line-icon" /><span class="monsterPrimaryText fw-bold">AC </span><span>@(model.Defenses.ArmorClass).</span>
-                <span class="monsterPrimaryText fw-bold">Saving Throws</span>
-                @if (model.Defenses.ProficientSavingThrows.Strength)
-                {
-                    <span> Str +@(model.Attributes.Strength + model.Defenses.SaveBonus + model.Attributes.AttributeMod)</span>
-                }
-                @if (model.Defenses.ProficientSavingThrows.Dexterity)
-                {
-                    <span> Dex +@(model.Attributes.Dexterity + model.Defenses.SaveBonus + model.Attributes.AttributeMod)</span>
-                }
-                @if (model.Defenses.ProficientSavingThrows.Constitution)
-                {
-                    <span> Con +@(model.Attributes.Constitution + model.Defenses.SaveBonus + model.Attributes.AttributeMod)</span>
-                }
-                @if (model.Defenses.ProficientSavingThrows.Intelligence)
-                {
-                    <span> Int +@(model.Attributes.Intelligence + model.Defenses.SaveBonus + model.Attributes.AttributeMod)</span>
-                }
-                @if (model.Defenses.ProficientSavingThrows.Wisdom)
-                {
-                    <span> Wis +@(model.Attributes.Wisdom + model.Defenses.SaveBonus + model.Attributes.AttributeMod)</span>
-                }
-                @if (model.Defenses.ProficientSavingThrows.Charisma)
-                {
-                    <span> Cha +@(model.Attributes.Charisma + model.Defenses.SaveBonus + model.Attributes.AttributeMod)</span>
-                }
-                <span>.</span>
-            </div>
-            <div>
-                <span class="fa-solid fa-heart line-icon" /><span class="monsterPrimaryText fw-bold">HP </span><span>@(model.Defenses.HitPoints).</span>
-            </div>
-            <div>
-                <span class="fa-solid fa-swords line-icon" /><span class="monsterPrimaryText fw-bold">ATK </span><span>+@(model.Offense.Attack).</span>
-                <span class="monsterPrimaryText fw-bold">DC </span><span>+@(model.Offense.DifficultyCheck).</span>
-                <span class="monsterPrimaryText fw-bold">DMG </span>
-                <span>
-                    @(model.Offense.Damage)
-                    @if (model.Offense.RandomizeDamage)
+            <div class="row">
+                <div class="col-auto pe-0"><span class="fa-solid fa-shield-halved line-icon" /></div>
+                <div class="col ps-0">
+                    <span class="monsterPrimaryText fw-bold">AC </span><span>@(model.Defenses.ArmorClass).</span>
+                    <span class="monsterPrimaryText fw-bold">Saving Throws</span>
+                    @if (model.Defenses.ProficientSavingThrows.Strength)
                     {
-                        <span> (@(DiceTools.ConvertToDiceString(model.Offense.RandomDamageRange, model.Offense.Damage)))</span>
+                        <span> Str +@(model.Attributes.Strength + model.Defenses.SaveBonus + model.Attributes.AttributeMod)</span>
                     }
-                    .
-                </span>
-                <span class="monsterPrimaryText fw-bold">Reach </span><span>@model.MaxReach ft.</span>
-                @if (model.MaxRange > 0)
-                {
-                    <span class="monsterPrimaryText fw-bold"> Range </span>
+                    @if (model.Defenses.ProficientSavingThrows.Dexterity)
+                    {
+                        <span> Dex +@(model.Attributes.Dexterity + model.Defenses.SaveBonus + model.Attributes.AttributeMod)</span>
+                    }
+                    @if (model.Defenses.ProficientSavingThrows.Constitution)
+                    {
+                        <span> Con +@(model.Attributes.Constitution + model.Defenses.SaveBonus + model.Attributes.AttributeMod)</span>
+                    }
+                    @if (model.Defenses.ProficientSavingThrows.Intelligence)
+                    {
+                        <span> Int +@(model.Attributes.Intelligence + model.Defenses.SaveBonus + model.Attributes.AttributeMod)</span>
+                    }
+                    @if (model.Defenses.ProficientSavingThrows.Wisdom)
+                    {
+                        <span> Wis +@(model.Attributes.Wisdom + model.Defenses.SaveBonus + model.Attributes.AttributeMod)</span>
+                    }
+                    @if (model.Defenses.ProficientSavingThrows.Charisma)
+                    {
+                        <span> Cha +@(model.Attributes.Charisma + model.Defenses.SaveBonus + model.Attributes.AttributeMod)</span>
+                    }
+                    <span>.</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-auto pe-0"><span class="fa-solid fa-heart line-icon" /></div>
+                <div class="col ps-0">
+                    <span class="monsterPrimaryText fw-bold">HP </span><span>@(model.Defenses.HitPoints).</span>
+                    @if (model.Defenses.Resistances.Count > 0)
+                    {
+                        <span class="monsterPrimaryText fw-bold"> Resistant </span>
+                        <span>to </span>
+                        <span>@(string.Join(", ", model.Defenses.Resistances)).</span>
+                    }
+                    @if (model.Defenses.Immunities.Count > 0)
+                    {
+                        <span class="monsterPrimaryText fw-bold"> Immune </span>
+                        <span>to </span>
+                        <span>@(string.Join(", ", model.Defenses.Immunities)).</span>
+                    }
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-auto pe-0"><span class="fa-solid fa-swords line-icon" /></div>
+                <div class="col ps-0">
+                    <span class="monsterPrimaryText fw-bold">ATK </span><span>+@(model.Offense.Attack).</span>
+                    <span class="monsterPrimaryText fw-bold">DC </span><span>+@(model.Offense.DifficultyCheck).</span>
+                    <span class="monsterPrimaryText fw-bold">DMG </span>
+                    <span>
+                        @(model.Offense.Damage)
+                        @if (model.Offense.RandomizeDamage)
+                        {
+                            <span> (@(DiceTools.ConvertToDiceString(model.Offense.RandomDamageRange, model.Offense.Damage)))</span>
+                        }
+                        <span>.</span>
+                    </span>
+                    <span class="monsterPrimaryText fw-bold">Reach </span><span>@model.MaxReach ft.</span>
+                    @if (model.MaxRange > 0)
+                    {
+                        <span class="monsterPrimaryText fw-bold"> Range </span>
 
-                    <span>@model.MaxRange ft.</span>
-                }
+                        <span>@model.MaxRange ft.</span>
+                    }
+                </div>
             </div>
             <hr class="monsterAccent my-1 border border-2 border-opacity-100" />
             <div>
-                <div>
-                    <span class="fa-solid fa-bolt line-icon" /><span class="monsterPrimaryText fw-bold">Speed </span><span>@(model.WalkSpeed + model.SpeedMod) ft.</span>
-                    @foreach (var item in model.OtherSpeeds)
-                    {
-                        <span>, @item.Key @(item.Value + model.SpeedMod) ft.</span>
-                    }
+                <div class="row">
+                    <div class="col-auto pe-0"><span class="fa-solid fa-bolt line-icon" /></div>
+                    <div class="col ps-0">
+                        <span class="monsterPrimaryText fw-bold">Speed </span><span>@(model.WalkSpeed + model.SpeedMod) ft.</span>
+                        @foreach (var item in model.OtherSpeeds)
+                        {
+                            <span>, @item.Key @(item.Value + model.SpeedMod) ft.</span>
+                        }
+                    </div>
                 </div>
-                <div>
-                    <span class="fa-solid fa-eye line-icon" /><span class="monsterPrimaryText fw-bold">Senses </span>
-                    @foreach (var item in model.Senses)
-                    {
-                        <span>@item.Key @item.Value ft. </span>
-                    }
-                    <span class="">passive Perception </span><span>@(10 + model.Attributes.Wisdom).</span>
+                <div class="row">
+                    <div class="col-auto pe-0"><span class="fa-solid fa-eye line-icon" /></div>
+                    <div class="col ps-0">
+                        <span class="monsterPrimaryText fw-bold">Senses </span>
+                        @foreach (var item in model.Senses)
+                        {
+                            <span>@item.Key @item.Value ft. </span>
+                        }
+                        <span class="">passive Perception </span><span>@(10 + model.Attributes.Wisdom).</span>
+                    </div>
                 </div>
-                <div>
-                    <span class="fa-solid fa-comment line-icon" /><span class="monsterPrimaryText fw-bold">Languages </span>
-                    @if (model.Languages.Count() > 0)
-                    {
-                        <span>@(string.Join(", ", model.Languages)).</span>
-                    }
-                    else
-                    {
-                        <span>None.</span>
-                    }
+                <div class="row">
+                    <div class="col-auto pe-0"><span class="fa-solid fa-comment line-icon" /></div>
+                    <div class="col ps-0">
+                        <span class="monsterPrimaryText fw-bold">Languages </span>
+                        @if (model.Languages.Count() > 0)
+                        {
+                            <span>@(string.Join(", ", model.Languages)).</span>
+                        }
+                        else
+                        {
+                            <span>None.</span>
+                        }
+                    </div>
                 </div>
-                <div>
-                    <span class="fa-solid fa-award line-icon" /><span class="monsterPrimaryText fw-bold">Proficiency </span><span>+@model.Proficiency</span>
-                    @*<span class="monsterPrimaryText fw-bold">CR </span>
-                    <span class="monsterPrimaryText fw-bold">XP </span>*@
+                <div class="row">
+                    <div class="col-auto pe-0"><span class="fa-solid fa-award line-icon" /></div>
+                    <div class="col ps-0">
+                        <span class="monsterPrimaryText fw-bold">Proficiency </span><span>+@model.Proficiency</span>
+                        @*<span class="monsterPrimaryText fw-bold">CR </span>
+                        <span class="monsterPrimaryText fw-bold">XP </span>*@
+                    </div>
                 </div>
                 @if (model.Items.Count() > 0)
                 {
-                    <div>
-                        <span class="fa-solid fa-sack line-icon" /><span class="monsterPrimaryText fw-bold">Items </span>
-                        <span>@(string.Join(", ", model.Items)).</span>
+                    <div class="row">
+                        <div class="col-auto pe-0"><span class="fa-solid fa-sack line-icon" /></div>
+                        <div class="col ps-0">
+                            <span class="monsterPrimaryText fw-bold">Items </span>
+                            <span>@(string.Join(", ", model.Items)).</span>
+                        </div>
                     </div>
                 }
                 @if (model.Features.Any(f => f.Type == FeatureType.Trait))
@@ -139,6 +175,7 @@
             </div>
         </div>
     </div>
+    @**@
     <div class="col-6">
         <div>
             @if (!model.Features.Any(f => f.Type == FeatureType.Free) && (model.ParagonDefenses > 0 || model.ParagonPowers > 0))

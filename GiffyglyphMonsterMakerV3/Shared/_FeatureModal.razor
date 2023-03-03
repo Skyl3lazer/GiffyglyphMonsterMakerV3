@@ -489,7 +489,7 @@
         var result = await _fs.DeleteFeatureAsync(f, true);
         if (result)
         {
-            _ts.ShowWarning(f.Name, "Removed Template");
+            _ts.ShowWarning("Removed Template" + f.Name);
         }
         else
         {
@@ -827,7 +827,7 @@
         await SaveMonster.InvokeAsync();
         if (result1 && result2)
         {
-            _ts.ShowSuccess(SpecificFeature.Name + " and template", "Saved");
+            _ts.ShowSuccess("Saved" + SpecificFeature.Name + " and template");
         }
         else
         {
@@ -844,7 +844,7 @@
         StateHasChanged();
         if (result)
         {
-            _ts.ShowSuccess(SpecificFeature.Name, "Saved");
+            _ts.ShowSuccess("Saved " + SpecificFeature.Name);
         }
         else
         {
