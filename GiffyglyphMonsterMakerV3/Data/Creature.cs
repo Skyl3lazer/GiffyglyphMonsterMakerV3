@@ -250,6 +250,7 @@ namespace GiffyglyphMonsterMakerV3.Data
         public int SaveBonus { get; set; }
         public List<string> Resistances { get; set; } = new();
         public List<string> Immunities { get; set; } = new();
+        public List<string> Vulnerabilities { get; set; } = new();
         public ProficientSaves ProficientSavingThrows { get; set; } = new();
     }
     public class OffenseArray : INotifyPropertyChanged

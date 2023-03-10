@@ -79,6 +79,12 @@
                         <span>to </span>
                         <span>@(string.Join(", ", model.Defenses.Immunities)).</span>
                     }
+                    @if (model.Defenses.Vulnerabilities.Count > 0)
+                    {
+                        <span class="monsterPrimaryText fw-bold"> Vulnerabile </span>
+                        <span>to </span>
+                        <span>@(string.Join(", ", model.Defenses.Vulnerabilities)).</span>
+                    }
                 </div>
             </div>
             <div class="row">

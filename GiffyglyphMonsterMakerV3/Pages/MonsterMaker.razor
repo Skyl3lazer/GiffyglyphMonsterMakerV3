@@ -278,6 +278,9 @@ else
                         <div class="row">
                             <_stringAdder Header="Resistances" ValueList="@active.Defenses.Resistances" ValueChangedEvent="(a) => ResistancesUpdated(a)" DefaultList="Enum.GetNames(typeof(DamageType)).ToList()"></_stringAdder>
                         </div>
+                        <div class="row">
+                            <_stringAdder Header="Vulnerabilities" ValueList="@active.Defenses.Vulnerabilities" ValueChangedEvent="(a) => VulnerabilitiesUpdated(a)" DefaultList="Enum.GetNames(typeof(DamageType)).ToList()"></_stringAdder>
+                        </div>
                     </div>
                 </div>
                 <div class="row">
@@ -636,7 +639,11 @@ else
         var itemList = (List<string>)val;
         active.Defenses.Resistances = itemList;
     }
-
+    public void VulnerabilitiesUpdated(object? val)
+    {
+        var itemList = (List<string>)val;
+        active.Defenses.Vulnerabilities = itemList;
+    }
     public void FeaturesUpdated(object? val)
     {
         var featureList = (List<Feature>)val;
