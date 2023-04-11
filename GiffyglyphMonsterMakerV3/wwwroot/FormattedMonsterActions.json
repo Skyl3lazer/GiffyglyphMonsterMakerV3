@@ -835,7 +835,7 @@
     "IsSpell": false,
     "DealsDamage": false,
     "Shape": 9,
-    "OtherEffect": "When you make an attack roll, treat is as a natural 11. You may decide this after seeing the initial result."
+    "OtherEffect": "When you make an attack roll, treat it as a natural 11. You may decide this after seeing the initial result."
   },
   {
     "Name": "Quick Charger",
