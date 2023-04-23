@@ -280,6 +280,7 @@ namespace GiffyglyphMonsterMakerV3.Data
         public bool Intelligence { get; set; }
         public bool Wisdom { get; set; }
         public bool Charisma { get; set; }
+        public int NumberTrained => (Strength ? 1 : 0) + (Dexterity ? 1 : 0) + (Constitution ? 1:0) + (Intelligence ? 1 : 0) + (Wisdom ? 1 : 0) + (Charisma ? 1 : 0);
     }
     public class DefenseArray
     {

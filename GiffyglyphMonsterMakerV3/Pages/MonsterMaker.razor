@@ -252,7 +252,17 @@ else
                             </div>
                         </div>
                         <div class="row">
-                            <span class="col-6">Proficient Saves (@active.Defenses.TrainedSavingThrows):</span>
+                            <div class="col-6">
+                                <div class="row">
+                                    <span>Proficient Saves (@active.Defenses.TrainedSavingThrows):</span>
+                                </div>
+                                <div class="row">
+                                    @if (active.Defenses.ProficientSavingThrows.NumberTrained > active.Defenses.TrainedSavingThrows)
+                                    {
+                                        <span class="text-danger">More trained Saving Throws than suggested.</span>
+                                    }
+                                </div>
+                            </div>
                             <div class="col-6">
                                 <div class="row px-2">
                                     <InputCheckbox class="col" @bind-Value="active.Defenses.ProficientSavingThrows.Strength" /><span class="col">STR</span>
@@ -676,7 +686,7 @@ else
         var result = await _ms.DeleteMonsterAsync(mon);
         if (result)
         {
-            _ts.ShowWarning("Removed" + mon.Name);
+            _ts.ShowWarning("Removed " + mon.Name);
         }
         else
         {
