@@ -119,6 +119,11 @@
                     {
                         <span>, @item.Key @(item.Value + model.SpeedMod) ft.</span>
                     }
+                    @if(model.InitiativeModifier > 0)
+                    {
+                        <span class="monsterPrimaryText fw-bold"> Initiative </span>
+                        <span>+@(model.InitiativeModifier).</span>
+                    }
                 </div>
             </div>
             <div class="row">
