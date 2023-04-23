@@ -5,7 +5,7 @@
 
 <div>
     <h1>Giffyglyph's Monster Maker V3</h1>
-    <p class="float-end text-secondary fst-italic fw-bold">@(GetType()?.Assembly?.GetName()?.Version?.ToString())</p>
+    <p class="float-end text-secondary fst-italic fw-bold">@(Assembly.GetExecutingAssembly()?.GetName()?.Version)</p>
 </div>
 
 <div>Unofficial App developed by Skyl3lazer, system by Giffyglyph</div>
