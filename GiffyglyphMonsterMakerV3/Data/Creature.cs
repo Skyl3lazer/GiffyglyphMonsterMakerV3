@@ -110,28 +110,8 @@ namespace GiffyglyphMonsterMakerV3.Data
             get
             {
                 int xp = ExperienceValue;
-                /*
-                double multiplier = 1;
-
-                switch (MonsterRank)
-                {
-                    case Rank.Minion:
-                        multiplier *= 16;
-                        break;
-                    case Rank.Grunt:
-                        multiplier *= 4;
-                        break;
-                    case Rank.Elite:
-                        multiplier *= 2;
-                        break;
-                    case Rank.Paragon:
-                        multiplier /= (0.25 * ParagonThreat);
-                        break;
-                }
-
-                double standardXp = xp * multiplier;
-                */
                 double CR = 0;
+
                 foreach(var xpVal in StaticTables.ExperienceDictionary5E.Values)
                 {
                     if(xpVal > xp)
@@ -175,6 +155,7 @@ namespace GiffyglyphMonsterMakerV3.Data
 
                 double multiplier = 1;
                 double baseExp = 0;
+
                 if (CombatLevel > 0)
                     baseExp = StaticTables.ExperienceDictionary5E[CombatLevel];
                 else

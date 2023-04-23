@@ -1192,7 +1192,7 @@
     "IsSpell": false,
     "IsAttack": false,
     "DealsDamage": false,
-    "OtherEffect": "You critically hit on a role of 19-20.",
+    "OtherEffect": "You critically hit on a roll of 19-20.",
     "Shape": 9,
     "Frequency": {
       "Type": 5,
