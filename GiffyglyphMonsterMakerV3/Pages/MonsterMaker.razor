@@ -248,11 +248,11 @@ else
                         <div class="row">
                             <div class="col-6">Save Bonus:</div>
                             <div class="col-6">
-                                <InputNumber @bind-Value="active.Defenses.SaveBonus" class="w-100" min="0" />
+                                <InputNumber @bind-Value="active.Defenses.TrainedSavingThrows" class="w-100" min="0" />
                             </div>
                         </div>
                         <div class="row">
-                            <span class="col-6">Proficient Saves (2):</span>
+                            <span class="col-6">Proficient Saves (@active.Defenses.TrainedSavingThrows):</span>
                             <div class="col-6">
                                 <div class="row px-2">
                                     <InputCheckbox class="col" @bind-Value="active.Defenses.ProficientSavingThrows.Strength" /><span class="col">STR</span>
@@ -785,7 +785,7 @@ else
 
         active.Defenses.HitPoints = (int)Math.Floor(hp);
         active.Defenses.ArmorClass = (int)Math.Floor(ac);
-        active.Defenses.SaveBonus = (int)Math.Floor(tst);
+        active.Defenses.TrainedSavingThrows = (int)Math.Floor(tst);
         active.Offense.Attack = (int)Math.Floor(atk);
         active.Offense.Damage = Math.Max((int)Math.Floor(dmg), 1);
         active.Offense.DifficultyCheck = (int)Math.Floor(dc);

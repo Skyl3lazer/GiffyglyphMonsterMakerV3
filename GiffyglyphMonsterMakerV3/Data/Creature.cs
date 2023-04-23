@@ -29,7 +29,8 @@ namespace GiffyglyphMonsterMakerV3.Data
             get => _monsterRank;
             set
             {
-                _monsterRank = value; Attributes.AttributeMod = MonsterRank == Rank.Elite ? 1 : MonsterRank == Rank.Paragon ? 2 : 0;
+                _monsterRank = value; 
+                Attributes.AttributeMod = MonsterRank == Rank.Elite ? 1 : MonsterRank == Rank.Paragon ? 2 : 0;
                 PropertyChanged?.Invoke(this,
                     new PropertyChangedEventArgs(nameof(MonsterRank)));
             }
@@ -174,7 +175,46 @@ namespace GiffyglyphMonsterMakerV3.Data
             Dict[AttributeType.Charisma] = 0;
             Dict[AttributeType.Dexterity] = 0;
         }
-        
+        public int StrWithMod { get
+            {
+                return Strength + AttributeMod;
+            } 
+        }
+        public int DexWithMod
+        {
+            get
+            {
+                return Dexterity + AttributeMod;
+            }
+        }
+        public int ConWithMod
+        {
+            get
+            {
+                return Constitution + AttributeMod;
+            }
+        }
+        public int IntWithMod
+        {
+            get
+            {
+                return Intelligence + AttributeMod;
+            }
+        }
+        public int WisWithMod
+        {
+            get
+            {
+                return Wisdom + AttributeMod;
+            }
+        }
+        public int ChaWithMod
+        {
+            get
+            {
+                return Charisma + AttributeMod;
+            }
+        }
         public int AttributeMod { get; set; }
         public int Strength
         {
@@ -247,7 +287,8 @@ namespace GiffyglyphMonsterMakerV3.Data
         public Guid Id { get; set; }
         public int ArmorClass { get; set; }
         public int HitPoints { get; set; }
-        public int SaveBonus { get; set; }
+        [Column("SaveBonus")]
+        public int TrainedSavingThrows { get; set; }
         public List<string> Resistances { get; set; } = new();
         public List<string> Immunities { get; set; } = new();
         public List<string> Vulnerabilities { get; set; } = new();
