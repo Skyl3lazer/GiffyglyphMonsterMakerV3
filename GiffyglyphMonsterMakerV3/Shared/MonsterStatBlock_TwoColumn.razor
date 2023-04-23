@@ -120,10 +120,10 @@
                         {
                             <span>, @item.Key @(item.Value + model.SpeedMod) ft.</span>
                         }
-                        @if (model.InitiativeModifier > 0)
+                        @if (model.InitiativeModifier != 0)
                         {
                             <span class="monsterPrimaryText fw-bold"> Initiative </span>
-                            <span>+@(model.InitiativeModifier).</span>
+                            <span>@(model.InitiativeModifier + model.Attributes.Dexterity < 0 ? "-" : "+")@(model.InitiativeModifier + model.Attributes.Dexterity).</span>
                         }
                     </div>
                 </div>
