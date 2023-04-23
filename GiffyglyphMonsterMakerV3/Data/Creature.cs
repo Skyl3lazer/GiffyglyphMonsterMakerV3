@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using GiffyglyphMonsterMakerV3.Pages;
 using GiffyglyphMonsterMakerV3.Utility;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Math.EC.Multiplier;
 
 namespace GiffyglyphMonsterMakerV3.Data
 {
@@ -103,11 +105,103 @@ namespace GiffyglyphMonsterMakerV3.Data
                 return meleeFeatures.Count() > 0 ? meleeFeatures.First().Range : 0;
             }
         }
+        public double ChallengeRating
+        {
+            get
+            {
+                int xp = ExperienceValue;
+                /*
+                double multiplier = 1;
 
+                switch (MonsterRank)
+                {
+                    case Rank.Minion:
+                        multiplier *= 16;
+                        break;
+                    case Rank.Grunt:
+                        multiplier *= 4;
+                        break;
+                    case Rank.Elite:
+                        multiplier *= 2;
+                        break;
+                    case Rank.Paragon:
+                        multiplier /= (0.25 * ParagonThreat);
+                        break;
+                }
+
+                double standardXp = xp * multiplier;
+                */
+                double CR = 0;
+                foreach(var xpVal in StaticTables.ExperienceDictionary5E.Values)
+                {
+                    if(xpVal > xp)
+                    {
+                        return CR;
+                    }
+                    else
+                    {
+                        CR = StaticTables.ExperienceDictionary5E.Where(a => a.Value == xpVal).First().Key;
+                    }
+                }
+                return 34;
+            }
+        }
+        public string ChallengeRatingString
+        {
+            get
+            {
+                if (ChallengeRating == 0.125)
+                {
+                    return "1/8";
+                }else if(ChallengeRating == 0.25)
+                {
+                    return "1/4";
+                }else if(ChallengeRating == 0.5)
+                {
+                    return "1/2";
+                }
+                else
+                {
+                    return ((int)ChallengeRating).ToString();
+                }
+            }
+        }
+        public int ExperienceValue
+        {
+            get
+            {
+                if (CombatLevel > 34)
+                    return 0;
+
+                double multiplier = 1;
+                double baseExp = 0;
+                if (CombatLevel > 0)
+                    baseExp = StaticTables.ExperienceDictionary5E[CombatLevel];
+                else
+                    baseExp = StaticTables.ExperienceDictionary5E[0.5];
+
+                switch (MonsterRank)
+                {
+                    case Rank.Minion:
+                        multiplier *= 0.0625;
+                        break;
+                    case Rank.Grunt:
+                        multiplier *= 0.25;
+                        break;
+                    case Rank.Elite:
+                        multiplier *= .5;
+                        break;
+                    case Rank.Paragon:
+                        multiplier *= (0.25 * ParagonThreat);
+                        break;
+                }
+
+                return (int)Math.Floor(multiplier * baseExp);
+            }
+        }
 
         public event PropertyChangedEventHandler? PropertyChanged;
     }
-
     public enum LayoutType
     {
         Single = 0,

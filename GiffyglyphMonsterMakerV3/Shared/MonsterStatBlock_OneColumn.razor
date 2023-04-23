@@ -155,8 +155,8 @@
                 <div class="col-auto pe-0"><span class="fa-solid fa-award line-icon" /></div>
                 <div class="col ps-0">
                     <span class="monsterPrimaryText fw-bold">Proficiency </span><span>+@(model.Proficiency).</span>
-                    @*<span class="monsterPrimaryText fw-bold">CR </span>
-                    <span class="monsterPrimaryText fw-bold">XP </span>*@
+                    <span class="monsterPrimaryText fw-bold"> CR </span><span>@(model.ChallengeRatingString).</span>
+                    <span class="monsterPrimaryText fw-bold"> XP </span><span>@(model.ExperienceValue.ToString("N0")).</span>
                 </div>
             </div>
             @if (model.Items.Count() > 0)
