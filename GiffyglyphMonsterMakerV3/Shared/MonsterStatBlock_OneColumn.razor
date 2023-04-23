@@ -37,27 +37,27 @@
                 <span class="monsterPrimaryText fw-bold">Saving Throws</span>
                 @if (model.Defenses.ProficientSavingThrows.Strength)
                 {
-                    <span> Str +@(model.Attributes.Strength + model.Defenses.TrainedSavingThrows + model.Attributes.AttributeMod)</span>
+                    <span> Str +@(model.Attributes.StrWithMod + model.Proficiency)</span>
                 }
                 @if (model.Defenses.ProficientSavingThrows.Dexterity)
                 {
-                    <span> Dex +@(model.Attributes.Dexterity + model.Defenses.TrainedSavingThrows + model.Attributes.AttributeMod)</span>
+                    <span> Dex +@(model.Attributes.DexWithMod + model.Proficiency)</span>
                 }
                 @if (model.Defenses.ProficientSavingThrows.Constitution)
                 {
-                    <span> Con +@(model.Attributes.Constitution + model.Defenses.TrainedSavingThrows + model.Attributes.AttributeMod)</span>
+                    <span> Con +@(model.Attributes.ConWithMod + model.Proficiency)</span>
                 }
                 @if (model.Defenses.ProficientSavingThrows.Intelligence)
                 {
-                    <span> Int +@(model.Attributes.Intelligence + model.Defenses.TrainedSavingThrows + model.Attributes.AttributeMod)</span>
+                    <span> Int +@(model.Attributes.IntWithMod + model.Proficiency)</span>
                 }
                 @if (model.Defenses.ProficientSavingThrows.Wisdom)
                 {
-                    <span> Wis +@(model.Attributes.Wisdom + model.Defenses.TrainedSavingThrows + model.Attributes.AttributeMod)</span>
+                    <span> Wis +@(model.Attributes.WisWithMod + model.Proficiency)</span>
                 }
                 @if (model.Defenses.ProficientSavingThrows.Charisma)
                 {
-                    <span> Cha +@(model.Attributes.Charisma + model.Defenses.TrainedSavingThrows + model.Attributes.AttributeMod)</span>
+                    <span> Cha +@(model.Attributes.ChaWithMod + model.Proficiency)</span>
                 }
                 <span>.</span>
             </div>
@@ -78,7 +78,7 @@
                     <span>to </span>
                     <span>@(string.Join(", ", model.Defenses.Immunities)).</span>
                 }
-                @if(model.Defenses.Vulnerabilities.Count > 0)
+                @if (model.Defenses.Vulnerabilities.Count > 0)
                 {
                     <span class="monsterPrimaryText fw-bold"> Vulnerable </span>
                     <span>to </span>
@@ -119,7 +119,7 @@
                     {
                         <span>, @item.Key @(item.Value + model.SpeedMod) ft.</span>
                     }
-                    @if(model.InitiativeModifier != 0)
+                    @if (model.InitiativeModifier != 0)
                     {
                         <span class="monsterPrimaryText fw-bold"> Initiative </span>
                         <span>@(model.InitiativeModifier + model.Attributes.DexWithMod < 0 ? "-" : "+")@(model.InitiativeModifier + model.Attributes.DexWithMod).</span>

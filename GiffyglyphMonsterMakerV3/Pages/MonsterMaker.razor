@@ -765,18 +765,19 @@ else
             case Rank.Minion:
                 hp *= 0.2;
                 dmg *= 0.75;
+                tst -= 1;
                 break;
             case Rank.Elite:
                 hp *= 2;
                 ac += 1;
-                tst += 1;
+                tst += 2;
                 dmg *= 1.1;
                 paraPower = 1;
                 break;
             case Rank.Paragon:
                 ac += 2;
                 hp *= active.ParagonThreat;
-                tst += 1;
+                tst += 2;
                 dmg *= 1.2;
                 paraPower = active.ParagonThreat;
                 paraDef = (int)Math.Floor(active.ParagonThreat / 2.0);
