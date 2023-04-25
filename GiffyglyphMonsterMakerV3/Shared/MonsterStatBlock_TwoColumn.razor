@@ -126,17 +126,10 @@
                            ).
                     </span>
                     <span class="monsterPrimaryText fw-bold">DMG </span>
-                    <span>
-                        @(
-                            model.Offense.Damage
-                            )
+                    <span>@(model.Offense.Damage)
                         @if (model.Offense.RandomizeDamage)
                         {
-                            <span>
-                                (@(
-                                   DiceTools.ConvertToDiceString(model.Offense.RandomDamageRange, model.Offense.Damage)
-                                   ))
-                            </span>
+                            <span>(@(DiceTools.ConvertToDiceString(model.Offense.RandomDamageRange, model.Offense.Damage)))</span>
                         }
                         <span>.</span>
                     </span>
@@ -162,7 +155,7 @@
                         @foreach (var item in model.OtherSpeeds)
                         {
                             <span>
-                                , @item.Key @(
+                               , @item.Key @(
                             item.Value + model.SpeedMod
                             ) ft.
                             </span>
