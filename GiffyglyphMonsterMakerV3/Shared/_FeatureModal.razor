@@ -38,17 +38,17 @@
                                .OrderBy(feature => (
                                feature.Type != FeatureType.Trait
                                ? feature is Action ?
-                                   (((Action)feature).AssociatedRole == ActiveMonster.MonsterRole ? "*" : "") + feature.Name
-                                   :
-                                   feature.Name
+                               (((Action)feature).AssociatedRole == ActiveMonster.MonsterRole ? "*" : "") + feature.Name
+                               :
+                               feature.Name
                                : (((Trait)feature).AssociatedCreatureType == ActiveMonster.Type ? "*" : "") + feature.Name)))
                                 {
                                     <option value="@item.Id">
                                         @((item.Type != FeatureType.Trait
                                             ? item is Action ?
                                             (((Action)item).AssociatedRole == ActiveMonster.MonsterRole ? "*" : "") + item.Name + (((Action)item).AssociatedRole != null ? " (" + ((Action)item).AssociatedRole + ")" : "")
-                                                : item.Name
-                                        : (((Trait)item).AssociatedCreatureType == ActiveMonster.Type ? "*" : "") + item.Name + (((Trait)item).AssociatedCreatureType != null ? " (" + ((Trait)item).AssociatedCreatureType + ")" : "")))
+                                            : item.Name
+                                            : (((Trait)item).AssociatedCreatureType == ActiveMonster.Type ? "*" : "") + item.Name + (((Trait)item).AssociatedCreatureType != null ? " (" + ((Trait)item).AssociatedCreatureType + ")" : "")))
                                     </option>
                                 }
                             </InputSelect>
@@ -123,16 +123,16 @@
                             <span class="">@((MarkupString)SpecificFeature.MarkupDescription(ActiveMonster))</span>
                             @*Default feature stuff*@
                             <div class="row">
-                                <div class="col-6">
+                                <div class="col-5">
                                     <div class="row fw-bold">General Properties</div>
                                     <div class="row">
-                                        <div class="col-4">Name:</div>
+                                        <div class="col-5">Name:</div>
                                         <div class="col-6">
                                             <input class="w-100" @bind="SpecificFeature.Name" @bind:event="oninput" />
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-4">Rarity:</div>
+                                        <div class="col-5">Rarity:</div>
                                         <div class="col-6">
                                             <InputSelect class="w-100" @bind-Value="SpecificFeature.Rarity" TValue="RarityType">
                                                 @foreach (var item in Enum.GetValues(typeof(RarityType)))
@@ -143,7 +143,7 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-4">Associated Attribute:</div>
+                                        <div class="col-5">Associated Attribute:</div>
                                         <div class="col-6">
                                             <InputSelect class="w-100" @bind-Value="SpecificFeature.RelevantAttribute" TValue="AttributeType">
                                                 @foreach (var item in Enum.GetValues(typeof(AttributeType)))
@@ -154,7 +154,7 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-4">Has a Save? </div>
+                                        <div class="col-5">Has a Save? </div>
                                         <div class="col-2">
                                             <InputCheckbox class="h-100 w-100" @bind-Value="SpecificFeature.HasSave" />
                                         </div>
@@ -162,14 +162,14 @@
                                     @if (SpecificFeature.HasSave)
                                     {
                                         <div class="row">
-                                            <div class="col-4"><span class="fa-regular fa-caret-right me-1" />Save Vs?</div>
+                                            <div class="col-5"><span class="fa-regular fa-caret-right me-1" />Save Vs?</div>
                                             <div class="col-6">
                                                 <input @bind="SpecificFeature.SaveVs" @bind:event="oninput" style="width: 65px;" />
                                             </div>
                                         </div>
                                     }
                                     <div class="row">
-                                        <div class="col-4">Frequency:</div>
+                                        <div class="col-5">Frequency:</div>
                                         <div class="col-6">
                                             <InputSelect class="w-100" @bind-Value="SpecificFeature.Frequency.Type" TValue="FrequencyType">
                                                 @foreach (var item in Enum.GetValues(typeof(FrequencyType)))
@@ -182,14 +182,14 @@
                                     @if (SpecificFeature.Frequency.Type != FrequencyType.passive)
                                     {
                                         <div class="row">
-                                            <div class="col-4"><span class="fa-regular fa-caret-right me-1" />Frequency Value:</div>
+                                            <div class="col-5"><span class="fa-regular fa-caret-right me-1" />Frequency Value:</div>
                                             <div class="col-6">
                                                 <input class="w-100" @bind="SpecificFeature.Frequency.Value" @bind:event="oninput" style="width: 50px;" />
                                             </div>
                                         </div>
                                     }
                                     <div class="row">
-                                        <div class="col-4">Delay:</div>
+                                        <div class="col-5">Delay:</div>
                                         <div class="col-6">
                                             <InputSelect class="w-100" @bind-Value="SpecificFeature.Frequency.Delay" TValue="DelayType">
                                                 @foreach (var item in Enum.GetValues(typeof(DelayType)))
@@ -202,14 +202,14 @@
                                     @if (SpecificFeature.Frequency.Delay != DelayType.none)
                                     {
                                         <div class="row">
-                                            <div class="col-4"><span class="fa-regular fa-caret-right me-1" />Delay Value:</div>
+                                            <div class="col-5"><span class="fa-regular fa-caret-right me-1" />Delay Value:</div>
                                             <div class="col-6">
                                                 <input @bind="SpecificFeature.Frequency.DelayValue" @bind:event="oninput" style="width: 50px;" />
                                             </div>
                                         </div>
                                     }
                                 </div>
-                                <div class="col-6 border-left border-light">
+                                <div class="col-7 border-left border-light">
                                     <span class="row fw-bold">@SpecificFeature.Type Specific</span>
                                     @switch (SpecificFeature.Type)
                                     {
@@ -228,7 +228,7 @@
                                         case FeatureType.Action:
                                             var action = SpecificFeature as Action;
                                             <div class="row">
-                                                <div class="col-4">Distance:</div>
+                                                <div class="col-5">Distance:</div>
                                                 <div class="col-6">
                                                     <InputSelect class="w-100" @bind-Value="action.Distance" TValue="RangeType">
                                                         @foreach (var item in Enum.GetValues(typeof(RangeType)))
@@ -239,13 +239,13 @@
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-4">Range/Reach:</div>
+                                                <div class="col-5">Range/Reach:</div>
                                                 <div class="col-6">
                                                     <InputNumber class="w-100" @bind-Value="@action.Range" min="0" TValue="int" />
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-4">Is a Spell?</div>
+                                                <div class="col-5">Is a Spell?</div>
                                                 <div class="col-2">
                                                     <InputCheckbox class="h-100 w-100" @bind-Value="action.IsSpell" />
                                                 </div>
@@ -253,20 +253,20 @@
                                             @if (action.IsSpell)
                                             {
                                                 <div class="row">
-                                                    <div class="col-4"><span class="fa-regular fa-caret-right me-1" />Description:</div>
+                                                    <div class="col-5"><span class="fa-regular fa-caret-right me-1" />Description:</div>
                                                     <div class="col-6">
                                                         <input class="w-100" @bind="action.SpellDesc" @bind:event="oninput" />
                                                     </div>
                                                 </div>
                                                 <div class="row">
-                                                    <div class="col-4"><span class="fa-regular fa-caret-right me-1" />Concentration:</div>
+                                                    <div class="col-5"><span class="fa-regular fa-caret-right me-1" />Concentration:</div>
                                                     <div class="col-6">
                                                         <InputCheckbox class="h-100 w-100" @bind-Value="action.Concentration" />
                                                     </div>
                                                 </div>
                                             }
                                             <div class="row">
-                                                <div class="col-4">Deals Damage?</div>
+                                                <div class="col-5">Deals Damage?</div>
                                                 <div class="col-2">
                                                     <InputCheckbox class="h-100 w-100" @bind-Value="action.DealsDamage" />
                                                 </div>
@@ -274,7 +274,7 @@
                                             @if (action.DealsDamage)
                                             {
                                                 <div class="row">
-                                                    <div class="col-4"><span class="fa-regular fa-caret-right me-1" />Damage Type:</div>
+                                                    <div class="col-5"><span class="fa-regular fa-caret-right me-1" />Damage Type:</div>
                                                     <div class="col-6">
                                                         <InputSelect class="w-100" @bind-Value="action.ActionDamageType" TValue="DamageType">
                                                             @foreach (var item in Enum.GetValues(typeof(DamageType)))
@@ -285,14 +285,14 @@
                                                     </div>
                                                 </div>
                                                 <div class="row">
-                                                    <div class="col-4"><span class="fa-regular fa-caret-right me-1" />Multiplier:</div>
+                                                    <div class="col-5"><span class="fa-regular fa-caret-right me-1" />Multiplier:</div>
                                                     <div class="col-6">
                                                         <InputNumber class="w-100" @bind-Value="@action.DamageMultiplier" min="0" TValue="double" />
                                                     </div>
                                                 </div>
                                             }
                                             <div class="row">
-                                                <div class="col-4">Is an Attack?</div>
+                                                <div class="col-5">Is an Attack?</div>
                                                 <div class="col-2">
                                                     <InputCheckbox class="h-100 w-100" @bind-Value="action.IsAttack" />
                                                 </div>
@@ -300,7 +300,7 @@
                                             @if (action.IsAttack)
                                             {
                                                 <div class="row">
-                                                    <div class="col-4"><span class="fa-regular fa-caret-right me-1" />Multiattack?</div>
+                                                    <div class="col-5"><span class="fa-regular fa-caret-right me-1" />Multiattack?</div>
                                                     <div class="col-2">
                                                         <InputCheckbox class="h-100 w-100" @bind-Value="action.IsMultiAttack" />
                                                     </div>
@@ -308,7 +308,7 @@
                                                 @if (action.IsMultiAttack)
                                                 {
                                                     <div class="row">
-                                                        <div class="col-4"><span class="fa-regular fa-caret-right me-1" /><span class="fa-regular fa-caret-right me-1" />How Many?</div>
+                                                        <div class="col-5"><span class="fa-regular fa-caret-right me-1" /><span class="fa-regular fa-caret-right me-1" />How Many?</div>
                                                         <div class="col-6">
                                                             <InputNumber class="w-100" @bind-Value="@action.MultiAttack" min="0" TValue="int" />
                                                         </div>
@@ -316,19 +316,19 @@
                                                 }
                                             }
                                             <div class="row">
-                                                <div class="col-4">Other Effect:</div>
+                                                <div class="col-5">Other Effect:</div>
                                                 <div class="col-6">
                                                     <input class="w-100" @bind="action.OtherEffect" @bind:event="oninput" />
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-4">Miss Effect:</div>
+                                                <div class="col-5">Miss Effect:</div>
                                                 <div class="col-6">
                                                     <input class="w-100" @bind="action.MissEffect" @bind:event="oninput" />
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-4">Effect Area:</div>
+                                                <div class="col-5">Effect Area:</div>
                                                 <div class="col-6">
                                                     <InputSelect class="w-100" @bind-Value="action.Shape" TValue="TargetShape">
                                                         @foreach (var item in Enum.GetValues(typeof(TargetShape)))
@@ -341,20 +341,39 @@
                                             <div class="row">
                                                 @if (action.Shape == TargetShape.target)
                                                 {
-                                                    <div class="col-4"><span class="fa-regular fa-caret-right me-1" />Number of Targets:</div>
+                                                    <div class="col-5"><span class="fa-regular fa-caret-right me-1" />Number of Targets:</div>
                                                     <div class="col-6">
                                                         <InputNumber class="w-100" @bind-Value="@action.Targets" min="0" TValue="int" />
                                                     </div>
                                                 }
                                                 else if (action.Shape != TargetShape.self && action.Shape != TargetShape.emanation)
                                                 {
-                                                    <div class="col-4"><span class="fa-regular fa-caret-right me-1" />Radius</div>
+                                                    <div class="col-5"><span class="fa-regular fa-caret-right me-1" />Radius</div>
                                                     <div class="col-6">
                                                         <InputNumber class="w-100" @bind-Value="@action.Radius" min="0" TValue="int" />
                                                     </div>
                                                 }
                                             </div>
-
+                                            <div class="row">
+                                                <div class="col-5">Override Random Damage?</div>
+                                                <div class="col-2">
+                                                    <InputCheckbox class="h-100 w-100" @bind-Value="action.OverrideRandomDamage" />
+                                                </div>
+                                            </div>
+                                            @if (action.OverrideRandomDamage)
+                                            {
+                                                <div class="row">
+                                                    <div class="col-5"><span class="fa-regular fa-caret-right me-1" />Override Damage Range:</div>
+                                                    <div class="col-6">
+                                                        <InputSelect class="w-100" @bind-Value="action.OverrideRandomDamageRange" TValue="DamageRange">
+                                                            @foreach (var item in Enum.GetValues(typeof(DamageRange)))
+                                                            {
+                                                                <option value="@item">@item</option>
+                                                            }
+                                                        </InputSelect>
+                                                    </div>
+                                                </div>
+                                            }
                                             break;
                                         case FeatureType.Countermeasure:
                                             var countermeasure = SpecificFeature as Countermeasure;
