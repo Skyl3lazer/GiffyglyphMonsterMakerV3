@@ -35,29 +35,38 @@
             <div class="col ps-0">
                 <span class="monsterPrimaryText fw-bold">AC </span><span>@(model.Defenses.ArmorClass).</span>
                 <span class="monsterPrimaryText fw-bold">Saving Throws</span>
-                @if (model.Defenses.ProficientSavingThrows.Strength)
-                {
-                    <span> Str +@(model.Attributes.StrWithMod + model.Proficiency)</span>
-                }
-                @if (model.Defenses.ProficientSavingThrows.Dexterity)
-                {
-                    <span> Dex +@(model.Attributes.DexWithMod + model.Proficiency)</span>
-                }
-                @if (model.Defenses.ProficientSavingThrows.Constitution)
-                {
-                    <span> Con +@(model.Attributes.ConWithMod + model.Proficiency)</span>
-                }
-                @if (model.Defenses.ProficientSavingThrows.Intelligence)
-                {
-                    <span> Int +@(model.Attributes.IntWithMod + model.Proficiency)</span>
-                }
-                @if (model.Defenses.ProficientSavingThrows.Wisdom)
-                {
-                    <span> Wis +@(model.Attributes.WisWithMod + model.Proficiency)</span>
-                }
-                @if (model.Defenses.ProficientSavingThrows.Charisma)
-                {
-                    <span> Cha +@(model.Attributes.ChaWithMod + model.Proficiency)</span>
+                @{
+                    bool first = true;
+
+                    @if (model.Defenses.ProficientSavingThrows.Strength)
+                    {
+                        <span> Str +@(model.Attributes.StrWithMod + model.Proficiency)</span>
+                        first = false;
+                    }
+                    @if (model.Defenses.ProficientSavingThrows.Dexterity)
+                    {
+                        <span>@(first ? "" : ",") Dex +@(model.Attributes.DexWithMod + model.Proficiency)</span>
+                        first = false;
+                    }
+                    @if (model.Defenses.ProficientSavingThrows.Constitution)
+                    {
+                        <span>@(first ? "" : ",") Con +@(model.Attributes.ConWithMod + model.Proficiency)</span>
+                        first = false;
+                    }
+                    @if (model.Defenses.ProficientSavingThrows.Intelligence)
+                    {
+                        <span>@(first ? "" : ",") Int +@(model.Attributes.IntWithMod + model.Proficiency)</span>
+                        first = false;
+                    }
+                    @if (model.Defenses.ProficientSavingThrows.Wisdom)
+                    {
+                        <span>@(first ? "" : ",") Wis +@(model.Attributes.WisWithMod + model.Proficiency)</span>
+                        first = false;
+                    }
+                    @if (model.Defenses.ProficientSavingThrows.Charisma)
+                    {
+                        <span>@(first ? "" : ",") Cha +@(model.Attributes.ChaWithMod + model.Proficiency)</span>
+                    }
                 }
                 <span>.</span>
             </div>
@@ -130,9 +139,13 @@
                 <div class="col-auto pe-0"><span class="fa-solid fa-eye line-icon" /></div>
                 <div class="col ps-0">
                     <span class="monsterPrimaryText fw-bold">Senses </span>
-                    @foreach (var item in model.Senses)
-                    {
-                        <span>@item.Key @item.Value ft. </span>
+                    @{
+                        List<string> senses = new();
+                        foreach (var item in model.Senses)
+                        {
+                            senses.Add(item.Key + " " + item.Value + " ft.");
+                        }
+                        <span>@String.Join(", ",senses)@(senses.Count > 0 ? ", " : "")</span>
                     }
                     <span class="">passive Perception </span><span>@(10 + model.Attributes.WisWithMod).</span>
                 </div>

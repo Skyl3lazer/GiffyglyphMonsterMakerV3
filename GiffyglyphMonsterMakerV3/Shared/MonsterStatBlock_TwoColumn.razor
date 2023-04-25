@@ -36,41 +36,38 @@
                 <div class="col ps-0">
                     <span class="monsterPrimaryText fw-bold">AC </span><span>@(model.Defenses.ArmorClass).</span>
                     <span class="monsterPrimaryText fw-bold">Saving Throws</span>
-                    @if (model.Defenses.ProficientSavingThrows.Strength)
-                    {
-                        <span> Str +@(
-                                            model.Attributes.StrWithMod + model.Proficiency
-                                            )</span>
-                    }
-                    @if (model.Defenses.ProficientSavingThrows.Dexterity)
-                    {
-                        <span> Dex +@(
-                                            model.Attributes.DexWithMod + model.Proficiency
-                                            )</span>
-                    }
-                    @if (model.Defenses.ProficientSavingThrows.Constitution)
-                    {
-                        <span> Con +@(
-                                            model.Attributes.ConWithMod + model.Proficiency
-                                            )</span>
-                    }
-                    @if (model.Defenses.ProficientSavingThrows.Intelligence)
-                    {
-                        <span> Int +@(
-                                            model.Attributes.IntWithMod + model.Proficiency
-                                            )</span>
-                    }
-                    @if (model.Defenses.ProficientSavingThrows.Wisdom)
-                    {
-                        <span> Wis +@(
-                                            model.Attributes.WisWithMod + model.Proficiency
-                                            )</span>
-                    }
-                    @if (model.Defenses.ProficientSavingThrows.Charisma)
-                    {
-                        <span> Cha +@(
-                                            model.Attributes.ChaWithMod + model.Proficiency
-                                            )</span>
+                    @{
+                        bool first = true;
+
+                        @if (model.Defenses.ProficientSavingThrows.Strength)
+                        {
+                            <span> Str +@(model.Attributes.StrWithMod + model.Proficiency)</span>
+                            first = false;
+                        }
+                        @if (model.Defenses.ProficientSavingThrows.Dexterity)
+                        {
+                            <span>@(first ? "" : ",") Dex +@(model.Attributes.DexWithMod + model.Proficiency)</span>
+                            first = false;
+                        }
+                        @if (model.Defenses.ProficientSavingThrows.Constitution)
+                        {
+                            <span>@(first ? "" : ",") Con +@(model.Attributes.ConWithMod + model.Proficiency)</span>
+                            first = false;
+                        }
+                        @if (model.Defenses.ProficientSavingThrows.Intelligence)
+                        {
+                            <span>@(first ? "" : ",") Int +@(model.Attributes.IntWithMod + model.Proficiency)</span>
+                            first = false;
+                        }
+                        @if (model.Defenses.ProficientSavingThrows.Wisdom)
+                        {
+                            <span>@(first ? "" : ",") Wis +@(model.Attributes.WisWithMod + model.Proficiency)</span>
+                            first = false;
+                        }
+                        @if (model.Defenses.ProficientSavingThrows.Charisma)
+                        {
+                            <span>@(first ? "" : ",") Cha +@(model.Attributes.ChaWithMod + model.Proficiency)</span>
+                        }
                     }
                     <span>.</span>
                 </div>
@@ -78,44 +75,56 @@
             <div class="row">
                 <div class="col-auto pe-0"><span class="fa-solid fa-heart line-icon" /></div>
                 <div class="col ps-0">
-                    <span class="monsterPrimaryText fw-bold">HP </span><span>@(
-                        model.Defenses.HitPoints
-                        ).</span>
+                    <span class="monsterPrimaryText fw-bold">HP </span><span>
+                        @(
+                            model.Defenses.HitPoints
+                            ).
+                    </span>
                     @if (model.Defenses.Resistances.Count > 0)
                     {
                         <span class="monsterPrimaryText fw-bold"> Resistant </span>
                         <span>to </span>
-                        <span>@(
-                                                  string.Join(", ", model.Defenses.Resistances)
-                                                  ).</span>
+                        <span>
+                            @(
+                                string.Join(", ", model.Defenses.Resistances)
+                                ).
+                        </span>
                     }
                     @if (model.Defenses.Immunities.Count > 0)
                     {
                         <span class="monsterPrimaryText fw-bold"> Immune </span>
                         <span>to </span>
-                        <span>@(
-                                                  string.Join(", ", model.Defenses.Immunities)
-                                                  ).</span>
+                        <span>
+                            @(
+                                string.Join(", ", model.Defenses.Immunities)
+                                ).
+                        </span>
                     }
                     @if (model.Defenses.Vulnerabilities.Count > 0)
                     {
                         <span class="monsterPrimaryText fw-bold"> Vulnerable </span>
                         <span>to </span>
-                        <span>@(
-                                                  string.Join(", ", model.Defenses.Vulnerabilities)
-                                                  ).</span>
+                        <span>
+                            @(
+                                string.Join(", ", model.Defenses.Vulnerabilities)
+                                ).
+                        </span>
                     }
                 </div>
             </div>
             <div class="row">
                 <div class="col-auto pe-0"><span class="fa-solid fa-swords line-icon" /></div>
                 <div class="col ps-0">
-                    <span class="monsterPrimaryText fw-bold">ATK </span><span>+@(
-                        model.Offense.Attack
-                        ).</span>
-                    <span class="monsterPrimaryText fw-bold">DC </span><span>+@(
-                        model.Offense.DifficultyCheck
-                        ).</span>
+                    <span class="monsterPrimaryText fw-bold">ATK </span><span>
+                        +@(
+                           model.Offense.Attack
+                           ).
+                    </span>
+                    <span class="monsterPrimaryText fw-bold">DC </span><span>
+                        +@(
+                           model.Offense.DifficultyCheck
+                           ).
+                    </span>
                     <span class="monsterPrimaryText fw-bold">DMG </span>
                     <span>
                         @(
@@ -123,9 +132,11 @@
                             )
                         @if (model.Offense.RandomizeDamage)
                         {
-                            <span> (@(
-                                                        DiceTools.ConvertToDiceString(model.Offense.RandomDamageRange, model.Offense.Damage)
-                                                        ))</span>
+                            <span>
+                                (@(
+                                   DiceTools.ConvertToDiceString(model.Offense.RandomDamageRange, model.Offense.Damage)
+                                   ))
+                            </span>
                         }
                         <span>.</span>
                     </span>
@@ -143,23 +154,29 @@
                 <div class="row">
                     <div class="col-auto pe-0"><span class="fa-solid fa-bolt line-icon" /></div>
                     <div class="col ps-0">
-                        <span class="monsterPrimaryText fw-bold">Speed </span><span>@(
-                            model.WalkSpeed + model.SpeedMod
-                            ) ft.</span>
+                        <span class="monsterPrimaryText fw-bold">Speed </span><span>
+                            @(
+                                model.WalkSpeed + model.SpeedMod
+                                ) ft.
+                        </span>
                         @foreach (var item in model.OtherSpeeds)
                         {
-                            <span>, @item.Key @(
-                                              item.Value + model.SpeedMod
-                                              ) ft.</span>
+                            <span>
+                                , @item.Key @(
+                            item.Value + model.SpeedMod
+                            ) ft.
+                            </span>
                         }
                         @if (model.InitiativeModifier != 0)
                         {
                             <span class="monsterPrimaryText fw-bold"> Initiative </span>
-                            <span>@(
-                                                          model.InitiativeModifier + model.Attributes.DexWithMod < 0 ? "-" : "+"
-                                                          )@(
+                            <span>
+                                @(
+                                    model.InitiativeModifier + model.Attributes.DexWithMod < 0 ? "-" : "+"
+                                    )@(
                                    model.InitiativeModifier + model.Attributes.DexWithMod
-                                   ).</span>
+                                   ).
+                            </span>
                         }
                     </div>
                 </div>
@@ -167,13 +184,19 @@
                     <div class="col-auto pe-0"><span class="fa-solid fa-eye line-icon" /></div>
                     <div class="col ps-0">
                         <span class="monsterPrimaryText fw-bold">Senses </span>
-                        @foreach (var item in model.Senses)
-                        {
-                            <span>@item.Key @item.Value ft. </span>
+                        @{
+                            List<string> senses = new();
+                            foreach (var item in model.Senses)
+                            {
+                                senses.Add(item.Key + " " + item.Value + " ft.");
+                            }
+                            <span>@String.Join(", ",senses)@(senses.Count>0?", ":"")</span>
                         }
-                        <span class="">passive Perception </span><span>@(
-                            10 + model.Attributes.WisWithMod
-                            ).</span>
+                        <span class="">passive Perception </span><span>
+                            @(
+                                10 + model.Attributes.WisWithMod
+                                ).
+                        </span>
                     </div>
                 </div>
                 <div class="row">
@@ -182,9 +205,11 @@
                         <span class="monsterPrimaryText fw-bold">Languages </span>
                         @if (model.Languages.Count() > 0)
                         {
-                            <span>@(
-                                                          string.Join(", ", model.Languages)
-                                                          ).</span>
+                            <span>
+                                @(
+                                    string.Join(", ", model.Languages)
+                                    ).
+                            </span>
                         }
                         else
                         {

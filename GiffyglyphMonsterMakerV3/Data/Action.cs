@@ -125,8 +125,16 @@ namespace GiffyglyphMonsterMakerV3.Data
             if (DealsDamage)
             {
                 var dam = (int)Math.Max(Math.Floor((double)(parentCreature.Offense.Damage * DamageMultiplier) / MultiAttack), 1);
-                desc += dam + (parentCreature.Offense.RandomizeDamage ? " (" + DiceTools.ConvertToDiceString(parentCreature.Offense.RandomDamageRange, dam) + ")" : "") + " " + ActionDamageType +
-                        " damage.";
+                if (OverrideRandomDamage)
+                {
+                    desc += dam + " (" + DiceTools.ConvertToDiceString(OverrideRandomDamageRange, dam) + ")" + " " + ActionDamageType +
+                            " damage.";
+                }
+                else
+                {
+                    desc += dam + (parentCreature.Offense.RandomizeDamage ? " (" + DiceTools.ConvertToDiceString(parentCreature.Offense.RandomDamageRange, dam) + ")" : "") + " " + ActionDamageType +
+                            " damage.";
+                }
             }
 
             if (!String.IsNullOrWhiteSpace(OtherEffect))
@@ -193,6 +201,8 @@ namespace GiffyglyphMonsterMakerV3.Data
         public int Targets { get; set; } = 1;
         public TargetShape Shape { get; set; } = TargetShape.target;
         public Role? AssociatedRole { get; set; }
+        public bool OverrideRandomDamage { get; set;} = false;
+        public DamageRange OverrideRandomDamageRange { get; set; }
         public override void UpdateThisToMatch(Object o)
         {
             if (o is not Action a)
@@ -214,6 +224,8 @@ namespace GiffyglyphMonsterMakerV3.Data
             IsAttack = a.IsAttack;
             AssociatedRole = a.AssociatedRole;
             Concentration = a.Concentration;
+            OverrideRandomDamage = a.OverrideRandomDamage;
+            OverrideRandomDamageRange = a.OverrideRandomDamageRange;
 
             base.UpdateThisToMatch(o);
         }
