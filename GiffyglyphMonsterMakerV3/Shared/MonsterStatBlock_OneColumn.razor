@@ -147,7 +147,7 @@
                         }
                         <span>@String.Join(", ",senses)@(senses.Count > 0 ? ", " : "")</span>
                     }
-                    <span class="">passive Perception </span><span>@(10 + model.Attributes.WisWithMod).</span>
+                    <span class="">passive Perception </span><span>@(10 + model.Attributes.WisWithMod + (model.MonsterRole == Role.Skirmisher ? model.Proficiency : 0)).</span>
                 </div>
             </div>
             <div class="row">
