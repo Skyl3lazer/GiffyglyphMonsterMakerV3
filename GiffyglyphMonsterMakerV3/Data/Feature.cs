@@ -163,7 +163,7 @@ namespace GiffyglyphMonsterMakerV3.Data
         petrified,
         poisoned,
         prone,
-        pestrained,
+        restrained,
         stunned,
         unconscious,
         exhaustion
