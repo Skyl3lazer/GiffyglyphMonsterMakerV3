@@ -574,7 +574,7 @@
     "IsAttack": false,
     "IsSpell": false,
     "DealsDamage": false,
-    "OtherEffect": "YOu can't be surprised and hidden creatures don't gain advantage on attack rolls against you.",
+    "OtherEffect": "You can't be surprised and hidden creatures don't gain advantage on attack rolls against you.",
     "Shape": 9
   },
   {
