@@ -29,14 +29,14 @@ namespace GiffyglyphMonsterMakerV3.Data
         }
 
 
-        public async Task<Folder> GetFolderByIdAsync(string id)
+        public async Task<Folder> GetFolderByIdAsync(Guid id)
         {
             await using var _context = await _dbContextFactory.CreateDbContextAsync();
 
             var folder = _context.Folders.Single(a => a.Id == id);
             return folder;
         }
-        public Folder GetFolderById(string id)
+        public Folder GetFolderById(Guid id)
         {
             var task = Task.Run<Folder>(async () => await GetFolderByIdAsync(id));
             return task.Result;
@@ -63,7 +63,7 @@ namespace GiffyglyphMonsterMakerV3.Data
             return true;
         }
 
-        public async Task<bool> UpdateFeatureAsync(Folder folder)
+        public async Task<bool> UpdateFolderAsync(Folder folder)
         {
             await using var _context = await _dbContextFactory.CreateDbContextAsync();
 
@@ -85,7 +85,7 @@ namespace GiffyglyphMonsterMakerV3.Data
             return true;
         }
 
-        public async Task<bool> DeleteFeatureAsync(Folder folder, bool cascade = false)
+        public async Task<bool> DeleteFolderAsync(Folder folder, bool cascade = false)
         {
             await using var _context = await _dbContextFactory.CreateDbContextAsync();
 
@@ -94,7 +94,10 @@ namespace GiffyglyphMonsterMakerV3.Data
                 return false;
             }
 
-            if(_context.Folders.Any(a => a.HierarchyId.GetAncestor(folder.Id)) { }
+            if (_context.Folders.Any(a => a.ParentId == folder.Id))
+            {
+                return false;
+            }
 
             try
             {

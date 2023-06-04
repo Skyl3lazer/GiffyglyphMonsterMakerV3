@@ -15,6 +15,7 @@ namespace GiffyglyphMonsterMakerV3.Data
         public Guid? ParentId { get; set; }
         public Folder Parent { get; set; }
         public ICollection<Folder> Children { get; set; }
+        public ICollection<Creature> Creatures { get; set; }
 
         public Folder(string name)
         {
