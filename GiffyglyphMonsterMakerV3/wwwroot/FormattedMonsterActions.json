@@ -1143,7 +1143,7 @@
   {
     "Name": "Focused",
     "AssociatedRole": 0,
-    "Type": 3,
+    "Type": 1,
     "Rarity": 0,
     "IsSpell": false,
     "IsAttack": false,
