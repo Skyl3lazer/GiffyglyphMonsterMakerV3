@@ -13,6 +13,7 @@ namespace GiffyglyphMonsterMakerV3.Data
         [ForeignKey("Id")]
         public string CreateUserId { get; set; }
         public HierarchyId HierarchyId { get; set; }
+        [NotMapped]
         public HierarchyId OldHierarchyId { get; set; }
 
         public Folder(string name)
