@@ -13,6 +13,7 @@ namespace GiffyglyphMonsterMakerV3.Data
         [ForeignKey("Id")]
         public string CreateUserId { get; set; }
         public Guid? ParentId { get; set; }
+        public Folder Parent { get; set; }
         public ICollection<Folder> Children { get; set; }
 
         public Folder(string name)
