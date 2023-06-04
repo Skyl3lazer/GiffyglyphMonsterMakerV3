@@ -104,7 +104,17 @@ namespace GiffyglyphMonsterMakerV3.Data
                 .HasMany<Creature>()
                 .WithOne()
                 .HasForeignKey(b=>b.CreateUserId)
-                .OnDelete(DeleteBehavior.Cascade); 
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Folder>()
+                .HasOne<ApplicationUser>()
+                .WithMany()
+                .HasForeignKey(a => a.CreateUserId)
+                .IsRequired();
+            modelBuilder.Entity<ApplicationUser>()
+                .HasMany<Folder>()
+                .WithOne()
+                .HasForeignKey(b => b.CreateUserId)
+                .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Feature>()
                 .HasOne<ApplicationUser>()
                 .WithMany()
@@ -112,8 +122,10 @@ namespace GiffyglyphMonsterMakerV3.Data
                 .IsRequired()
                 .OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<Folder>()
-                .HasMany<Folder>(a => a.Children)
-                .WithOne();
+                .HasMany<Creature>()
+                .WithOne()
+                .HasForeignKey(b => b.FolderId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             base.OnModelCreating(modelBuilder);
         }

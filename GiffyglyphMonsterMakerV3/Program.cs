@@ -27,6 +27,7 @@ var connectionString = config.GetConnectionString("Azure") ?? config["Connection
 // Add services to the container.
 builder.Services.AddDbContextFactory<ApplicationDbContext>(item => item.UseSqlServer(connectionString, conf =>
 {
+    conf.UseHierarchyId();
 }));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
