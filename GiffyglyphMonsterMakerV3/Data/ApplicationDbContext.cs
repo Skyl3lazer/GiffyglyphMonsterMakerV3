@@ -16,6 +16,7 @@ namespace GiffyglyphMonsterMakerV3.Data
     {
         public DbSet<Monster> Monsters { get; set; }
         public DbSet<Feature> Features { get; set; }
+        public DbSet<Folder> Folders { get; set; }
         
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {

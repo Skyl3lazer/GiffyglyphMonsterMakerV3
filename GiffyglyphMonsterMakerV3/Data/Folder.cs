@@ -8,7 +8,8 @@ namespace GiffyglyphMonsterMakerV3.Data
     public class Folder
     {
         [Key]
-        public string Id { get; set; } = Guid.NewGuid().ToString();
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
         public string Name { get; set; }
         [ForeignKey("Id")]
         public string CreateUserId { get; set; }
