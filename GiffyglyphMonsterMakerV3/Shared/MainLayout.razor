@@ -3,6 +3,7 @@
 @using System.Security.Claims;
 @using Microsoft.AspNetCore.Identity
 @inject MonsterService _MonsterService;
+@inject FolderService _FolderService;
 @inject UserManager<ApplicationUser> _UserManager
 @using Blazored.Toast.Configuration
 
@@ -18,9 +19,11 @@
             <LoginDisplay />
         </div>
         <CascadingValue Value="@Monsters">
-            <article class="content px-4">
-                @Body
-            </article>
+            <CascadingValue Value="@Folders">
+                <article class="content px-4">
+                    @Body
+                </article>
+            </CascadingValue>
         </CascadingValue>
     </main>
 </div>
@@ -32,26 +35,33 @@
                 InfoIcon="fas fa-lightbulb"
                 SuccessClass="bg-success"
                 SuccessIcon="fa fa-thumbs-up"
-                ErrorIcon="fa fa-bug" 
+                ErrorIcon="fa fa-bug"
                 ErrorClass="bg-danger"
                 WarningClass="bg-warning"
                 WarningIcon="fas fa-circle-exclamation"
                 ShowProgressBar="true"
-                RemoveToastsOnNavigation="true"
-                />
+                RemoveToastsOnNavigation="true" />
 
 @code
 {
     [CascadingParameter]
     private Task<AuthenticationState> authenticationStateTask { get; set; }
     private List<Monster> Monsters { get; set; }
+    private List<Folder> Folders { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         var authState = await authenticationStateTask;
         var user = authState.User;
         var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
-        
+
         Monsters = await Task.Run(() => _MonsterService.GetAllMonstersAsync());
+        Folders = new List<Folder>();
+        Folders.Add(new Folder("/")
+            {
+                Id = Guid.Empty
+            });
+        var fol = await Task.Run(() => _FolderService.GetAllFoldersAsync());
+        Folders.AddRange(fol.OrderBy(a => a.Name));
     }
 }

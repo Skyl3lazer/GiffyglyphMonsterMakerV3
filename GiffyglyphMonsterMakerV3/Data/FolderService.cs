@@ -42,6 +42,18 @@ namespace GiffyglyphMonsterMakerV3.Data
             var task = Task.Run<Folder>(async () => await GetFolderByIdAsync(id));
             return task.Result;
         }
+
+        public async Task<List<Folder>> GetAllFoldersAsync() {
+            var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+            var User = authState.User;
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            await using var _context = await _dbContextFactory.CreateDbContextAsync();
+
+            var folders = _context.Folders.Where(a => a.CreateUserId == currentUserId).ToList();
+            return folders;
+        }
+
         public async Task<bool> InsertFolderAsync(Folder folder)
         {
             await using var _context = await _dbContextFactory.CreateDbContextAsync();

@@ -368,8 +368,17 @@ else
                     <span class="fa-solid fa-copy" title="Copy Current Monster" @onclick="() => CopyCurrentMonster()" />
                     <span class="ms-1">(@(Monsters.Count)/@_maxMonsters)</span>
                 </div>
+                <div>
+                    @*Testing folders*@
+                    <InputSelect class="w-100" @bind-Value="@ActiveFolder">
+                        @foreach (var item in Folders)
+                        {
+                            <option value="@item">@item</option>
+                        }
+                    </InputSelect>
+                </div>
                 <div class="row overflow-auto px-1 d-block" style="height: 250px;">
-                    @foreach (var mon in Monsters.OrderBy(m => m.Name))
+                    @foreach (var mon in Monsters.Where(a => a.FolderId == ActiveFolder.Id).OrderBy(m => m.Name))
                     {
                         <MonsterTitleCard model="mon" DeleteCallback="() => RemoveMonster(mon)" ActiveClick="() => ActiveClick(mon)" FocusedMonster="@(mon.Id == active.Id)" SaveCallback="(m) => SaveMonsterAsync((Monster)m, true)" />
                     }
@@ -409,11 +418,17 @@ else
 }
 
 @code {
+
     [CascadingParameter]
-    protected List<Monster> Monsters { get; set; }
+    protected List<Folder> Folders { get; set; }
+
+    [CascadingParameter]
+    private List<Monster> Monsters { get; set; }
 
     [CascadingParameter]
     private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    private Folder? ActiveFolder { get; set; } = null;
 
     private readonly int _maxMonsters = 150;
 
@@ -430,19 +445,79 @@ else
         var authState = await authenticationStateTask;
         var User = authState.User;
         CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (Folders == null)
+            return;
+
+        ActiveFolder = Folders.First();
+
+
 
         if (Monsters == null)
             return;
 
         if (Monsters.Count == 0)
         {
-            CreateFirstMonster();
+            await CreateFirstMonster();
         }
         else
         {
-            active = Monsters.First();
+            active = SearchFirst(ActiveFolder) as Monster;
         }
     }
+    private Creature? SearchFirst(Folder root)
+    {
+        Queue<Folder> Q = new Queue<Folder>();
+        HashSet<Folder> S = new HashSet<Folder>();
+        Q.Enqueue(root);
+        S.Add(root);
+        while (Q.Count > 0)
+        {
+            Folder f = Q.Dequeue();
+            if (f.Creatures.Count > 0)
+                return f.Creatures.First();
+            foreach (Folder friend in f.Children)
+            {
+                if (!S.Contains(friend))
+                {
+                    Q.Enqueue(friend);
+                    S.Add(friend);
+                }
+            }
+        }
+        return null;
+    }
+
+    public void TraverseFolders(Folder root)
+    {
+        Queue<Folder> traverseOrder = new Queue<Folder>();
+
+        Queue<Folder> Q = new Queue<Folder>();
+        HashSet<Folder> S = new HashSet<Folder>();
+        Q.Enqueue(root);
+        S.Add(root);
+
+        while (Q.Count > 0)
+        {
+            Folder e = Q.Dequeue();
+            traverseOrder.Enqueue(e);
+
+            foreach (Folder fol in e.Children)
+            {
+                if (!S.Contains(fol))
+                {
+                    Q.Enqueue(fol);
+                    S.Add(fol);
+                }
+            }
+        }
+
+        while (traverseOrder.Count > 0)
+        {
+            Folder e = traverseOrder.Dequeue();
+            // Console.WriteLine(e);
+        }
+    }
+
 
     private void ChangeMonsterColumnLayout()
     {
@@ -783,7 +858,7 @@ else
                 hp *= active.ParagonThreat;
                 tst += 1;
                 dmg *= 1.2;
-                paraPower = active.ParagonThreat-1;
+                paraPower = active.ParagonThreat - 1;
                 paraDef = (int)Math.Floor(active.ParagonThreat / 2.0);
                 break;
         }

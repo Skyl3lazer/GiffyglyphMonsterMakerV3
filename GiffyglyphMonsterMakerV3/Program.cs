@@ -58,6 +58,7 @@ builder.Services.AddScoped<IPrintingService, PrintingService>();
 builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<ApplicationUser>>();
 builder.Services.AddScoped<MonsterService>();
 builder.Services.AddScoped<FeatureService>();
+builder.Services.AddScoped<FolderService>();
 builder.Services.AddTransient<IEmailSender, MailService>();
 
 
