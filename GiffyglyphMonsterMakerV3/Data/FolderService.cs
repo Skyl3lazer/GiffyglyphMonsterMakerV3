@@ -153,7 +153,6 @@ namespace GiffyglyphMonsterMakerV3.Data
                     {
                         folder.Parent.Creatures.Add(creature);
                         creature.FolderId = folder.ParentId;
-                        creature.Folder = folder.Parent;
                         _context.Update(creature);
                     }
 

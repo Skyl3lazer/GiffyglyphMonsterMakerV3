@@ -57,7 +57,7 @@
 
         Monsters = await Task.Run(() => _MonsterService.GetAllMonstersAsync());
         Folders = new List<Folder>();
-        Folders.Add(new Folder("/")
+        Folders.Add(new Folder("/", userId)
             {
                 Id = Guid.Empty
             });

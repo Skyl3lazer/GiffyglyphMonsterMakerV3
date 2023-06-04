@@ -13,13 +13,14 @@ namespace GiffyglyphMonsterMakerV3.Data
         [ForeignKey("Id")]
         public string CreateUserId { get; set; }
         public Guid? ParentId { get; set; }
-        public Folder Parent { get; set; }
-        public ICollection<Folder> Children { get; set; }
-        public ICollection<Creature> Creatures { get; set; }
+        public Folder? Parent { get; set; }
+        public ICollection<Folder> Children { get; set; } = new List<Folder>();
+        public ICollection<Creature> Creatures { get; set; } = new List<Creature>();
 
-        public Folder(string name)
+        public Folder(string name, string createUserId)
         {
             Name = name;
+            CreateUserId = createUserId;
         }
         //Maybe if I'm bored one day I'll optimize this to not recurse
         public bool HasChildMonsters()

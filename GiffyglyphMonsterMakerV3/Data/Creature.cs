@@ -36,7 +36,6 @@ namespace GiffyglyphMonsterMakerV3.Data
                 }
             }
         }
-        public Folder? Folder { get; set; }
 
         [Required] public string Name { get; set; } = "";
         [Required]

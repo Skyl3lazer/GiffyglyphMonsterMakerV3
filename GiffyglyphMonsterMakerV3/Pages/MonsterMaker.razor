@@ -5,9 +5,11 @@
 @using Action = GiffyglyphMonsterMakerV3.Data.Action
 @using System.Security.Claims;
 @using ChromiumHTMLToPDF;
-@inject MonsterService _ms;
-@inject FeatureService _fs;
-@inject IToastService _ts;
+@using System.Collections.ObjectModel;
+@inject MonsterService _monsterService;
+@inject FolderService _folderService;
+@inject FeatureService _featureService;
+@inject IToastService _toastService;
 @inject IJSRuntime _javascript;
 
 
@@ -370,15 +372,19 @@ else
                 </div>
                 <div>
                     @*Testing folders*@
-                    <InputSelect class="w-100" @bind-Value="@ActiveFolder">
+                    <InputSelect class="w-100" @bind-Value="@ActiveFolderId">
                         @foreach (var item in Folders)
                         {
-                            <option value="@item">@item</option>
+                            <option value="@item.Id">@item.Name</option>
                         }
                     </InputSelect>
                 </div>
+                <div>
+                    <input @bind="@NewFolderName" @bind:event="oninput" class="w-100" />
+                    <span class="fa-solid fa-plus" title="Add New Folder" @onclick="() => AddFolder()" />
+                 </div>
                 <div class="row overflow-auto px-1 d-block" style="height: 250px;">
-                    @foreach (var mon in Monsters.Where(a => a.FolderId == ActiveFolder.Id).OrderBy(m => m.Name))
+                    @foreach (var mon in Monsters.Where(a => a.FolderId ==  ActiveFolderId).OrderBy(m => m.Name))
                     {
                         <MonsterTitleCard model="mon" DeleteCallback="() => RemoveMonster(mon)" ActiveClick="() => ActiveClick(mon)" FocusedMonster="@(mon.Id == active.Id)" SaveCallback="(m) => SaveMonsterAsync((Monster)m, true)" />
                     }
@@ -428,11 +434,13 @@ else
     [CascadingParameter]
     private Task<AuthenticationState> authenticationStateTask { get; set; }
 
-    private Folder? ActiveFolder { get; set; } = null;
+    private Guid? ActiveFolderId { get; set; } = null;
 
     private readonly int _maxMonsters = 150;
 
     private string? CurrentUserId = null;
+
+    private string NewFolderName{ get; set; }
 
     private Monster? active { get; set; }
 
@@ -448,23 +456,36 @@ else
         if (Folders == null)
             return;
 
-        ActiveFolder = Folders.First();
-
-
+        var topFolder = Folders.First();
+        foreach(Folder f in Folders.Where(a => a.Id != Guid.Empty && a.Parent == null))
+        {
+            topFolder.Children.Add(f);
+        }
+        ActiveFolderId = Guid.Empty;
 
         if (Monsters == null)
             return;
 
+        
+
         if (Monsters.Count == 0)
         {
             await CreateFirstMonster();
+            topFolder.Creatures.Add(active);
         }
         else
         {
-            active = SearchFirst(ActiveFolder) as Monster;
+            foreach (var m in Monsters.Where(a => a.FolderId == null || a.FolderId == Guid.Empty))
+            {
+                topFolder.Creatures.Add(m);
+            }
+
+            active = GetFirstMonster(topFolder) as Monster;
+            if (active == null)
+                active = Monsters.First();
         }
     }
-    private Creature? SearchFirst(Folder root)
+    private Creature? GetFirstMonster(Folder root)
     {
         Queue<Folder> Q = new Queue<Folder>();
         HashSet<Folder> S = new HashSet<Folder>();
@@ -542,20 +563,20 @@ else
             return;
         if (Monsters.Count >= _maxMonsters)
         {
-            _ts.ShowError("At Maximum Monsters (" + _maxMonsters + ")!");
+            _toastService.ShowError("At Maximum Monsters (" + _maxMonsters + ")!");
             return;
         }
 
-        Monster? result = await _ms.CopyMonsterAsync(active);
+        Monster? result = await _monsterService.CopyMonsterAsync(active);
 
         if (result != null)
         {
             Monsters.Add(result);
-            _ts.ShowSuccess("Copied " + active.Name);
+            _toastService.ShowSuccess("Copied " + active.Name);
         }
         else
         {
-            _ts.ShowError("Could not copy monster!");
+            _toastService.ShowError("Could not copy monster!");
         }
     }
 
@@ -584,18 +605,18 @@ else
 
     public async Task SaveMonsterAsync(Monster mon, bool showToast)
     {
-        bool result = await _ms.UpdateMonsterAsync(mon);
+        bool result = await _monsterService.UpdateMonsterAsync(mon);
 
         if (!showToast)
             return;
 
         if (result)
         {
-            _ts.ShowSuccess("Saved " + mon.Name);
+            _toastService.ShowSuccess("Saved " + mon.Name);
         }
         else
         {
-            _ts.ShowError("Could not save monster!");
+            _toastService.ShowError("Could not save monster!");
         }
     }
 
@@ -671,21 +692,21 @@ else
             });
         Monsters.Add(monster);
         active = monster;
-        await _ms.InsertMonsterAsync(monster);
+        await _monsterService.InsertMonsterAsync(monster);
         UpdateValues();
     }
 
     public async Task RemoveFeature(Feature feature)
     {
         active.Features.Remove(feature);
-        var result = await _fs.DeleteFeatureAsync(feature);
+        var result = await _featureService.DeleteFeatureAsync(feature);
         if (result)
         {
-            _ts.ShowWarning("Removed Feature " + feature.Name);
+            _toastService.ShowWarning("Removed Feature " + feature.Name);
         }
         else
         {
-            _ts.ShowError("Could not remove feature!");
+            _toastService.ShowError("Could not remove feature!");
         }
     }
     public void SenseUpdated(object? val)
@@ -734,32 +755,48 @@ else
         var feature = (Feature)val;
         EditFeature = feature;
     }
+    public async Task AddFolder()
+    {
+        Folder newFolder = new(NewFolderName, CurrentUserId);
+        newFolder.ParentId = ActiveFolderId == Guid.Empty ? null : ActiveFolderId;
+        Folders.Add(newFolder);
+        ActiveFolderId = newFolder.Id;
+        await _folderService.InsertFolderAsync(newFolder);
+        NewFolderName = "";
+        StateHasChanged();
+    }
     public async Task AddMonster(string name = "My New Monster")
     {
         if (Monsters.Count >= _maxMonsters)
         {
-            _ts.ShowError("At Maximum Monsters (" + _maxMonsters + ")!");
+            _toastService.ShowError("At Maximum Monsters (" + _maxMonsters + ")!");
             return;
         }
 
         var mon = new Monster(name, CurrentUserId);
+
+        if (ActiveFolderId != Guid.Empty){
+            mon.FolderId = ActiveFolderId;
+        }
+
+
         active = mon;
         Monsters.Add(mon);
-        await _ms.InsertMonsterAsync(mon);
+        await _monsterService.InsertMonsterAsync(mon);
         UpdateValues();
 
     }
     public async Task RemoveMonster(Monster mon)
     {
         Monsters.Remove(mon);
-        var result = await _ms.DeleteMonsterAsync(mon);
+        var result = await _monsterService.DeleteMonsterAsync(mon);
         if (result)
         {
-            _ts.ShowWarning("Removed " + mon.Name);
+            _toastService.ShowWarning("Removed " + mon.Name);
         }
         else
         {
-            _ts.ShowError("Could not remove monster!");
+            _toastService.ShowError("Could not remove monster!");
         }
 
         if (Monsters.Count == 0)

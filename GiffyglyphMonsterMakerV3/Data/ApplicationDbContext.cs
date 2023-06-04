@@ -124,7 +124,7 @@ namespace GiffyglyphMonsterMakerV3.Data
                 .OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<Folder>()
                 .HasMany<Creature>(a => a.Creatures)
-                .WithOne(a => a.Folder)
+                .WithOne()
                 .HasForeignKey(b => b.FolderId)
                 .HasPrincipalKey(a => a.Id)
                 .OnDelete(DeleteBehavior.NoAction);
