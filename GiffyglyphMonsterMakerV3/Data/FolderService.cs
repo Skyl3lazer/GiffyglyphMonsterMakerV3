@@ -8,11 +8,12 @@ using GiffyglyphMonsterMakerV3.Utility;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Security.Claims;
+using NuGet.Packaging;
 
 namespace GiffyglyphMonsterMakerV3.Data
 {
     public class FolderService
-    {/*
+    {
         #region Property
 
         private bool Loading = false;
@@ -84,8 +85,21 @@ namespace GiffyglyphMonsterMakerV3.Data
             }
             return true;
         }
+        private void RemoveFolderContents(ApplicationDbContext _context, Folder folder)
+        {
+            _context.Remove(folder);
 
-        public async Task<bool> DeleteFolderAsync(Folder folder, bool cascade = false)
+            foreach (Creature creature in folder.Creatures)
+            {
+                _context.Remove(creature);
+            }
+
+            foreach (var child in folder.Children)
+            {
+                RemoveFolderContents(_context, child);
+            }
+        }
+        public async Task<bool> DeleteFolderAsync(Folder folder, bool overrideDelete = false, bool cascade = false)
         {
             await using var _context = await _dbContextFactory.CreateDbContextAsync();
 
@@ -94,7 +108,7 @@ namespace GiffyglyphMonsterMakerV3.Data
                 return false;
             }
 
-            if (_context.Folders.Any(a => a.ParentId == folder.Id))
+            if (!overrideDelete && folder.HasChildMonsters())
             {
                 return false;
             }
@@ -105,10 +119,32 @@ namespace GiffyglyphMonsterMakerV3.Data
                 _context.Remove(folder);
                 if (cascade)
                 {
-                    foreach (var item in _context.Folders.Where(a => a.Id == folder.Id))
+                    foreach (Creature creature in folder.Creatures)
                     {
-                        item.TemplateId = null;
+                        _context.Remove(creature);
                     }
+                    foreach (var child in folder.Children)
+                    {
+                        RemoveFolderContents(_context, child);
+                    }
+                }
+                else
+                {
+                    foreach(var child in folder.Children)
+                    {
+                        folder.Parent.Children.Add(child);
+                        child.ParentId = folder.ParentId;
+                        child.Parent = folder.Parent;
+                        _context.Update(child);
+                    }
+                    foreach (var creature in folder.Creatures)
+                    {
+                        folder.Parent.Creatures.Add(creature);
+                        creature.FolderId = folder.ParentId;
+                        creature.Folder = folder.Parent;
+                        _context.Update(creature);
+                    }
+
                 }
 
                 await _context.SaveChangesAsync();
@@ -118,6 +154,6 @@ namespace GiffyglyphMonsterMakerV3.Data
                 Loading = false;
             }
             return true;
-        }*/
+        }
     }
 }

@@ -21,5 +21,24 @@ namespace GiffyglyphMonsterMakerV3.Data
         {
             Name = name;
         }
+        //Maybe if I'm bored one day I'll optimize this to not recurse
+        public bool HasChildMonsters()
+        {
+            if(Creatures.Count > 0)
+            {
+                return true;
+            }
+
+            bool hasChildMonsters = false;
+            foreach(Folder folder in Children)
+            {
+                if (folder.HasChildMonsters())
+                {
+                    hasChildMonsters = true;
+                }
+            }
+
+            return hasChildMonsters;
+        }
     }
 }
