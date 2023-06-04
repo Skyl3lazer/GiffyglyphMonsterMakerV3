@@ -111,6 +111,9 @@ namespace GiffyglyphMonsterMakerV3.Data
                 .HasForeignKey(b => b.CreateUserId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<Folder>()
+                .HasMany<Folder>(a => a.Children)
+                .WithOne();
 
             base.OnModelCreating(modelBuilder);
         }

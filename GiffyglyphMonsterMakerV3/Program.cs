@@ -25,7 +25,9 @@ var credential = new DefaultAzureCredential(credentialOptions);*/
 //var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__Azure");
 var connectionString = config.GetConnectionString("Azure") ?? config["ConnectionStrings__Azure"];
 // Add services to the container.
-builder.Services.AddDbContextFactory<ApplicationDbContext>(item => item.UseSqlServer(connectionString));
+builder.Services.AddDbContextFactory<ApplicationDbContext>(item => item.UseSqlServer(connectionString, conf =>
+{
+}));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -55,7 +57,7 @@ builder.Services.AddScoped<IPrintingService, PrintingService>();
 builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<ApplicationUser>>();
 builder.Services.AddScoped<MonsterService>();
 builder.Services.AddScoped<FeatureService>();
-builder.Services.AddTransient<IEmailSender, MailService >();
+builder.Services.AddTransient<IEmailSender, MailService>();
 
 
 var app = builder.Build();
@@ -64,7 +66,9 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
-}else{
+}
+else
+{
     app.UseExceptionHandler("/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
