@@ -8,14 +8,12 @@ namespace GiffyglyphMonsterMakerV3.Data
     public class Folder
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
         public string Name { get; set; }
         [ForeignKey("Id")]
         public string CreateUserId { get; set; }
-        public HierarchyId HierarchyId { get; set; }
-        [NotMapped]
-        public HierarchyId OldHierarchyId { get; set; }
+        public Guid? ParentId { get; set; }
+        public ICollection<Folder> Children { get; set; }
 
         public Folder(string name)
         {

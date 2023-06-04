@@ -21,7 +21,7 @@ namespace GiffyglyphMonsterMakerV3.Data
         [ForeignKey("Id")]
         public string CreateUserId { get; set; }
         [ForeignKey("Id")]
-        public int? FolderId { get; set; }
+        public Guid? FolderId { get; set; }
 
         [Required] public string Name { get; set; } = "";
         [Required]
