@@ -57,7 +57,7 @@
 
         Monsters = await Task.Run(() => _MonsterService.GetAllMonstersAsync());
         var fol = await Task.Run(() => _FolderService.GetAllFoldersAsync());
-        if(fol.Count == 0)
+        if(fol.Count == 0 && userId != null)
         {
             var newFolder = new Folder("/", userId);
             await _FolderService.InsertFolderAsync(newFolder);
