@@ -54,8 +54,17 @@ namespace GiffyglyphMonsterMakerV3.Data
             _context.Filter<Folder>(q => q.Where(m => m.CreateUserId == currentUserId));
 
             await _context.Folders
-                 .Include(a => a.Children)
-                 .Include(m => m.Creatures)
+                .Include(a => a.Children)
+                .Include(m => m.Creatures)
+                    .ThenInclude(a => a.Features)
+                        .ThenInclude(f => f.Frequency)
+                .Include(m => m.Creatures)
+                    .ThenInclude(m => m.Offense)
+                .Include(m => m.Creatures)
+                    .ThenInclude(m => m.Defenses)
+                        .ThenInclude(d => d.ProficientSavingThrows)
+                .Include(m => m.Creatures)
+                    .ThenInclude(m => m.Attributes)
                  .LoadAsync();
 
             return await _context.Folders.ToListAsync();

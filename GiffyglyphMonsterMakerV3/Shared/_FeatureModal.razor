@@ -505,6 +505,10 @@
         {
             SelectedFeatureTemplateId = null;
         }
+
+        if(SelectedFeatureTemplate != null && SelectedFeatureTemplate.TemplateId == f.TemplateId)
+            SelectedFeatureTemplate.TemplateId = null;
+
         var result = await _fs.DeleteFeatureAsync(f, true);
         if (result)
         {

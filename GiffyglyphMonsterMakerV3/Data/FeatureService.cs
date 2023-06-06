@@ -142,6 +142,7 @@ namespace GiffyglyphMonsterMakerV3.Data
                     foreach (var item in _context.Features.Where(a => a.TemplateId == feature.Id))
                     {
                         item.TemplateId = null;
+                        _context.Update(item);
                     }
                 }
 
