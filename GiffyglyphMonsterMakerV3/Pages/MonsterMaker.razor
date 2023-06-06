@@ -532,9 +532,10 @@ else
             active = GetFirstMonster(topFolder) as Monster;
 
             if (active == null)
+            {
                 active = Monsters.First();
-
-            active = ActiveMonsterFolder.Creatures.First() as Monster;
+                active = ActiveMonsterFolder.Creatures.First() as Monster;
+            }
 
             ActiveFolderId = active.FolderId ?? topFolder.Id;
         }
@@ -899,7 +900,11 @@ else
         }
         else if (active.Id == mon.Id)
         {
-            active = Monsters[0];
+            if (ActiveFolder.Creatures.Count > 0)
+                active = ActiveFolder.Creatures.First() as Monster;
+            else
+                active = GetFirstMonster(Folders.First(a => a.IsBaseFolder)) as Monster;
+            
             UpdateValues();
         }
     }
