@@ -53,6 +53,10 @@ else
                 }
             </div>
         </div>
+        @if(popQueue.Count == 0)
+        {
+            <div>No Monsters in this Folder</div>
+        }
         @while (popQueue.Count > 0)
         {
             <div class="d-block" style="page-break-after: always; break-after: page;">
