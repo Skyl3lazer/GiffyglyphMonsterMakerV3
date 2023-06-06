@@ -364,7 +364,7 @@ else
                 </div>
             </div>
             <div class="col-9 w-50">
-                <div><span class="fs-4 card-header collapsed" data-bs-toggle="collapse" data-bs-target="#FolderDiv" aria-expanded="true" aria-controls="FolderDiv">Folders<span class="ms-1">(@(Folders.Count)/@_maxFolders)</span><span class="fas fa-chevrons-down mx-1 fs-4" /><span class="fas fa-chevrons-up mx-1 fs-4" /></span></div>
+                <div><span class="fs-4 card-header collapsed" data-bs-toggle="collapse" data-bs-target="#FolderDiv" aria-expanded="true" aria-controls="FolderDiv">Folders<span class="ms-1">(@(Folders.Count)/@_maxFolders)</span><span class="fas fa-chevrons-down mx-1 fs-6" /><span class="fas fa-chevrons-up mx-1 fs-6" /></span></div>
                 @{
                     var activeFolder = ActiveFolder;
                     string folderName = ActiveFolder.Name;
@@ -387,7 +387,7 @@ else
                     <span class="fa-solid fa-folder-open me-1 @(activeFolder.Id == active.FolderId ? "text-success" : "")" title="Active Folder" />@folderName
                     @if (activeFolder.Creatures.Count == 0 && activeFolder.Children.Count == 0)
                     {
-                        <button type="button" class="btn btn-sm btn-danger ms-3" @onclick="() => DeleteFolder(activeFolder.Id)"><span class="fa-regular fa-folder-xmark me-1" />Delete Folder</button>
+                        <button type="button" class="btn btn-sm btn-outline-danger ms-3" @onclick="() => DeleteFolder(activeFolder.Id)"><span class="fa-regular fa-folder-xmark me-1" />Delete Folder</button>
                     }
                     else
                     {
@@ -410,8 +410,8 @@ else
                         <span class="fa-regular fa-folder-plus" title="Add New Folder" @onclick="() => AddFolder()" />
                     </div>
                 </div>
-
-                <div class="mt-1">
+                <hr class="ms-2"/>
+                <div class="ms-2">
                     <span>Stat Blocks</span>
                     <span class="fa-kit fa-solid-skull-circle-plus" title="Add New Monster" @onclick="() => AddMonster()" />
                     <span class="fa-solid fa-copy" title="Copy Current Monster" @onclick="() => CopyCurrentMonster()" />
@@ -421,8 +421,8 @@ else
                         <button class="btn btn-sm btn-outline-success ms-2" type="button" @onclick="() => MoveActiveMonsterToActiveFolder()"><span class="fa-regular fa-folder-arrow-down me-1" />Move Active to this Folder</button>
                     }
                 </div>
-                <div class="row overflow-auto px-1 d-block" style="height: 250px;">
-                    @foreach (var mon in Monsters.Where(a => a.FolderId == ActiveFolderId).OrderBy(m => m.Name))
+                <div class="row overflow-auto px-1 d-block ms-2" style="height: 250px;">
+                    @foreach (var mon in ActiveFolder.Creatures.Select(a => a as Monster).OrderBy(m => m.Name))
                     {
                         <MonsterTitleCard model="mon" DeleteCallback="() => RemoveMonster(mon)" ActiveClick="() => ActiveClick(mon)" FocusedMonster="@(mon.Id == active.Id)" SaveCallback="(m) => SaveMonsterAsync((Monster)m, true)" />
                     }
