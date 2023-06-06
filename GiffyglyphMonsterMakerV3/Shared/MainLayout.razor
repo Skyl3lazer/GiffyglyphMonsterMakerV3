@@ -56,12 +56,13 @@
         var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
 
         Monsters = await Task.Run(() => _MonsterService.GetAllMonstersAsync());
-        Folders = new List<Folder>();
-        Folders.Add(new Folder("/", userId)
-            {
-                Id = Guid.Empty
-            });
         var fol = await Task.Run(() => _FolderService.GetAllFoldersAsync());
-        Folders.AddRange(fol.OrderBy(a => a.Name));
+        if(fol.Count == 0)
+        {
+            var newFolder = new Folder("/", userId);
+            await _FolderService.InsertFolderAsync(newFolder);
+            fol.Add(newFolder);
+        }
+        Folders = fol;
     }
 }

@@ -16,6 +16,13 @@ namespace GiffyglyphMonsterMakerV3.Data
         public Folder? Parent { get; set; }
         public ICollection<Folder> Children { get; set; } = new List<Folder>();
         public ICollection<Creature> Creatures { get; set; } = new List<Creature>();
+        public bool IsBaseFolder
+        {
+            get
+            {
+                return ParentId == null;
+            }
+        }
 
         public Folder(string name, string createUserId)
         {

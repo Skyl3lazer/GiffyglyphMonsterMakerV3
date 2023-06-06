@@ -58,16 +58,6 @@ namespace GiffyglyphMonsterMakerV3.Data
                  .Include(m => m.Creatures)
                  .LoadAsync();
 
-            /*
-             await _context.Monsters
-                 .Include(a => a.Features)
-                 .ThenInclude(f => f.Frequency)
-                 .Include(m => m.Offense)
-                 .Include(m => m.Defenses)
-                 .ThenInclude(d => d.ProficientSavingThrows)
-                 .Include(m => m.Attributes)
-                 .LoadAsync();
-            */
             return await _context.Folders.ToListAsync();
         }
 
