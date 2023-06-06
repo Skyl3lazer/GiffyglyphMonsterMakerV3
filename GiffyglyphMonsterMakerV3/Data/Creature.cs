@@ -20,6 +20,22 @@ namespace GiffyglyphMonsterMakerV3.Data
         public Guid Id { get; set; } = Guid.NewGuid();
         [ForeignKey("Id")]
         public string CreateUserId { get; set; }
+        private Guid? _folderId;
+        [ForeignKey("Id")]
+        public Guid? FolderId
+        {
+            get
+            {
+                return _folderId ?? Guid.Empty;
+            }
+            set
+            {
+                if(value != _folderId)
+                {
+                    _folderId = value;
+                }
+            }
+        }
 
         [Required] public string Name { get; set; } = "";
         [Required]
@@ -31,7 +47,7 @@ namespace GiffyglyphMonsterMakerV3.Data
             get => _monsterRank;
             set
             {
-                _monsterRank = value; 
+                _monsterRank = value;
                 Attributes.AttributeMod = MonsterRank == Rank.Elite ? 1 : MonsterRank == Rank.Paragon ? 2 : 0;
                 PropertyChanged?.Invoke(this,
                     new PropertyChangedEventArgs(nameof(MonsterRank)));
@@ -112,9 +128,9 @@ namespace GiffyglyphMonsterMakerV3.Data
                 int xp = ExperienceValue;
                 double CR = 0;
 
-                foreach(var xpVal in StaticTables.ExperienceDictionary5E.Values)
+                foreach (var xpVal in StaticTables.ExperienceDictionary5E.Values)
                 {
-                    if(xpVal > xp)
+                    if (xpVal > xp)
                     {
                         return CR;
                     }
@@ -133,10 +149,12 @@ namespace GiffyglyphMonsterMakerV3.Data
                 if (ChallengeRating == 0.125)
                 {
                     return "1/8";
-                }else if(ChallengeRating == 0.25)
+                }
+                else if (ChallengeRating == 0.25)
                 {
                     return "1/4";
-                }else if(ChallengeRating == 0.5)
+                }
+                else if (ChallengeRating == 0.5)
                 {
                     return "1/2";
                 }
@@ -242,7 +260,7 @@ namespace GiffyglyphMonsterMakerV3.Data
 
         public AttributeArray()
         {
-            Dict = new ();
+            Dict = new();
             Dict[AttributeType.Strength] = 0;
             Dict[AttributeType.Constitution] = 0;
             Dict[AttributeType.Intelligence] = 0;
@@ -250,10 +268,12 @@ namespace GiffyglyphMonsterMakerV3.Data
             Dict[AttributeType.Charisma] = 0;
             Dict[AttributeType.Dexterity] = 0;
         }
-        public int StrWithMod { get
+        public int StrWithMod
+        {
+            get
             {
                 return Strength + AttributeMod;
-            } 
+            }
         }
         public int DexWithMod
         {
@@ -304,7 +324,8 @@ namespace GiffyglyphMonsterMakerV3.Data
         public int Dexterity
         {
             get => Dict[AttributeType.Dexterity];
-            set {
+            set
+            {
                 Dict[AttributeType.Dexterity] = value; PropertyChanged?.Invoke(this,
                 new PropertyChangedEventArgs(nameof(Dexterity)));
             }
@@ -321,7 +342,8 @@ namespace GiffyglyphMonsterMakerV3.Data
         public int Intelligence
         {
             get => Dict[AttributeType.Intelligence];
-            set {
+            set
+            {
                 Dict[AttributeType.Intelligence] = value; PropertyChanged?.Invoke(this,
                 new PropertyChangedEventArgs(nameof(Intelligence)));
             }
@@ -329,7 +351,8 @@ namespace GiffyglyphMonsterMakerV3.Data
         public int Wisdom
         {
             get => Dict[AttributeType.Wisdom];
-            set {
+            set
+            {
                 Dict[AttributeType.Wisdom] = value; PropertyChanged?.Invoke(this,
                 new PropertyChangedEventArgs(nameof(Wisdom)));
             }
@@ -337,7 +360,8 @@ namespace GiffyglyphMonsterMakerV3.Data
         public int Charisma
         {
             get => Dict[AttributeType.Charisma];
-            set {
+            set
+            {
                 Dict[AttributeType.Charisma] = value; PropertyChanged?.Invoke(this,
                 new PropertyChangedEventArgs(nameof(Charisma)));
             }
@@ -355,7 +379,7 @@ namespace GiffyglyphMonsterMakerV3.Data
         public bool Intelligence { get; set; }
         public bool Wisdom { get; set; }
         public bool Charisma { get; set; }
-        public int NumberTrained => (Strength ? 1 : 0) + (Dexterity ? 1 : 0) + (Constitution ? 1:0) + (Intelligence ? 1 : 0) + (Wisdom ? 1 : 0) + (Charisma ? 1 : 0);
+        public int NumberTrained => (Strength ? 1 : 0) + (Dexterity ? 1 : 0) + (Constitution ? 1 : 0) + (Intelligence ? 1 : 0) + (Wisdom ? 1 : 0) + (Charisma ? 1 : 0);
     }
     public class DefenseArray
     {
@@ -382,7 +406,9 @@ namespace GiffyglyphMonsterMakerV3.Data
         public int Attack
         {
             get => _attack;
-            set { _attack = value; PropertyChanged?.Invoke(this,
+            set
+            {
+                _attack = value; PropertyChanged?.Invoke(this,
                 new PropertyChangedEventArgs(nameof(Attack)));
             }
         }
@@ -390,7 +416,9 @@ namespace GiffyglyphMonsterMakerV3.Data
         public int DifficultyCheck
         {
             get => _difficultyCheck;
-            set { _difficultyCheck = value; PropertyChanged?.Invoke(this,
+            set
+            {
+                _difficultyCheck = value; PropertyChanged?.Invoke(this,
                 new PropertyChangedEventArgs(nameof(DifficultyCheck)));
             }
         }
@@ -398,7 +426,9 @@ namespace GiffyglyphMonsterMakerV3.Data
         public int Damage
         {
             get => _damage;
-            set { _damage = value; PropertyChanged?.Invoke(this,
+            set
+            {
+                _damage = value; PropertyChanged?.Invoke(this,
                 new PropertyChangedEventArgs(nameof(Damage)));
             }
         }
@@ -406,7 +436,9 @@ namespace GiffyglyphMonsterMakerV3.Data
         public bool RandomizeDamage
         {
             get => _randomizeDamage;
-            set { _randomizeDamage = value; PropertyChanged?.Invoke(this,
+            set
+            {
+                _randomizeDamage = value; PropertyChanged?.Invoke(this,
                 new PropertyChangedEventArgs(nameof(RandomizeDamage)));
             }
         }
@@ -414,7 +446,9 @@ namespace GiffyglyphMonsterMakerV3.Data
         public DamageRange RandomDamageRange
         {
             get => _randomDamageRange;
-            set { _randomDamageRange = value; PropertyChanged?.Invoke(this,
+            set
+            {
+                _randomDamageRange = value; PropertyChanged?.Invoke(this,
                 new PropertyChangedEventArgs(nameof(RandomDamageRange)));
             }
         }

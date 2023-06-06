@@ -16,6 +16,7 @@ namespace GiffyglyphMonsterMakerV3.Data
     {
         public DbSet<Monster> Monsters { get; set; }
         public DbSet<Feature> Features { get; set; }
+        public DbSet<Folder> Folders { get; set; }
         
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -104,12 +105,28 @@ namespace GiffyglyphMonsterMakerV3.Data
                 .HasMany<Creature>()
                 .WithOne()
                 .HasForeignKey(b=>b.CreateUserId)
-                .OnDelete(DeleteBehavior.Cascade); 
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Folder>()
+                .HasOne<ApplicationUser>()
+                .WithMany()
+                .HasForeignKey(a => a.CreateUserId)
+                .IsRequired();
+            modelBuilder.Entity<ApplicationUser>()
+                .HasMany<Folder>()
+                .WithOne()
+                .HasForeignKey(b => b.CreateUserId)
+                .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Feature>()
                 .HasOne<ApplicationUser>()
                 .WithMany()
                 .HasForeignKey(b => b.CreateUserId)
                 .IsRequired()
+                .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<Folder>()
+                .HasMany<Creature>(a => a.Creatures)
+                .WithOne()
+                .HasForeignKey(b => b.FolderId)
+                .HasPrincipalKey(a => a.Id)
                 .OnDelete(DeleteBehavior.NoAction);
 
             base.OnModelCreating(modelBuilder);

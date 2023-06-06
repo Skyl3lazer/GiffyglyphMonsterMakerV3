@@ -5,9 +5,11 @@
 @using Action = GiffyglyphMonsterMakerV3.Data.Action
 @using System.Security.Claims;
 @using ChromiumHTMLToPDF;
-@inject MonsterService _ms;
-@inject FeatureService _fs;
-@inject IToastService _ts;
+@using System.Collections.ObjectModel;
+@inject MonsterService _monsterService;
+@inject FolderService _folderService;
+@inject FeatureService _featureService;
+@inject IToastService _toastService;
 @inject IJSRuntime _javascript;
 
 
@@ -362,14 +364,65 @@ else
                 </div>
             </div>
             <div class="col-9 w-50">
-                <div>
+                <div><span class="fs-4 card-header collapsed" data-bs-toggle="collapse" data-bs-target="#FolderDiv" aria-expanded="true" aria-controls="FolderDiv">Folders<span class="ms-1">(@(Folders.Count)/@_maxFolders)</span><span class="fas fa-chevrons-down mx-1 fs-6" /><span class="fas fa-chevrons-up mx-1 fs-6" /></span></div>
+                @{
+                    var activeFolder = ActiveFolder;
+                    string folderName = ActiveFolder.Name;
+                    bool hasParent = activeFolder?.ParentId != null;
+                    Folder recurseParent = activeFolder;
+                    while (hasParent)
+                    {
+                        recurseParent = Folders.First(a => a.Id == recurseParent.ParentId);
+
+                        if(recurseParent.IsBaseFolder)
+                            folderName = recurseParent.Name + folderName;
+                        else
+                            folderName = recurseParent.Name + "/" + folderName;
+
+                        if (recurseParent.ParentId == null)
+                            hasParent = false;
+                    }
+                }
+                <div id="@ActiveFolderId">
+                    <span class="fa-solid fa-folder-open me-1 @(activeFolder.Id == active.FolderId ? "text-success" : "")" title="Active Folder" />@folderName
+                    @if (activeFolder.Creatures.Count == 0 && activeFolder.Children.Count == 0)
+                    {
+                        <button type="button" class="btn btn-sm btn-outline-danger ms-3" @onclick="() => DeleteFolder(activeFolder.Id)"><span class="fa-regular fa-folder-xmark me-1" />Delete Folder</button>
+                    }
+                    else
+                    {
+                        <button type="button" class="btn btn-sm btn-secondary ms-3 disabled"><span class="fa-regular fa-folder-xmark me-1" />Cannot Delete Unless Empty</button>
+                    }
+                </div>
+                <div id="FolderDiv" class="collapse">
+                    @{
+                        if (!activeFolder.IsBaseFolder)
+                        {
+                            <div class="ms-2" role="button" id="@ActiveFolderId" @onclick="() => ActiveFolderId = activeFolder.ParentId"><span class="fa-solid fa-folder-arrow-up me-1 @(active.FolderId == activeFolder.ParentId ? " text-success" : "")" title="Up One Level" />...</div>
+                        }
+                        foreach (var item in activeFolder.Children)
+                        {
+                            <div class="ms-2" role="button" id="@item.Id" @onclick="() => ActiveFolderId = item.Id"><span class="fa-solid fa-folder me-1 @(active.FolderId == item.Id ? " text-success" : "")" title="Inactive Folder" />@item.Name</div>
+                        }
+                    }
+                    <div>
+                        <input @bind="@NewFolderName" @bind:event="oninput" class="w-50" placeholder="New Folder Name" />
+                        <span class="fa-regular fa-folder-plus" title="Add New Folder" @onclick="() => AddFolder()" />
+                    </div>
+                </div>
+                <hr class="ms-2"/>
+                <div class="ms-2">
                     <span>Stat Blocks</span>
-                    <span class="fa-solid fa-plus" title="Add New Monster" @onclick="() => AddMonster()" />
+                    <span class="fa-kit fa-solid-skull-circle-plus" title="Add New Monster" @onclick="() => AddMonster()" />
                     <span class="fa-solid fa-copy" title="Copy Current Monster" @onclick="() => CopyCurrentMonster()" />
                     <span class="ms-1">(@(Monsters.Count)/@_maxMonsters)</span>
+                    @if (active.FolderId != ActiveFolderId)
+                    {
+                        <button class="btn btn-sm btn-outline-success ms-2" type="button" @onclick="() => MoveActiveMonsterToActiveFolder()"><span class="fa-regular fa-folder-arrow-down me-1" />Move Active to this Folder</button>
+                    }
                 </div>
-                <div class="row overflow-auto px-1 d-block" style="height: 250px;">
-                    @foreach (var mon in Monsters.OrderBy(m => m.Name))
+                <div class="row overflow-auto px-1 d-block ms-2" style="height: 250px;">
+                    @foreach (var mon in ActiveFolder.Creatures.Select(a => a as Monster).OrderBy(m => m.Name))
                     {
                         <MonsterTitleCard model="mon" DeleteCallback="() => RemoveMonster(mon)" ActiveClick="() => ActiveClick(mon)" FocusedMonster="@(mon.Id == active.Id)" SaveCallback="(m) => SaveMonsterAsync((Monster)m, true)" />
                     }
@@ -409,15 +462,38 @@ else
 }
 
 @code {
+
     [CascadingParameter]
-    protected List<Monster> Monsters { get; set; }
+    protected List<Folder> Folders { get; set; }
+
+    [CascadingParameter]
+    private List<Monster> Monsters { get; set; }
 
     [CascadingParameter]
     private Task<AuthenticationState> authenticationStateTask { get; set; }
 
+    private Guid? ActiveFolderId { get; set; } = null;
+    private Folder? ActiveFolder
+    {
+        get
+        {
+            return Folders?.FirstOrDefault(a => a.Id == ActiveFolderId);
+        }
+    }
+    private Folder? ActiveMonsterFolder
+    {
+        get
+        {
+            return Folders?.FirstOrDefault(a => a.Id == active?.FolderId);
+        }
+    }
+
     private readonly int _maxMonsters = 150;
+    private readonly int _maxFolders = 50;
 
     private string? CurrentUserId = null;
+
+    private string NewFolderName { get; set; }
 
     private Monster? active { get; set; }
 
@@ -430,19 +506,94 @@ else
         var authState = await authenticationStateTask;
         var User = authState.User;
         CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (Folders == null)
+            return;
+
+        var topFolder = Folders.First(a => a.IsBaseFolder);
 
         if (Monsters == null)
             return;
 
         if (Monsters.Count == 0)
         {
-            CreateFirstMonster();
+            ActiveFolderId = topFolder.Id;
+            await CreateFirstMonster();
         }
         else
         {
-            active = Monsters.First();
+            //Migrate monsters without folders to the base folder
+            foreach (var m in Monsters.Where(a => a.FolderId == null || a.FolderId == Guid.Empty))
+            {
+                topFolder.Creatures.Add(m);
+                m.FolderId = topFolder.Id;
+                await SaveMonsterAsync(m, false);
+            }
+
+            active = GetFirstMonster(topFolder) as Monster;
+
+            if (active == null)
+                active = Monsters.First();
+
+            ActiveFolderId = active.FolderId ?? topFolder.Id;
         }
     }
+
+    // There won't always be a monster in the top folder, so we have to go find one.
+    private Creature? GetFirstMonster(Folder root)
+    {
+        Queue<Folder> Q = new Queue<Folder>();
+        HashSet<Folder> S = new HashSet<Folder>();
+        Q.Enqueue(root);
+        S.Add(root);
+        while (Q.Count > 0)
+        {
+            Folder f = Q.Dequeue();
+            if (f.Creatures.Count > 0)
+                return f.Creatures.First();
+            foreach (Folder friend in f.Children)
+            {
+                if (!S.Contains(friend))
+                {
+                    Q.Enqueue(friend);
+                    S.Add(friend);
+                }
+            }
+        }
+        return null;
+    }
+
+    //If we want to draw a tree later, unused for now
+    public void TraverseFolders(Folder root)
+    {
+        Queue<Folder> traverseOrder = new Queue<Folder>();
+
+        Queue<Folder> Q = new Queue<Folder>();
+        HashSet<Folder> S = new HashSet<Folder>();
+        Q.Enqueue(root);
+        S.Add(root);
+
+        while (Q.Count > 0)
+        {
+            Folder e = Q.Dequeue();
+            traverseOrder.Enqueue(e);
+
+            foreach (Folder fol in e.Children)
+            {
+                if (!S.Contains(fol))
+                {
+                    Q.Enqueue(fol);
+                    S.Add(fol);
+                }
+            }
+        }
+
+        while (traverseOrder.Count > 0)
+        {
+            Folder e = traverseOrder.Dequeue();
+            // Console.WriteLine(e);
+        }
+    }
+
 
     private void ChangeMonsterColumnLayout()
     {
@@ -467,20 +618,20 @@ else
             return;
         if (Monsters.Count >= _maxMonsters)
         {
-            _ts.ShowError("At Maximum Monsters (" + _maxMonsters + ")!");
+            _toastService.ShowError("At Maximum Monsters (" + _maxMonsters + ")!");
             return;
         }
 
-        Monster? result = await _ms.CopyMonsterAsync(active);
+        Monster? result = await _monsterService.CopyMonsterAsync(active);
 
         if (result != null)
         {
             Monsters.Add(result);
-            _ts.ShowSuccess("Copied " + active.Name);
+            _toastService.ShowSuccess("Copied " + active.Name);
         }
         else
         {
-            _ts.ShowError("Could not copy monster!");
+            _toastService.ShowError("Could not copy monster!");
         }
     }
 
@@ -509,25 +660,25 @@ else
 
     public async Task SaveMonsterAsync(Monster mon, bool showToast)
     {
-        bool result = await _ms.UpdateMonsterAsync(mon);
+        bool result = await _monsterService.UpdateMonsterAsync(mon);
 
         if (!showToast)
             return;
 
         if (result)
         {
-            _ts.ShowSuccess("Saved " + mon.Name);
+            _toastService.ShowSuccess("Saved " + mon.Name);
         }
         else
         {
-            _ts.ShowError("Could not save monster!");
+            _toastService.ShowError("Could not save monster!");
         }
     }
 
 
     private async Task CreateFirstMonster()
     {
-        Monster monster = new("My First Monster", CurrentUserId);
+        Monster monster = new("My First Monster", CurrentUserId) { FolderId = ActiveFolderId };
         monster.Features.Add(new Action(CurrentUserId)
             {
                 Name = "Hit Them",
@@ -595,22 +746,23 @@ else
                 ParentId = monster.Id
             });
         Monsters.Add(monster);
+        ActiveFolder.Creatures.Add(monster);
         active = monster;
-        await _ms.InsertMonsterAsync(monster);
+        await _monsterService.InsertMonsterAsync(monster);
         UpdateValues();
     }
 
     public async Task RemoveFeature(Feature feature)
     {
         active.Features.Remove(feature);
-        var result = await _fs.DeleteFeatureAsync(feature);
+        var result = await _featureService.DeleteFeatureAsync(feature);
         if (result)
         {
-            _ts.ShowWarning("Removed Feature " + feature.Name);
+            _toastService.ShowWarning("Removed Feature " + feature.Name);
         }
         else
         {
-            _ts.ShowError("Could not remove feature!");
+            _toastService.ShowError("Could not remove feature!");
         }
     }
     public void SenseUpdated(object? val)
@@ -659,32 +811,83 @@ else
         var feature = (Feature)val;
         EditFeature = feature;
     }
+    public async Task AddFolder()
+    {
+        if (Folders.Count >= _maxFolders)
+        {
+            _toastService.ShowError("At Maximum Folders (" + _maxMonsters + ")!");
+            return;
+        }
+        if (string.IsNullOrWhiteSpace(NewFolderName))
+            return;
+
+        Folder newFolder = new(NewFolderName, CurrentUserId);
+        newFolder.ParentId = ActiveFolderId;
+        Folders.Add(newFolder);
+        ActiveFolderId = newFolder.Id;
+        await _folderService.InsertFolderAsync(newFolder);
+        newFolder.Parent = Folders.First(a => a.Id == newFolder.ParentId);
+        newFolder.Parent.Children.Add(newFolder);
+        NewFolderName = "";
+        StateHasChanged();
+    }
+    public async Task DeleteFolder(Guid removeId)
+    {
+        if (removeId == Guid.Empty)
+            return;
+
+        Folder? removeMe = Folders.FirstOrDefault(a => a.Id == removeId);
+
+        if (removeMe == null)
+            return;
+
+        var parentId = removeMe.ParentId;
+        removeMe.ParentId = null;
+
+        bool deleted = await _folderService.DeleteFolderAsync(removeMe);
+        if (deleted)
+        {
+            ActiveFolderId = parentId;
+            ActiveFolder.Children.Remove(removeMe);
+            Folders.Remove(removeMe);
+            _toastService.ShowSuccess("Deleted Folder");
+        }
+        else
+        {
+            _toastService.ShowError("Could not remove monster!");
+        }
+        StateHasChanged();
+    }
     public async Task AddMonster(string name = "My New Monster")
     {
         if (Monsters.Count >= _maxMonsters)
         {
-            _ts.ShowError("At Maximum Monsters (" + _maxMonsters + ")!");
+            _toastService.ShowError("At Maximum Monsters (" + _maxMonsters + ")!");
             return;
         }
 
-        var mon = new Monster(name, CurrentUserId);
+        var mon = new Monster(name, CurrentUserId) {  FolderId = ActiveFolderId };
+
+        ActiveFolder?.Creatures.Add(mon);
         active = mon;
         Monsters.Add(mon);
-        await _ms.InsertMonsterAsync(mon);
+        await _monsterService.InsertMonsterAsync(mon);
         UpdateValues();
 
     }
     public async Task RemoveMonster(Monster mon)
     {
+        //make this remove the monster from the folder's creatures
+        ActiveMonsterFolder?.Creatures.Remove(mon);
         Monsters.Remove(mon);
-        var result = await _ms.DeleteMonsterAsync(mon);
+        var result = await _monsterService.DeleteMonsterAsync(mon);
         if (result)
         {
-            _ts.ShowWarning("Removed " + mon.Name);
+            _toastService.ShowWarning("Removed " + mon.Name);
         }
         else
         {
-            _ts.ShowError("Could not remove monster!");
+            _toastService.ShowError("Could not remove monster!");
         }
 
         if (Monsters.Count == 0)
@@ -696,6 +899,13 @@ else
             active = Monsters[0];
             UpdateValues();
         }
+    }
+    public async Task MoveActiveMonsterToActiveFolder()
+    {
+        ActiveMonsterFolder.Creatures.Remove(active);
+        ActiveFolder.Creatures.Add(active);
+        active.FolderId = ActiveFolderId;
+        await SaveMonsterAsync(active, true);
     }
     public void ActiveClick(Monster mon)
     {
@@ -783,7 +993,7 @@ else
                 hp *= active.ParagonThreat;
                 tst += 1;
                 dmg *= 1.2;
-                paraPower = active.ParagonThreat-1;
+                paraPower = active.ParagonThreat - 1;
                 paraDef = (int)Math.Floor(active.ParagonThreat / 2.0);
                 break;
         }

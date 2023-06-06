@@ -16,7 +16,48 @@
 else
 {
     <div class="container-xxl" id="print">
-        <div class="d-print-none alert alert-info">Use your browser's Print feature to print stat blocks. 2 per page, with overflow that looks bad (for now)</div>
+        <div class="d-print-none alert alert-info">Use your browser's Print feature to print stat blocks. 2 per page, with overflow that looks bad (for now).</div>
+        <div class="d-print-none alert alert-info">You probably want to be in light mode on this page, with "print backgrounds" on while printing.</div>
+        <div class="d-print-none">
+            <div><span class="fs-4 card-header collapsed" data-bs-toggle="collapse" data-bs-target="#FolderDiv" aria-expanded="true" aria-controls="FolderDiv">Folders<span class="fas fa-chevrons-down mx-1 fs-6" /><span class="fas fa-chevrons-up mx-1 fs-6" /></span></div>
+            @{
+                var activeFolder = ActiveFolder;
+                string folderName = ActiveFolder.Name;
+                bool hasParent = activeFolder?.ParentId != null;
+                Folder recurseParent = activeFolder;
+                while (hasParent)
+                {
+                    recurseParent = Folders.First(a => a.Id == recurseParent.ParentId);
+
+                    if (recurseParent.IsBaseFolder)
+                        folderName = recurseParent.Name + folderName;
+                    else
+                        folderName = recurseParent.Name + "/" + folderName;
+
+                    if (recurseParent.ParentId == null)
+                        hasParent = false;
+                }
+            }
+            <div id="@ActiveFolderId">
+                <span class="fa-solid fa-folder-open me-1" title="Active Folder" />@folderName
+            </div>
+            <div id="FolderDiv" class="collapse">
+                @{
+                    if (!activeFolder.IsBaseFolder)
+                    {
+                        <div class="ms-2" role="button" id="@ActiveFolderId" @onclick="() => ActiveFolderId = activeFolder.ParentId"><span class="fa-solid fa-folder-arrow-up me-1" title="Up One Level" />...</div>
+                    }
+                    foreach (var item in activeFolder.Children)
+                    {
+                        <div class="ms-2" role="button" id="@item.Id" @onclick="() => ActiveFolderId = item.Id"><span class="fa-solid fa-folder me-1" title="Inactive Folder" />@item.Name</div>
+                    }
+                }
+            </div>
+        </div>
+        @if(popQueue.Count == 0)
+        {
+            <div>No Monsters in this Folder</div>
+        }
         @while (popQueue.Count > 0)
         {
             <div class="d-block" style="page-break-after: always; break-after: page;">
@@ -47,15 +88,36 @@ else
 }
 @code {
     [CascadingParameter]
-    protected List<Monster>? Monsters { get; set; }
+    protected List<Folder>? Folders { get; set; }
 
     private Queue<Monster>? popQueue { get; set; }
 
+    private Guid? _activeFolderId = null;
+    private Guid? ActiveFolderId {
+        get => _activeFolderId;
+        set
+        {
+            if(value != _activeFolderId)
+            {
+                _activeFolderId = value;
+                popQueue = new Queue<Monster>(ActiveFolder.Creatures.Select(a => a as Monster));
+                StateHasChanged();
+            }
+        }
+    }
+    private Folder? ActiveFolder
+    {
+        get
+        {
+            return Folders?.FirstOrDefault(a => a.Id == ActiveFolderId);
+        }
+    }
+
     protected override void OnParametersSet()
     {
-        if (Monsters != null)
+        if(Folders != null)
         {
-            popQueue = new Queue<Monster>(Monsters);
+            ActiveFolderId = Folders.First().Id;
         }
     }
 }
