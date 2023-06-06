@@ -429,7 +429,7 @@ else
                 </div>
                 @*<div class="alert alert-warning">You Have Unsaved Changes!</div>*@
                 <div class="row my-1">
-                    @foreach (var mon in Monsters)
+                    @foreach (var mon in ActiveFolder.Creatures.Select(a => a as Monster))
                     {
                         if (mon.Layout == LayoutType.Single)
                         {
@@ -534,6 +534,8 @@ else
             if (active == null)
                 active = Monsters.First();
 
+            active = ActiveMonsterFolder.Creatures.First() as Monster;
+
             ActiveFolderId = active.FolderId ?? topFolder.Id;
         }
     }
@@ -627,6 +629,7 @@ else
         if (result != null)
         {
             Monsters.Add(result);
+            ActiveFolder.Creatures.Add(result);
             _toastService.ShowSuccess("Copied " + active.Name);
         }
         else
