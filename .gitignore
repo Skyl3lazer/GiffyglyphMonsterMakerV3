@@ -368,3 +368,4 @@ GiffyglyphMonsterMakerV3/GiffyglyphMonsterMakerV3/wwwroot/lib/
 node_modules/
 /GiffyglyphMonsterMakerV3/Migrations
 /GiffyglyphMonsterMakerV3/Grant.sql
+/GiffyglyphMonsterMakerV3/Properties/launchSettings.json
