@@ -6,14 +6,16 @@
 @using System.Security.Claims;
 @using ChromiumHTMLToPDF;
 @using System.Collections.ObjectModel;
+@using System.Text.Json
 @inject MonsterService _monsterService;
 @inject FolderService _folderService;
 @inject FeatureService _featureService;
 @inject IToastService _toastService;
 @inject IJSRuntime _javascript;
+@inject Blazored.LocalStorage.ILocalStorageService localStore;
 
 
-@if (active == null)
+@if (ActiveMonster == null)
 {
     <div class="d-flex justify-content-center">
         <div class="spinner-border" role="status">
@@ -23,7 +25,7 @@
 }
 else
 {
-    <_FeatureModal ActiveMonster="active" SpecificFeature="EditFeature" FeatureChangedCallback="(f) => FeaturesUpdated(f)" SelectedFeatureCallback="(f) => EditFeatureChanged(f)" SaveMonster="() => SaveActiveMonster(false)" />
+    <_FeatureModal ActiveMonster="ActiveMonster" SpecificFeature="EditFeature" FeatureChangedCallback="(f) => FeaturesUpdated(f)" SelectedFeatureCallback="(f) => EditFeatureChanged(f)" SaveMonster="() => SaveActiveMonster(false)" />
     <_ConfirmDeleteFeatureModal TargetFeature="DeleteFeatureModalTarget" Result="(a) => ConfirmDeleteFeatureModalResult((Feature)a)" />
 
     <PageTitle>Monster Statblock Maker V3</PageTitle>
@@ -36,13 +38,13 @@ else
                         <div class="row">
                             <div class="col-6">Name:</div>
                             <div class="col-6">
-                                <input @bind="active.Name" @bind:event="oninput" class="w-100" />
+                                <input @bind="ActiveMonster.Name" @bind:event="oninput" class="w-100" />
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-6">Size: </div>
                             <div class="col-6">
-                                <InputSelect class="w-100" @bind-Value="active.Size">
+                                <InputSelect class="w-100" @bind-Value="ActiveMonster.Size">
                                     @foreach (var item in Enum.GetValues(typeof(SizeType)))
                                     {
                                         <option value="@item">@item</option>
@@ -53,7 +55,7 @@ else
                         <div class="row">
                             <div class="col-6">Creature Type:</div>
                             <div class="col-6">
-                                <InputSelect class="w-100" @bind-Value="active.Type">
+                                <InputSelect class="w-100" @bind-Value="ActiveMonster.Type">
                                     @foreach (var item in Enum.GetValues(typeof(CreatureType)))
                                     {
                                         <option value="@item">@item</option>
@@ -63,19 +65,19 @@ else
                         </div>
                         <div class="row">
                             <div class="col-6"><span class="fa-regular fa-caret-right me-1" />Type Detail:</div>
-                            <div class="col-6"><input @bind="active.TypeDetail" @bind:event="oninput" class="w-100" /></div>
+                            <div class="col-6"><input @bind="ActiveMonster.TypeDetail" @bind:event="oninput" class="w-100" /></div>
                         </div>
                         <div class="row">
                             <div class="col-6">Combat Level:</div>
-                            <div class="col-6"><InputNumber Value="@active.CombatLevel" class="w-100" min="0" max="30" ValueChanged="(int i) => LevelChanged(i)" ValueExpression="() => active.CombatLevel" TValue="int" /></div>
+                            <div class="col-6"><InputNumber Value="@ActiveMonster.CombatLevel" class="w-100" min="0" max="30" ValueChanged="(int i) => LevelChanged(i)" ValueExpression="() => ActiveMonster.CombatLevel" TValue="int" /></div>
                         </div>
                         <div class="row">
                             <div class="col-6"><span class="fa-regular fa-caret-right me-1" />Proficiency Bonus:</div>
-                            <div class="col-6">@active.Proficiency</div>
+                            <div class="col-6">@ActiveMonster.Proficiency</div>
                         </div>
                         <div class="row">
                             <div class="col-6">Rank: </div><div class="col-6">
-                                <InputSelect class="w-100" Value="@active.MonsterRank" ValueChanged="(Rank i) => RankChanged(i)" ValueExpression="() => active.MonsterRank" TValue="Rank">
+                                <InputSelect class="w-100" Value="@ActiveMonster.MonsterRank" ValueChanged="(Rank i) => RankChanged(i)" ValueExpression="() => ActiveMonster.MonsterRank" TValue="Rank">
                                     @foreach (var item in Enum.GetValues(typeof(Rank)))
                                     {
                                         <option value="@item">@item</option>
@@ -83,40 +85,40 @@ else
                                 </InputSelect>
                             </div>
                         </div>
-                        @if (active.MonsterRank == Rank.Paragon)
+                        @if (ActiveMonster.MonsterRank == Rank.Paragon)
                         {
                             <div class="row">
                                 <div class="col-6"><span class="fa-regular fa-caret-right me-1" />Threat:</div>
                                 <div class="col-6">
-                                    <InputNumber Value="active.ParagonThreat" class="w-100" min="1" ValueChanged="(int i) => ParagonChanged(i)" TValue="int" ValueExpression="() => active.ParagonThreat" />
+                                    <InputNumber Value="ActiveMonster.ParagonThreat" class="w-100" min="1" ValueChanged="(int i) => ParagonChanged(i)" TValue="int" ValueExpression="() => ActiveMonster.ParagonThreat" />
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-6"><span class="fa-regular fa-caret-right me-1" /><span class="fa-regular fa-caret-right me-1" />Paragon Powers:</div>
                                 <div class="col-6">
-                                    <InputNumber class="w-100" @bind-Value="active.ParagonPowers" min="0" />
+                                    <InputNumber class="w-100" @bind-Value="ActiveMonster.ParagonPowers" min="0" />
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-6"><span class="fa-regular fa-caret-right me-1" /><span class="fa-regular fa-caret-right me-1" />Paragon Defense:</div>
                                 <div class="col-6">
-                                    <InputNumber class="w-100" @bind-Value="active.ParagonDefenses" min="0" />
+                                    <InputNumber class="w-100" @bind-Value="ActiveMonster.ParagonDefenses" min="0" />
                                 </div>
                             </div>
                         }
-                        else if (active.MonsterRank == Rank.Elite)
+                        else if (ActiveMonster.MonsterRank == Rank.Elite)
                         {
                             <div class="row">
                                 <div class="col-6"><span class="fa-regular fa-caret-right me-1" />Paragon Powers:</div>
                                 <div class="col-6">
-                                    <InputNumber @bind-Value="active.ParagonPowers" min="0" class="w-100" />
+                                    <InputNumber @bind-Value="ActiveMonster.ParagonPowers" min="0" class="w-100" />
                                 </div>
                             </div>
                         }
                         <div class="row">
                             <div class="col-6">Role: </div>
                             <div class="col-6">
-                                <InputSelect class="w-100" Value="@active.MonsterRole" ValueChanged="(Role i) => RoleChanged(i)" ValueExpression="() => active.MonsterRole" TValue="Role">
+                                <InputSelect class="w-100" Value="@ActiveMonster.MonsterRole" ValueChanged="(Role i) => RoleChanged(i)" ValueExpression="() => ActiveMonster.MonsterRole" TValue="Role">
                                     @foreach (var item in Enum.GetValues(typeof(Role)))
                                     {
                                         <option value="@item">@item</option>
@@ -127,7 +129,7 @@ else
                         <div class="row">
                             <div class="col-6"><span class="fa-regular fa-caret-right me-1" />Role Special Type: </div>
                             <div class="col-6">
-                                <input @bind="active.MonsterRoleDetail" @bind:event="oninput" class="w-100" />
+                                <input @bind="ActiveMonster.MonsterRoleDetail" @bind:event="oninput" class="w-100" />
                             </div>
                         </div>
                         <div class="fw-bold">Base Stats</div>
@@ -135,21 +137,21 @@ else
 
                         <div class="row">
                             <span class="col-2">STR: </span>
-                            <InputSelect @bind-Value="active.Attributes.Strength" class="col-2">
+                            <InputSelect @bind-Value="ActiveMonster.Attributes.Strength" class="col-2">
                                 @for (int i = 7; i > -6; i--)
                                 {
                                     <option>@i</option>
                                 }
                             </InputSelect>
                             <span class="col-2">DEX: </span>
-                            <InputSelect @bind-Value="active.Attributes.Dexterity" class="col-2">
+                            <InputSelect @bind-Value="ActiveMonster.Attributes.Dexterity" class="col-2">
                                 @for (int i = 7; i > -6; i--)
                                 {
                                     <option>@i</option>
                                 }
                             </InputSelect>
                             <span class="col-2">CON: </span>
-                            <InputSelect @bind-Value="active.Attributes.Constitution" class="col-2">
+                            <InputSelect @bind-Value="ActiveMonster.Attributes.Constitution" class="col-2">
                                 @for (int i = 7; i > -6; i--)
                                 {
                                     <option>@i</option>
@@ -158,21 +160,21 @@ else
                         </div>
                         <div class="row">
                             <span class="col-2">INT: </span>
-                            <InputSelect @bind-Value="active.Attributes.Intelligence" class="col-2">
+                            <InputSelect @bind-Value="ActiveMonster.Attributes.Intelligence" class="col-2">
                                 @for (int i = 7; i > -6; i--)
                                 {
                                     <option>@i</option>
                                 }
                             </InputSelect>
                             <span class="col-2">WIS: </span>
-                            <InputSelect @bind-Value="active.Attributes.Wisdom" class="col-2">
+                            <InputSelect @bind-Value="ActiveMonster.Attributes.Wisdom" class="col-2">
                                 @for (int i = 7; i > -6; i--)
                                 {
                                     <option>@i</option>
                                 }
                             </InputSelect>
                             <span class="col-2">CHA: </span>
-                            <InputSelect @bind-Value="active.Attributes.Charisma" class="col-2">
+                            <InputSelect @bind-Value="ActiveMonster.Attributes.Charisma" class="col-2">
                                 @for (int i = 7; i > -6; i--)
                                 {
                                     <option>@i</option>
@@ -187,19 +189,19 @@ else
                         <div class="row">
                             <div class="col-6">Attack Bonus:</div>
                             <div class="col-6">
-                                <InputNumber @bind-Value="active.Offense.Attack" class="w-100" min="0" />
+                                <InputNumber @bind-Value="ActiveMonster.Offense.Attack" class="w-100" min="0" />
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-6">DC Mod:</div>
                             <div class="col-6">
-                                <InputNumber @bind-Value="active.Offense.DifficultyCheck" class="w-100" min="0" />
+                                <InputNumber @bind-Value="ActiveMonster.Offense.DifficultyCheck" class="w-100" min="0" />
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-6">Damage Average:</div>
                             <div class="col-6">
-                                <InputNumber @bind-Value="active.Offense.Damage" class="w-100" min="0" />
+                                <InputNumber @bind-Value="ActiveMonster.Offense.Damage" class="w-100" min="0" />
                             </div>
                         </div>
                         <div class="row">
@@ -207,12 +209,12 @@ else
                             <div class="col-6">
                                 <div class="row px-2">
                                     <div class="col-2 g-0 h-auto">
-                                        <InputCheckbox class="h-100 w-100" @bind-Value="active.Offense.RandomizeDamage" />
+                                        <InputCheckbox class="h-100 w-100" @bind-Value="ActiveMonster.Offense.RandomizeDamage" />
                                     </div>
-                                    @if (active.Offense.RandomizeDamage)
+                                    @if (ActiveMonster.Offense.RandomizeDamage)
                                     {
                                         <div class="col g-0 pe-2">
-                                            <InputSelect class="w-100" @bind-Value="@active.Offense.RandomDamageRange" TValue="DamageRange">
+                                            <InputSelect class="w-100" @bind-Value="@ActiveMonster.Offense.RandomDamageRange" TValue="DamageRange">
                                                 @foreach (var item in Enum.GetValues(typeof(DamageRange)))
                                                 {
                                                     <option value="@item">@item</option>
@@ -223,11 +225,11 @@ else
                                 </div>
                             </div>
                         </div>
-                        @if (active.Offense.RandomizeDamage)
+                        @if (ActiveMonster.Offense.RandomizeDamage)
                         {
                             <div class="row">
                                 <div class="col-6"><span class="fa-regular fa-caret-right me-1" /><span class="fa-regular fa-caret-right me-1" />Randomized Roll:</div>
-                                <div class="col-6">(@(DiceTools.ConvertToDiceString(active.Offense.RandomDamageRange, active.Offense.Damage)))</div>
+                                <div class="col-6">(@(DiceTools.ConvertToDiceString(ActiveMonster.Offense.RandomDamageRange, ActiveMonster.Offense.Damage)))</div>
                             </div>
                         }
                     </div>
@@ -238,22 +240,22 @@ else
                         <div class="row">
                             <div class="col-6">Armor Class:</div>
                             <div class="col-6">
-                                <InputNumber @bind-Value="active.Defenses.ArmorClass" class="w-100" min="0" />
+                                <InputNumber @bind-Value="ActiveMonster.Defenses.ArmorClass" class="w-100" min="0" />
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-6">Hit Points:</div>
                             <div class="col-6">
-                                <InputNumber @bind-Value="active.Defenses.HitPoints" class="w-100" min="0" />
+                                <InputNumber @bind-Value="ActiveMonster.Defenses.HitPoints" class="w-100" min="0" />
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-6">
                                 <div class="row">
-                                    <span>Proficient Saves (@active.Defenses.TrainedSavingThrows):</span>
+                                    <span>Proficient Saves (@ActiveMonster.Defenses.TrainedSavingThrows):</span>
                                 </div>
                                 <div class="row">
-                                    @if (active.Defenses.ProficientSavingThrows.NumberTrained > active.Defenses.TrainedSavingThrows)
+                                    @if (ActiveMonster.Defenses.ProficientSavingThrows.NumberTrained > ActiveMonster.Defenses.TrainedSavingThrows)
                                     {
                                         <span class="text-danger">More trained Saving Throws than suggested.</span>
                                     }
@@ -261,16 +263,16 @@ else
                             </div>
                             <div class="col-6">
                                 <div class="row px-2">
-                                    <InputCheckbox class="col" @bind-Value="active.Defenses.ProficientSavingThrows.Strength" /><span class="col">STR</span>
-                                    <InputCheckbox class="col" @bind-Value="active.Defenses.ProficientSavingThrows.Intelligence" /><span class="col">INT</span>
+                                    <InputCheckbox class="col" @bind-Value="ActiveMonster.Defenses.ProficientSavingThrows.Strength" /><span class="col">STR</span>
+                                    <InputCheckbox class="col" @bind-Value="ActiveMonster.Defenses.ProficientSavingThrows.Intelligence" /><span class="col">INT</span>
                                 </div>
                                 <div class="row px-2">
-                                    <InputCheckbox class="col" @bind-Value="active.Defenses.ProficientSavingThrows.Dexterity" /><span class="col">DEX</span>
-                                    <InputCheckbox class="col" @bind-Value="active.Defenses.ProficientSavingThrows.Wisdom" /><span class="col">WIS</span>
+                                    <InputCheckbox class="col" @bind-Value="ActiveMonster.Defenses.ProficientSavingThrows.Dexterity" /><span class="col">DEX</span>
+                                    <InputCheckbox class="col" @bind-Value="ActiveMonster.Defenses.ProficientSavingThrows.Wisdom" /><span class="col">WIS</span>
                                 </div>
                                 <div class="row px-2">
-                                    <InputCheckbox class="col" @bind-Value="active.Defenses.ProficientSavingThrows.Constitution" /><span class="col">CON</span>
-                                    <InputCheckbox class="col" @bind-Value="active.Defenses.ProficientSavingThrows.Charisma" /><span class="col">CHA</span>
+                                    <InputCheckbox class="col" @bind-Value="ActiveMonster.Defenses.ProficientSavingThrows.Constitution" /><span class="col">CON</span>
+                                    <InputCheckbox class="col" @bind-Value="ActiveMonster.Defenses.ProficientSavingThrows.Charisma" /><span class="col">CHA</span>
                                 </div>
                             </div>
                         </div>
@@ -279,13 +281,13 @@ else
                                 List<string> immuneDefaults = Enum.GetNames(typeof(DamageType)).ToList();
                                 immuneDefaults.AddRange(Enum.GetNames(typeof(ConditionType)).ToList());
                             }
-                            <_stringAdder Header="Immunities" ValueList="@active.Defenses.Immunities" ValueChangedEvent="(a) => ImmunitiesUpdated(a)" DefaultList="immuneDefaults"></_stringAdder>
+                            <_stringAdder Header="Immunities" ValueList="@ActiveMonster.Defenses.Immunities" ValueChangedEvent="(a) => ImmunitiesUpdated(a)" DefaultList="immuneDefaults"></_stringAdder>
                         </div>
                         <div class="row">
-                            <_stringAdder Header="Resistances" ValueList="@active.Defenses.Resistances" ValueChangedEvent="(a) => ResistancesUpdated(a)" DefaultList="Enum.GetNames(typeof(DamageType)).ToList()"></_stringAdder>
+                            <_stringAdder Header="Resistances" ValueList="@ActiveMonster.Defenses.Resistances" ValueChangedEvent="(a) => ResistancesUpdated(a)" DefaultList="Enum.GetNames(typeof(DamageType)).ToList()"></_stringAdder>
                         </div>
                         <div class="row">
-                            <_stringAdder Header="Vulnerabilities" ValueList="@active.Defenses.Vulnerabilities" ValueChangedEvent="(a) => VulnerabilitiesUpdated(a)" DefaultList="Enum.GetNames(typeof(DamageType)).ToList()"></_stringAdder>
+                            <_stringAdder Header="Vulnerabilities" ValueList="@ActiveMonster.Defenses.Vulnerabilities" ValueChangedEvent="(a) => VulnerabilitiesUpdated(a)" DefaultList="Enum.GetNames(typeof(DamageType)).ToList()"></_stringAdder>
                         </div>
                     </div>
                 </div>
@@ -295,20 +297,20 @@ else
                         <div class="row">
                             <div class="col-6">Base Speed:</div>
                             <div class="col-6">
-                                <InputNumber @bind-Value="active.WalkSpeed" class="w-100" min="0" placeholder="30" />
+                                <InputNumber @bind-Value="ActiveMonster.WalkSpeed" class="w-100" min="0" placeholder="30" />
                             </div>
                         </div>
                         <div>
-                            <_EnumAdder Dict="@active.OtherSpeeds" Header="Other Speeds" ValueChangedEvent="(a) => SpeedsUpdated(a)"></_EnumAdder>
+                            <_EnumAdder Dict="@ActiveMonster.OtherSpeeds" Header="Other Speeds" ValueChangedEvent="(a) => SpeedsUpdated(a)"></_EnumAdder>
                         </div>
                         <div>
-                            <_EnumAdder Dict="@active.Senses" Header="Senses" ValueChangedEvent="(a) => SenseUpdated(a)"></_EnumAdder>
+                            <_EnumAdder Dict="@ActiveMonster.Senses" Header="Senses" ValueChangedEvent="(a) => SenseUpdated(a)"></_EnumAdder>
                         </div>
                         <div>
-                            <_stringAdder Header="Languages" ValueList="@active.Languages" ValueChangedEvent="(a) => LanguagesUpdated(a)" DefaultList="Enum.GetNames(typeof(DefaultLanguages)).ToList()"></_stringAdder>
+                            <_stringAdder Header="Languages" ValueList="@ActiveMonster.Languages" ValueChangedEvent="(a) => LanguagesUpdated(a)" DefaultList="Enum.GetNames(typeof(DefaultLanguages)).ToList()"></_stringAdder>
                         </div>
                         <div>
-                            <_stringAdder Header="Items" ValueList="@active.Items" ValueChangedEvent="(a) => ItemsUpdated(a)"></_stringAdder>
+                            <_stringAdder Header="Items" ValueList="@ActiveMonster.Items" ValueChangedEvent="(a) => ItemsUpdated(a)"></_stringAdder>
                         </div>
                     </div>
                 </div>
@@ -318,7 +320,7 @@ else
                         <span class="fst-italic">Recommended Features: </span>
                         <div>
                             <span class="fst-italic">
-                                @switch (active.MonsterRank)
+                                @switch (ActiveMonster.MonsterRank)
                                 {
                                     case Rank.Minion:
                                         @("1-5 (1 Ancestral, 1 Role, 2 Misc)")
@@ -339,16 +341,16 @@ else
                         </div>
                         <div class="fw-bold" data-bs-toggle="modal" data-bs-target="#featureModal" @onclick="() => EditFeature = null">Add Feature<span class="fas fa-plus ms-1"></span></div>
                         @foreach (var fType in
-                       active.Features
-                       .Select(a => a.Type)
-                       .Distinct()
-                       .OrderBy(b => (int)b)
-                       )
+                                            ActiveMonster.Features
+                                            .Select(a => a.Type)
+                                            .Distinct()
+                                            .OrderBy(b => (int)b)
+                                            )
 
                         {
                             <div>
                                 <span class="fw-bold">@fType@(fType.ToString().EndsWith("s") ? "" : "s")</span>
-                                @foreach (var feature in active.Features.Where(a => a.Type == fType).OrderBy(d => d.Rarity).ThenByDescending(c => c.Name))
+                                @foreach (var feature in ActiveMonster.Features.Where(a => a.Type == fType).OrderBy(d => d.Rarity).ThenByDescending(c => c.Name))
                                 {
                                     <div class="py-1">
                                         <span>
@@ -374,7 +376,7 @@ else
                     {
                         recurseParent = Folders.First(a => a.Id == recurseParent.ParentId);
 
-                        if(recurseParent.IsBaseFolder)
+                        if (recurseParent.IsBaseFolder)
                             folderName = recurseParent.Name + folderName;
                         else
                             folderName = recurseParent.Name + "/" + folderName;
@@ -384,7 +386,7 @@ else
                     }
                 }
                 <div id="@ActiveFolderId">
-                    <span class="fa-solid fa-folder-open me-1 @(activeFolder.Id == active.FolderId ? "text-success" : "")" title="Active Folder" />@folderName
+                    <span class="fa-solid fa-folder-open me-1 @(activeFolder.Id == ActiveMonster.FolderId ? "text-success" : "")" title="Active Folder" />@folderName
                     @if (activeFolder.Creatures.Count == 0 && activeFolder.Children.Count == 0)
                     {
                         <button type="button" class="btn btn-sm btn-outline-danger ms-3" @onclick="() => DeleteFolder(activeFolder.Id)"><span class="fa-regular fa-folder-xmark me-1" />Delete Folder</button>
@@ -398,11 +400,11 @@ else
                     @{
                         if (!activeFolder.IsBaseFolder)
                         {
-                            <div class="ms-2" role="button" id="@ActiveFolderId" @onclick="() => ActiveFolderId = activeFolder.ParentId"><span class="fa-solid fa-folder-arrow-up me-1 @(active.FolderId == activeFolder.ParentId ? " text-success" : "")" title="Up One Level" />...</div>
+                            <div class="ms-2" role="button" id="@ActiveFolderId" @onclick="() => ActiveFolderId = activeFolder.ParentId"><span class="fa-solid fa-folder-arrow-up me-1 @(ActiveMonster.FolderId == activeFolder.ParentId ? " text-success" : "")" title="Up One Level" />...</div>
                         }
                         foreach (var item in activeFolder.Children)
                         {
-                            <div class="ms-2" role="button" id="@item.Id" @onclick="() => ActiveFolderId = item.Id"><span class="fa-solid fa-folder me-1 @(active.FolderId == item.Id ? " text-success" : "")" title="Inactive Folder" />@item.Name</div>
+                            <div class="ms-2" role="button" id="@item.Id" @onclick="() => ActiveFolderId = item.Id"><span class="fa-solid fa-folder me-1 @(ActiveMonster.FolderId == item.Id ? " text-success" : "")" title="Inactive Folder" />@item.Name</div>
                         }
                     }
                     <div>
@@ -410,13 +412,13 @@ else
                         <span class="fa-regular fa-folder-plus" title="Add New Folder" @onclick="() => AddFolder()" />
                     </div>
                 </div>
-                <hr class="ms-2"/>
+                <hr class="ms-2" />
                 <div class="ms-2">
                     <span>Stat Blocks</span>
                     <span class="fa-kit fa-solid-skull-circle-plus" title="Add New Monster" @onclick="() => AddMonster()" />
                     <span class="fa-solid fa-copy" title="Copy Current Monster" @onclick="() => CopyCurrentMonster()" />
                     <span class="ms-1">(@(Monsters.Count)/@_maxMonsters)</span>
-                    @if (active.FolderId != ActiveFolderId)
+                    @if (ActiveMonster.FolderId != ActiveFolderId)
                     {
                         <button class="btn btn-sm btn-outline-success ms-2" type="button" @onclick="() => MoveActiveMonsterToActiveFolder()"><span class="fa-regular fa-folder-arrow-down me-1" />Move Active to this Folder</button>
                     }
@@ -424,7 +426,7 @@ else
                 <div class="row overflow-auto px-1 d-block ms-2" style="height: 250px;">
                     @foreach (var mon in ActiveFolder.Creatures.Select(a => a as Monster).OrderBy(m => m.Name))
                     {
-                        <MonsterTitleCard model="mon" DeleteCallback="() => RemoveMonster(mon)" ActiveClick="() => ActiveClick(mon)" FocusedMonster="@(mon.Id == active.Id)" SaveCallback="(m) => SaveMonsterAsync((Monster)m, true)" />
+                        <MonsterTitleCard model="mon" DeleteCallback="() => RemoveMonster(mon)" ActiveClick="() => ActiveClick(mon)" FocusedMonster="@(mon.Id == ActiveMonster.Id)" SaveCallback="(m) => SaveMonsterAsync((Monster)m, true)" />
                     }
                 </div>
                 @*<div class="alert alert-warning">You Have Unsaved Changes!</div>*@
@@ -434,13 +436,13 @@ else
                         if (mon.Layout == LayoutType.Single)
                         {
                             <div class="col-8">
-                                <MonsterStatBlock_OneColumn model="mon" Hidden="@(mon.Id != active.Id)" />
+                                <MonsterStatBlock_OneColumn model="mon" Hidden="@(mon.Id != ActiveMonster.Id)" />
                             </div>
                         }
                         else if (mon.Layout == LayoutType.TwoColumn)
                         {
                             <div class="col-12">
-                                <MonsterStatBlock_TwoColumn model="mon" Hidden="@(mon.Id != active.Id)" />
+                                <MonsterStatBlock_TwoColumn model="mon" Hidden="@(mon.Id != ActiveMonster.Id)" />
                             </div>
                         }
                     }
@@ -448,7 +450,7 @@ else
                 </div>
                 <div class="row my-1">
                     <button class="btn btn-primary d-inline-block col-9" @onclick="() => SaveActiveMonster(true)"><span class="mx-1 fas fa-floppy-disk" />Save Monster</button>
-                    @if (active != null)
+                    @if (ActiveMonster != null)
                     {
                         <div class="d-flex my-1 justify-content-start col">
                             <span class="btn btn-outline-dark rounded-circle justify-content-center" style="width: 42px; height: 42px;" @onclick="() => ConvertBlockToPng()"><span class="fa fa-camera align-middle" /></span>
@@ -472,7 +474,23 @@ else
     [CascadingParameter]
     private Task<AuthenticationState> authenticationStateTask { get; set; }
 
-    private Guid? ActiveFolderId { get; set; } = null;
+    private Guid? _activeFolderId = null;
+    private Guid? ActiveFolderId
+    {
+        get
+        {
+            return _activeFolderId;
+        }
+        set
+        {
+            if (value != _activeFolderId)
+            {
+                _activeFolderId = value;
+                LocalUserData.lastOpenedFolder = value;
+                localStore.SetItemAsync("giffglyphmonstermaker.skyl3lazer", LocalUserData);
+            }
+        }
+    }
     private Folder? ActiveFolder
     {
         get
@@ -484,7 +502,7 @@ else
     {
         get
         {
-            return Folders?.FirstOrDefault(a => a.Id == active?.FolderId);
+            return Folders?.FirstOrDefault(a => a.Id == ActiveMonster?.FolderId);
         }
     }
 
@@ -495,11 +513,29 @@ else
 
     private string NewFolderName { get; set; }
 
-    private Monster? active { get; set; }
+    private Monster? _activeMonster;
+    private Monster? ActiveMonster
+    {
+        get
+        {
+            return _activeMonster;
+        }
+        set
+        {
+            if (value != _activeMonster && value != null)
+            {
+                _activeMonster = value;
+                LocalUserData.lastOpenedMonster = value.Id; 
+                localStore.SetItemAsync("giffglyphmonstermaker.skyl3lazer", LocalUserData);
+            }
+        }
+    }
 
     private Feature? EditFeature { get; set; }
 
     private Feature? DeleteFeatureModalTarget { get; set; }
+
+    private LocalStorage LocalUserData { get; set; } = new();
 
     protected async override Task OnParametersSetAsync()
     {
@@ -509,14 +545,31 @@ else
         if (Folders == null)
             return;
 
-        var topFolder = Folders.First(a => a.IsBaseFolder);
+        try
+        {
+            LocalUserData = await localStore.GetItemAsync<LocalStorage>("giffglyphmonstermaker.skyl3lazer") ?? new LocalStorage();
+        }
+        catch (Exception ex) { }
+
+        await localStore.SetItemAsync("giffglyphmonstermaker.skyl3lazer", LocalUserData);
+
+        Folder? topFolder = null;
+
+        if (LocalUserData.lastOpenedFolder == null)
+        {
+            topFolder = Folders.First(a => a.IsBaseFolder);
+        }
+        else
+        {
+            topFolder = Folders.First(a => a.Id == LocalUserData.lastOpenedFolder);
+        }
 
         if (Monsters == null)
             return;
 
         if (Monsters.Count == 0)
         {
-            ActiveFolderId = topFolder.Id;
+            ActiveFolderId = topFolder?.Id;
             await CreateFirstMonster();
         }
         else
@@ -529,18 +582,23 @@ else
                 await SaveMonsterAsync(m, false);
             }
 
-            active = GetFirstMonster(topFolder) as Monster;
-
-            if (active == null)
+            if (LocalUserData?.lastOpenedMonster == null)
             {
-                active = Monsters.First();
-                active = ActiveMonsterFolder.Creatures.First() as Monster;
+                ActiveMonster = GetFirstMonster(topFolder) as Monster;
+            }
+            else
+            {
+                ActiveMonster = Monsters.First(a => a.Id == LocalUserData.lastOpenedMonster);
+            }
+            if (ActiveMonster == null)
+            {
+                ActiveMonster = Monsters.First();
+                ActiveMonster = ActiveMonsterFolder.Creatures.First() as Monster;
             }
 
-            ActiveFolderId = active.FolderId ?? topFolder.Id;
+            ActiveFolderId = ActiveMonster.FolderId ?? topFolder.Id;
         }
     }
-
     // There won't always be a monster in the top folder, so we have to go find one.
     private Creature? GetFirstMonster(Folder root)
     {
@@ -600,13 +658,13 @@ else
 
     private void ChangeMonsterColumnLayout()
     {
-        active.Layout = active.Layout == LayoutType.Single ? LayoutType.TwoColumn : LayoutType.Single;
+        ActiveMonster.Layout = ActiveMonster.Layout == LayoutType.Single ? LayoutType.TwoColumn : LayoutType.Single;
         StateHasChanged();
     }
 
     private void ConvertBlockToPng()
     {
-        var args = new object[] { "monster-" + active.Id, active.Name.Replace(" ", "-") + "_image.png" };
+        var args = new object[] { "monster-" + ActiveMonster.Id, ActiveMonster.Name.Replace(" ", "-") + "_image.png" };
         _javascript.InvokeAsync<string>("takeScreenshot", args);
     }
 
@@ -617,7 +675,7 @@ else
 
     private async Task CopyCurrentMonster()
     {
-        if (active == null)
+        if (ActiveMonster == null)
             return;
         if (Monsters.Count >= _maxMonsters)
         {
@@ -625,13 +683,13 @@ else
             return;
         }
 
-        Monster? result = await _monsterService.CopyMonsterAsync(active);
+        Monster? result = await _monsterService.CopyMonsterAsync(ActiveMonster);
 
         if (result != null)
         {
             Monsters.Add(result);
             ActiveFolder.Creatures.Add(result);
-            _toastService.ShowSuccess("Copied " + active.Name);
+            _toastService.ShowSuccess("Copied " + ActiveMonster.Name);
         }
         else
         {
@@ -643,23 +701,23 @@ else
     {
         get
         {
-            return active.CombatLevel < 8 ? ((int)Math.Floor(active.CombatLevel / 4.0) + 3) : ((int)Math.Floor((active.CombatLevel - 8) / 8.0) + 5);
+            return ActiveMonster.CombatLevel < 8 ? ((int)Math.Floor(ActiveMonster.CombatLevel / 4.0) + 3) : ((int)Math.Floor((ActiveMonster.CombatLevel - 8) / 8.0) + 5);
         }
     }
 
     private int MedStat
     {
-        get { return (int)Math.Floor(active.CombatLevel / 8.0) + 1; }
+        get { return (int)Math.Floor(ActiveMonster.CombatLevel / 8.0) + 1; }
     }
 
     private int LowStat
     {
-        get { return (int)Math.Floor(active.CombatLevel / 12.0) - 1; }
+        get { return (int)Math.Floor(ActiveMonster.CombatLevel / 12.0) - 1; }
     }
 
     private async Task SaveActiveMonster(bool showToast)
     {
-        await SaveMonsterAsync(active, showToast);
+        await SaveMonsterAsync(ActiveMonster, showToast);
     }
 
     public async Task SaveMonsterAsync(Monster mon, bool showToast)
@@ -684,81 +742,81 @@ else
     {
         Monster monster = new("My First Monster", CurrentUserId) { FolderId = ActiveFolderId };
         monster.Features.Add(new Action(CurrentUserId)
-            {
-                Name = "Hit Them",
-                Rarity = RarityType.Common,
-                Range = 5,
-                Distance = RangeType.Melee,
-                Targets = 1,
-                ActionDamageType = DamageType.bludgeoning,
-                DealsDamage = true,
-                Shape = TargetShape.target,
-                RelevantAttribute = AttributeType.Strength,
-                ParentId = monster.Id
-            });
+        {
+            Name = "Hit Them",
+            Rarity = RarityType.Common,
+            Range = 5,
+            Distance = RangeType.Melee,
+            Targets = 1,
+            ActionDamageType = DamageType.bludgeoning,
+            DealsDamage = true,
+            Shape = TargetShape.target,
+            RelevantAttribute = AttributeType.Strength,
+            ParentId = monster.Id
+        });
         monster.Features.Add(new Action(CurrentUserId)
+        {
+            Name = "Hit Them Twice",
+            Rarity = RarityType.Uncommon,
+            Range = 5,
+            MultiAttack = 2,
+            Distance = RangeType.Melee,
+            Targets = 1,
+            ActionDamageType = DamageType.bludgeoning,
+            DealsDamage = true,
+            Shape = TargetShape.target,
+            RelevantAttribute = AttributeType.Dexterity,
+            Frequency = new FeatureFrequency()
             {
-                Name = "Hit Them Twice",
-                Rarity = RarityType.Uncommon,
-                Range = 5,
-                MultiAttack = 2,
-                Distance = RangeType.Melee,
-                Targets = 1,
-                ActionDamageType = DamageType.bludgeoning,
-                DealsDamage = true,
-                Shape = TargetShape.target,
-                RelevantAttribute = AttributeType.Dexterity,
-                Frequency = new FeatureFrequency()
-                {
-                    Type = FrequencyType.shortrest,
-                    Value = 2
-                },
-                ParentId = monster.Id
-            });
+                Type = FrequencyType.shortrest,
+                Value = 2
+            },
+            ParentId = monster.Id
+        });
         monster.Features.Add(new Action(CurrentUserId)
+        {
+            Name = "Deadly Spell",
+            Rarity = RarityType.Rare,
+            Range = 30,
+            Distance = RangeType.Ranged,
+            HasSave = true,
+            SaveVs = "DEX",
+            Targets = 0,
+            ActionDamageType = DamageType.psychic,
+            RelevantAttribute = AttributeType.Intelligence,
+            DealsDamage = true,
+            Frequency = new FeatureFrequency()
             {
-                Name = "Deadly Spell",
-                Rarity = RarityType.Rare,
-                Range = 30,
-                Distance = RangeType.Ranged,
-                HasSave = true,
-                SaveVs = "DEX",
-                Targets = 0,
-                ActionDamageType = DamageType.psychic,
-                RelevantAttribute = AttributeType.Intelligence,
-                DealsDamage = true,
-                Frequency = new FeatureFrequency()
-                {
-                    Type = FrequencyType.cooldown,
-                    Value = 3
-                },
-                ParentId = monster.Id
-            });
+                Type = FrequencyType.cooldown,
+                Value = 3
+            },
+            ParentId = monster.Id
+        });
 
         monster.Features.Add(new BonusAction(CurrentUserId)
-            {
-                Name = "Bonus Smack",
-                Rarity = RarityType.Common,
-                Range = 5,
-                Distance = RangeType.Melee,
-                Targets = 1,
-                ActionDamageType = DamageType.bludgeoning,
-                RelevantAttribute = AttributeType.Strength,
-                DealsDamage = true,
-                Shape = TargetShape.target,
-                DamageMultiplier = 0.5,
-                ParentId = monster.Id
-            });
+        {
+            Name = "Bonus Smack",
+            Rarity = RarityType.Common,
+            Range = 5,
+            Distance = RangeType.Melee,
+            Targets = 1,
+            ActionDamageType = DamageType.bludgeoning,
+            RelevantAttribute = AttributeType.Strength,
+            DealsDamage = true,
+            Shape = TargetShape.target,
+            DamageMultiplier = 0.5,
+            ParentId = monster.Id
+        });
         Monsters.Add(monster);
         ActiveFolder.Creatures.Add(monster);
-        active = monster;
+        ActiveMonster = monster;
         await _monsterService.InsertMonsterAsync(monster);
         UpdateValues();
     }
 
     public async Task RemoveFeature(Feature feature)
     {
-        active.Features.Remove(feature);
+        ActiveMonster.Features.Remove(feature);
         var result = await _featureService.DeleteFeatureAsync(feature);
         if (result)
         {
@@ -772,42 +830,42 @@ else
     public void SenseUpdated(object? val)
     {
         var dict = (Dictionary<SenseType, int>)val;
-        active.Senses = dict;
+        ActiveMonster.Senses = dict;
     }
     public void SpeedsUpdated(object? val)
     {
         var dict = (Dictionary<MovementType, int>)val;
-        active.OtherSpeeds = dict;
+        ActiveMonster.OtherSpeeds = dict;
     }
     public void ItemsUpdated(object? val)
     {
         var itemList = (List<string>)val;
-        active.Items = itemList;
+        ActiveMonster.Items = itemList;
     }
     public void LanguagesUpdated(object? val)
     {
         var itemList = (List<string>)val;
-        active.Languages = itemList;
+        ActiveMonster.Languages = itemList;
     }
     public void ImmunitiesUpdated(object? val)
     {
         var itemList = (List<string>)val;
-        active.Defenses.Immunities = itemList;
+        ActiveMonster.Defenses.Immunities = itemList;
     }
     public void ResistancesUpdated(object? val)
     {
         var itemList = (List<string>)val;
-        active.Defenses.Resistances = itemList;
+        ActiveMonster.Defenses.Resistances = itemList;
     }
     public void VulnerabilitiesUpdated(object? val)
     {
         var itemList = (List<string>)val;
-        active.Defenses.Vulnerabilities = itemList;
+        ActiveMonster.Defenses.Vulnerabilities = itemList;
     }
     public void FeaturesUpdated(object? val)
     {
         var featureList = (List<Feature>)val;
-        active.Features = featureList;
+        ActiveMonster.Features = featureList;
     }
 
     public void EditFeatureChanged(object? val)
@@ -870,10 +928,10 @@ else
             return;
         }
 
-        var mon = new Monster(name, CurrentUserId) {  FolderId = ActiveFolderId };
+        var mon = new Monster(name, CurrentUserId) { FolderId = ActiveFolderId };
 
         ActiveFolder?.Creatures.Add(mon);
-        active = mon;
+        ActiveMonster = mon;
         Monsters.Add(mon);
         await _monsterService.InsertMonsterAsync(mon);
         UpdateValues();
@@ -898,64 +956,64 @@ else
         {
             CreateFirstMonster();
         }
-        else if (active.Id == mon.Id)
+        else if (ActiveMonster.Id == mon.Id)
         {
             if (ActiveFolder.Creatures.Count > 0)
-                active = ActiveFolder.Creatures.First() as Monster;
+                ActiveMonster = ActiveFolder.Creatures.First() as Monster;
             else
-                active = GetFirstMonster(Folders.First(a => a.IsBaseFolder)) as Monster;
-            
+                ActiveMonster = GetFirstMonster(Folders.First(a => a.IsBaseFolder)) as Monster;
+
             UpdateValues();
         }
     }
     public async Task MoveActiveMonsterToActiveFolder()
     {
-        ActiveMonsterFolder.Creatures.Remove(active);
-        ActiveFolder.Creatures.Add(active);
-        active.FolderId = ActiveFolderId;
-        await SaveMonsterAsync(active, true);
+        ActiveMonsterFolder.Creatures.Remove(ActiveMonster);
+        ActiveFolder.Creatures.Add(ActiveMonster);
+        ActiveMonster.FolderId = ActiveFolderId;
+        await SaveMonsterAsync(ActiveMonster, true);
     }
     public void ActiveClick(Monster mon)
     {
-        active = mon;
+        ActiveMonster = mon;
     }
 
     private void LevelChanged(int value)
     {
-        active.CombatLevel = value;
+        ActiveMonster.CombatLevel = value;
         UpdateValues();
     }
     private void ParagonChanged(int value)
     {
-        active.ParagonThreat = value;
+        ActiveMonster.ParagonThreat = value;
         UpdateValues();
     }
 
     private void RankChanged(Rank value)
     {
-        active.MonsterRank = value;
+        ActiveMonster.MonsterRank = value;
         UpdateValues();
     }
 
     private void RoleChanged(Role value)
     {
-        active.MonsterRole = value;
+        ActiveMonster.MonsterRole = value;
         UpdateValues();
     }
     public async Task UpdateValues()
     {
         //Base formula is for a GRUNT STRIKER, everyone else is based off of that
-        double ac = 12 + (int)Math.Floor((double)active.CombatLevel / 4);
-        double hp = 16 + active.CombatLevel * 7;
+        double ac = 12 + (int)Math.Floor((double)ActiveMonster.CombatLevel / 4);
+        double hp = 16 + ActiveMonster.CombatLevel * 7;
         double tst = 2;
 
         int paraPower = 0;
         int paraDef = 0;
 
-        double atk = active.Proficiency;
-        double dc = 8 + active.Proficiency;
-        double dmg = active.CombatLevel * 3;
-        switch (active.MonsterRole)
+        double atk = ActiveMonster.Proficiency;
+        double dc = 8 + ActiveMonster.Proficiency;
+        double dmg = ActiveMonster.CombatLevel * 3;
+        switch (ActiveMonster.MonsterRole)
         {
             case Role.Controller:
                 ac += 2;
@@ -982,7 +1040,7 @@ else
                 dmg *= 0.75;
                 break;
         }
-        switch (active.MonsterRank)
+        switch (ActiveMonster.MonsterRank)
         {
             case Rank.Minion:
                 hp *= 0.2;
@@ -998,23 +1056,23 @@ else
                 break;
             case Rank.Paragon:
                 ac += 2;
-                hp *= active.ParagonThreat;
+                hp *= ActiveMonster.ParagonThreat;
                 tst += 1;
                 dmg *= 1.2;
-                paraPower = active.ParagonThreat - 1;
-                paraDef = (int)Math.Floor(active.ParagonThreat / 2.0);
+                paraPower = ActiveMonster.ParagonThreat - 1;
+                paraDef = (int)Math.Floor(ActiveMonster.ParagonThreat / 2.0);
                 break;
         }
 
-        active.Defenses.HitPoints = (int)Math.Floor(hp);
-        active.Defenses.ArmorClass = (int)Math.Floor(ac);
-        active.Defenses.TrainedSavingThrows = (int)Math.Floor(tst);
-        active.Offense.Attack = (int)Math.Floor(atk);
-        active.Offense.Damage = Math.Max((int)Math.Floor(dmg), 1);
-        active.Offense.DifficultyCheck = (int)Math.Floor(dc);
-        active.WalkSpeed = 30;
-        active.ParagonPowers = paraPower;
-        active.ParagonDefenses = paraDef;
+        ActiveMonster.Defenses.HitPoints = (int)Math.Floor(hp);
+        ActiveMonster.Defenses.ArmorClass = (int)Math.Floor(ac);
+        ActiveMonster.Defenses.TrainedSavingThrows = (int)Math.Floor(tst);
+        ActiveMonster.Offense.Attack = (int)Math.Floor(atk);
+        ActiveMonster.Offense.Damage = Math.Max((int)Math.Floor(dmg), 1);
+        ActiveMonster.Offense.DifficultyCheck = (int)Math.Floor(dc);
+        ActiveMonster.WalkSpeed = 30;
+        ActiveMonster.ParagonPowers = paraPower;
+        ActiveMonster.ParagonDefenses = paraDef;
         StateHasChanged();
     }
 }

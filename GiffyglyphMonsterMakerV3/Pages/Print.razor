@@ -2,10 +2,11 @@
 @attribute [Authorize(Roles = "Administrator, AllowedUser, User")]
 @using GiffyglyphMonsterMakerV3.Data
 @using GiffyglyphMonsterMakerV3.Utility
+@inject Blazored.LocalStorage.ILocalStorageService localStore;
 
 <PageTitle>Print Statblocks</PageTitle>
 
-@if (popQueue == null)
+@if (ActiveFolder == null)
 {
     <div class="d-flex justify-content-center">
         <div class="spinner-border" role="status">
@@ -113,11 +114,12 @@ else
         }
     }
 
-    protected override void OnParametersSet()
+    protected async override Task OnParametersSetAsync()
     {
         if(Folders != null)
         {
-            ActiveFolderId = Folders.First().Id;
+            ActiveFolderId = (await localStore.GetItemAsync<LocalStorage>("giffglyphmonstermaker.skyl3lazer"))?.lastOpenedFolder ?? Folders.First().Id;
+            popQueue = new Queue<Monster>(ActiveFolder.Creatures.Select(a => a as Monster));
         }
     }
 }

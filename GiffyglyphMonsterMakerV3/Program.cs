@@ -1,4 +1,7 @@
 using Append.Blazor.Printing;
+using Azure.Identity;
+using Blazored.LocalStorage;
+using Blazored.Toast;
 using GiffyglyphMonsterMakerV3.Areas.Identity;
 using GiffyglyphMonsterMakerV3.Data;
 using GiffyglyphMonsterMakerV3.Utility;
@@ -8,8 +11,8 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
-using Azure.Identity;
-using Blazored.Toast;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
@@ -34,6 +37,11 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
+
+builder.Services.AddBlazoredLocalStorage(config =>
+{
+    config.JsonSerializerOptions.RespectNullableAnnotations = true;
+});
 /* maybe later
 builder.Services.AddAuthentication()
     .AddGoogle(options =>

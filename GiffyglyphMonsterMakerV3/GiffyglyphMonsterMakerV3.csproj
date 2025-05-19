@@ -5,8 +5,9 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>b0115544-12f6-4cbb-9755-cbd049d9963e</UserSecretsId>
-    <AssemblyVersion>1.1.25139.5</AssemblyVersion>
+    <AssemblyVersion>1.2.25139.1</AssemblyVersion>
 	  <Deterministic>false</Deterministic>
+	  <RunAnalyzersDuringLiveAnalysis>True</RunAnalyzersDuringLiveAnalysis>
   </PropertyGroup>
 
   <ItemGroup>
@@ -62,6 +63,7 @@
     <PackageReference Include="Append.Blazor.Printing" Version="6.3.0" />
     <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.4.0" />
     <PackageReference Include="Azure.Identity" Version="1.14.0" />
+    <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
     <PackageReference Include="Blazored.Toast" Version="4.2.1" />
     <PackageReference Include="ChromiumHTMLToPDF" Version="1.1.1" />
     <PackageReference Include="HtmlSanitizer" Version="9.0.884" />
