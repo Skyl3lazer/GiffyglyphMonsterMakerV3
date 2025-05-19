@@ -278,16 +278,16 @@ else
                         </div>
                         <div class="row">
                             @{
-                                List<string> immuneDefaults = Enum.GetNames(typeof(DamageType)).ToList();
-                                immuneDefaults.AddRange(Enum.GetNames(typeof(ConditionType)).ToList());
+                                List<string> immuneDefaults = Enum<DamageType>.GetAllItemsDescriptiveNames().ToList();
+                                immuneDefaults.AddRange(Enum<ConditionType>.GetAllItemsDescriptiveNames().ToList());
                             }
                             <_stringAdder Header="Immunities" ValueList="@ActiveMonster.Defenses.Immunities" ValueChangedEvent="(a) => ImmunitiesUpdated(a)" DefaultList="immuneDefaults"></_stringAdder>
                         </div>
                         <div class="row">
-                            <_stringAdder Header="Resistances" ValueList="@ActiveMonster.Defenses.Resistances" ValueChangedEvent="(a) => ResistancesUpdated(a)" DefaultList="Enum.GetNames(typeof(DamageType)).ToList()"></_stringAdder>
+                            <_stringAdder Header="Resistances" ValueList="@ActiveMonster.Defenses.Resistances" ValueChangedEvent="(a) => ResistancesUpdated(a)" DefaultList="Enum<DamageType>.GetAllItemsDescriptiveNames().ToList()"></_stringAdder>
                         </div>
                         <div class="row">
-                            <_stringAdder Header="Vulnerabilities" ValueList="@ActiveMonster.Defenses.Vulnerabilities" ValueChangedEvent="(a) => VulnerabilitiesUpdated(a)" DefaultList="Enum.GetNames(typeof(DamageType)).ToList()"></_stringAdder>
+                            <_stringAdder Header="Vulnerabilities" ValueList="@ActiveMonster.Defenses.Vulnerabilities" ValueChangedEvent="(a) => VulnerabilitiesUpdated(a)" DefaultList="Enum<DamageType>.GetAllItemsDescriptiveNames().ToList()"></_stringAdder>
                         </div>
                     </div>
                 </div>

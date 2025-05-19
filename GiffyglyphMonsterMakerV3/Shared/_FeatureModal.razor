@@ -279,7 +279,7 @@
                                                         <InputSelect class="w-100" @bind-Value="action.ActionDamageType" TValue="DamageType">
                                                             @foreach (var item in Enum.GetValues(typeof(DamageType)))
                                                             {
-                                                                <option value="@item">@item</option>
+                                                                <option value="@item">@(((DamageType)item).ToDescriptionString())</option>
                                                             }
                                                         </InputSelect>
                                                     </div>

@@ -127,12 +127,12 @@ namespace GiffyglyphMonsterMakerV3.Data
                 var dam = (int)Math.Max(Math.Floor((double)(parentCreature.Offense.Damage * DamageMultiplier) / MultiAttack), 1);
                 if (OverrideRandomDamage)
                 {
-                    desc += dam + " (" + DiceTools.ConvertToDiceString(OverrideRandomDamageRange, dam) + ")" + " " + ActionDamageType +
+                    desc += dam + " (" + DiceTools.ConvertToDiceString(OverrideRandomDamageRange, dam) + ")" + " " + ActionDamageType.ToDescriptionString() +
                             " damage.";
                 }
                 else
                 {
-                    desc += dam + (parentCreature.Offense.RandomizeDamage ? " (" + DiceTools.ConvertToDiceString(parentCreature.Offense.RandomDamageRange, dam) + ")" : "") + " " + ActionDamageType +
+                    desc += dam + (parentCreature.Offense.RandomizeDamage ? " (" + DiceTools.ConvertToDiceString(parentCreature.Offense.RandomDamageRange, dam) + ")" : "") + " " + ActionDamageType.ToDescriptionString() +
                             " damage.";
                 }
             }
@@ -230,7 +230,6 @@ namespace GiffyglyphMonsterMakerV3.Data
             base.UpdateThisToMatch(o);
         }
     }
-
     public enum DamageType
     {
         acid = 0,
@@ -247,6 +246,7 @@ namespace GiffyglyphMonsterMakerV3.Data
         slashing,
         thunder,
         healing,
+        [Description("temporary healing")]
         temporary_healing
     }
     public enum TargetShape
