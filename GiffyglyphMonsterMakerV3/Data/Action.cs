@@ -245,7 +245,9 @@ namespace GiffyglyphMonsterMakerV3.Data
         psychic,
         radiant,
         slashing,
-        thunder
+        thunder,
+        healing,
+        temporary_healing
     }
     public enum TargetShape
     {
