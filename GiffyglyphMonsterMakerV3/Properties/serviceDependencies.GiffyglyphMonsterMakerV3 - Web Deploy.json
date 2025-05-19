@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "mssql1": {
+      "serviceConnectorResourceId": "/subscriptions/[parameters('subscriptionId')]/resourcegroups/[parameters('resourceGroupName')]/providers/Microsoft.Web/sites/GiffyglyphMonsterMakerV3/providers/Microsoft.ServiceLinker/linkers/ConnectionStringsggmonstermaker_63AB78DC07",
+      "secretStore": "AzureAppSettings",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/giffyglyphmonstermaker-server/databases/giffyglyphmonstermaker-database",
+      "type": "mssql.azure",
+      "connectionId": "ConnectionStrings:ggmonstermaker"
+    }
+  }
+}

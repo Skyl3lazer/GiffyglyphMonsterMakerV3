@@ -1,9 +1,5 @@
 {
   "dependencies": {
-    "mssql1": {
-      "type": "mssql",
-      "connectionId": "ConnectionStrings:ggmonstermaker"
-    },
     "secrets2": {
       "ignored": "true",
       "type": "secrets.keyVault"
@@ -11,6 +7,10 @@
     "secrets1": {
       "type": "secrets",
       "connectionId": null
+    },
+    "mssql1": {
+      "type": "mssql",
+      "connectionId": "ConnectionStrings:ggmonstermaker"
     }
   }
 }

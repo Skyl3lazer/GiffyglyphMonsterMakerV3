@@ -460,7 +460,8 @@ namespace GiffyglyphMonsterMakerV3.Data
     {
         Swim = 0,
         Fly,
-        Climb
+        Climb,
+        Burrow
     }
 
     public enum SenseType
